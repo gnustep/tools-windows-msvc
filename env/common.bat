@@ -13,7 +13,7 @@ exit /b %errorlevel%
   
   if not exist "%PROJECT%" (
     echo ### Cloning project
-    git clone --recursive %REPO% %PROJECT%
+    git clone --recursive %REPO% %PROJECT% || exit /b 1
   )
   
   popd
