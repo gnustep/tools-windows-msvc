@@ -89,7 +89,7 @@ goto :eof
 
 :vsdevcmd
   :: https://github.com/microsoft/vswhere/wiki/Start-Developer-Command-Prompt
-  for /f "usebackq delims=" %%i in (`"%ROOT_DIR%\vswhere.exe" -latest -property installationPath`) do (
+  for /f "usebackq delims=" %%i in (`"%ROOT_DIR%\bin\vswhere.exe" -latest -property installationPath`) do (
     :: This assumes we are on a Windows x64 installation
     if "%ARCH%" == "x86" (
       call "%%i\VC\Auxiliary\Build\vcvarsall.bat" x64_x86 || exit 1
