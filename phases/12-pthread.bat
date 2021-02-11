@@ -1,7 +1,7 @@
 
 set PTHREAD_RELEASE_URL=ftp://sourceware.org/pub/pthreads-win32/prebuilt-dll-2-9-1-release
 
-pushd "%INSTALL_PREFIX%"
+cd "%INSTALL_PREFIX%"
 
 pushd lib
 if not exist pthreadVC2.dll (curl -O# %PTHREAD_RELEASE_URL%/dll/%ARCH%/pthreadVC2.dll || exit /b 1)
@@ -23,10 +23,6 @@ if not exist pthread.h (
   type pthread.orig.h >> pthread.h
   del pthread.orig.h
 )
-
 popd
 
-popd
-
-echo.
 echo pthreads-win32 installed

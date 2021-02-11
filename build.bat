@@ -15,40 +15,35 @@ endlocal
 :: Reset environment
 call RefreshEnv.cmd >nul
 
-:: Variables
-
-pushd %~dp0
-set ROOT_DIR=%CD%
-popd
-
-set ARCHITECTURES=(x86 x64)
-set SRCROOT=%ROOT_DIR%\src
-set INSTALL_ROOT=C:\GNUstep
-set BASH=msys2_shell -defterm -no-start -msys2 -full-path -here -c
+:: Load environment
+call %~dp0\env\sdkenv.bat
 
 :: Check if all required commands are installed
-where /Q git
+echo ### Checking prerequisites
+where git
 if %errorlevel% neq 0 call :error_missing_command git
-where /Q cmake
+where cmake
 if %errorlevel% neq 0 call :error_missing_command cmake, "choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'"
-where /Q ninja
+where ninja
 if %errorlevel% neq 0 call :error_missing_command ninja
-where /Q clang-cl
+where clang-cl
 if %errorlevel% neq 0 call :error_missing_command clang-cl, "choco install llvm"
-where /Q msys2_shell
+where msys2_shell
 if %errorlevel% neq 0 call :error_missing_command MSYS2, "choco install msys2"
-call %BASH% 'which make >/dev/null 2>/dev/null'
+call %BASH% 'which make 2>/dev/null'
 if %errorlevel% neq 0 call :error_missing_command make, "pacman -S make"
+call %BASH% 'which autoconf 2>/dev/null'
+if %errorlevel% neq 0 call :error_missing_command autoconf, "pacman -S autoconf"
+call %BASH% 'which automake 2>/dev/null'
+if %errorlevel% neq 0 call :error_missing_command automake, "pacman -S automake"
+call %BASH% 'which libtool 2>/dev/null'
+if %errorlevel% neq 0 call :error_missing_command libtool, "pacman -S libtool"
 
+:: Create directories
 if not exist "%SRCROOT%" (mkdir "%SRCROOT%")
 if not exist "%INSTALL_ROOT%" (mkdir "%INSTALL_ROOT%")
 
-for /f "usebackq delims=" %%i in (`call %BASH% 'cygpath -u "%ROOT_DIR%"'`) do (
-  set UNIX_ROOT_DIR=%%i
-)
-
 :: Run phases
-
 for %%G in %ARCHITECTURES% do (
   set ARCH=%%G
   call :buildarch
@@ -56,6 +51,10 @@ for %%G in %ARCHITECTURES% do (
   :: Reset environment so we can call vcvarsall.bat multiple times
   call RefreshEnv.cmd >nul
 )
+
+echo.
+echo ### Finished building GNUstep into:
+echo ### %INSTALL_ROOT%
 
 goto :eof
 
@@ -72,14 +71,18 @@ goto :eof
   
   call :vsdevcmd || (echo Failed && exit 1)
 
-  for %%f in (%ROOT_DIR%\phases\*.bat) do (
+  for %%f in (%ROOT_DIR%\phases\*-*.*) do (
     echo.
     echo ###### %%~nf ######
     echo.
-
-    REM if "%%~nf" == "30-gnustep-base" (
+    
+    if %%~xf == .bat (
       call %%f || (echo Failed && exit 1)
-    REM )
+    ) else if %%~xf == .sh (
+      call %BASH% '`cygpath -u "%%f"`' || (echo Failed && exit 1)
+    ) else (
+      echo Error invalid phase: %%f && exit 1
+    )
   )
   
   goto :eof
