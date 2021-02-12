@@ -9,7 +9,9 @@ if not exist %BUILD_DIR% (mkdir %BUILD_DIR%)
 cd "%BUILD_DIR%"
 
 echo ### Running cmake
-cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl || exit /b 1
+:: Note: build type must be Release or RelWithDebInfo so we link against the
+:: release CRT DLLs just like all our other projects.
+cmake .. -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl || exit /b 1
 
 echo.
 echo ### Building
