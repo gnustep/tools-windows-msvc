@@ -1,8 +1,8 @@
 #!/bin/sh
 set -e
 
-PROJECT=gnustep-base
-REPO=https://github.com/gnustep/libs-base.git
+export PROJECT=gnustep-base
+export REPO=https://github.com/gnustep/libs-base.git
 
 `dirname $0`/common.bat prepare_project
 
@@ -13,7 +13,9 @@ echo "### Loading GNUstep environment"
 
 echo
 echo "### Running configure"
-./configure --host=$TARGET --disable-iconv --disable-tls --disable-icu --disable-xml
+./configure \
+  --host=$TARGET \
+  --disable-iconv --disable-tls --disable-icu --disable-xml
 
 echo
 echo "### Cleaning"

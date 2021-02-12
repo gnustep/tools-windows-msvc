@@ -93,7 +93,7 @@ goto :eof
     :: This assumes we are on a Windows x64 installation
     if "%ARCH%" == "x86" (
       call "%%i\VC\Auxiliary\Build\vcvarsall.bat" x64_x86 || exit 1
-      set TARGET=x86-pc-windows
+      set TARGET=i686-pc-windows
       set CFLAGS=-m32
       set CXXFLAGS=-m32
       set LDFLAGS=-fuse-ld=lld -m32
