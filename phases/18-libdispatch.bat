@@ -5,7 +5,8 @@ set REPO=https://github.com/apple/swift-corelibs-libdispatch.git
 call "%~dp0\common.bat" prepare_project || exit /b 1
 
 set BUILD_DIR="%SRCROOT%\%PROJECT%\build-%ARCH%"
-if not exist %BUILD_DIR% (mkdir %BUILD_DIR%)
+if exist "%BUILD_DIR%" (rmdir /S /Q "%BUILD_DIR%" || exit /b 1)
+mkdir "%BUILD_DIR%" || exit /b 1
 cd "%BUILD_DIR%"
 
 echo.
@@ -14,12 +15,12 @@ echo ### Running cmake
 :: release CRT DLLs just like all our other projects.
 cmake .. ^
   -G Ninja ^
-  -DCMAKE_BUILD_TYPE=RelWithDebInfo ^
-  -DCMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%" ^
-  -DBUILD_SHARED_LIBS=YES ^
-  -DINSTALL_PRIVATE_HEADERS=YES ^
-  -DCMAKE_C_COMPILER=clang-cl ^
-  -DCMAKE_CXX_COMPILER=clang-cl ^
+  -D CMAKE_BUILD_TYPE=RelWithDebInfo ^
+  -D CMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%" ^
+  -D BUILD_SHARED_LIBS=YES ^
+  -D INSTALL_PRIVATE_HEADERS=YES ^
+  -D CMAKE_C_COMPILER=clang-cl ^
+  -D CMAKE_CXX_COMPILER=clang-cl ^
   || exit /b 1
 
 echo.
