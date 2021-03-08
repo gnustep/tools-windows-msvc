@@ -3,7 +3,8 @@ pushd %~dp0\..
 set ROOT_DIR=%CD%
 popd
 
-if not defined ARCHITECTURES set ARCHITECTURES=(x86 x64)
+:: TODO: add support for x86
+if not defined ARCHITECTURES set ARCHITECTURES=(x64)
 if not defined SRCROOT set SRCROOT=%ROOT_DIR%\src
 if not defined INSTALL_ROOT set INSTALL_ROOT=C:\GNUstep
 
