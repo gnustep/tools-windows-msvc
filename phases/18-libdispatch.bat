@@ -30,3 +30,7 @@ ninja || exit /b 1
 echo.
 echo ### Installing
 ninja install || exit /b 1
+
+:: Move DLLs from bin to lib directory.
+move "%INSTALL_PREFIX%\bin\BlocksRuntime.dll" "%INSTALL_PREFIX%\lib\"
+move "%INSTALL_PREFIX%\bin\dispatch.dll" "%INSTALL_PREFIX%\lib\"
