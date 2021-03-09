@@ -44,7 +44,7 @@ if not exist "%SRCROOT%" (mkdir "%SRCROOT%")
 if not exist "%INSTALL_ROOT%" (mkdir "%INSTALL_ROOT%")
 
 :: Run phases
-for %%G in %ARCHITECTURES% do (
+for %%G in (%ARCHITECTURES%) do (
   set ARCH=%%G
   call :buildarch
   
