@@ -11,13 +11,13 @@ cd "%BUILD_DIR%"
 
 echo.
 echo ### Running cmake
-:: Note: build type must be Release or RelWithDebInfo so we link against the
-:: release CRT DLLs just like all our other projects.
 :: GNUSTEP_CONFIG is set to empty string to prevent CMake from finding it in
 :: install root.
+set CMAKE_BUILD_TYPE=%BUILD_TYPE%
+if not %CMAKE_BUILD_TYPE% == Debug set CMAKE_BUILD_TYPE=RelWithDebInfo
 cmake .. ^
   -G Ninja ^
-  -D CMAKE_BUILD_TYPE=RelWithDebInfo ^
+  -D CMAKE_BUILD_TYPE=%CMAKE_BUILD_TYPE% ^
   -D CMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%" ^
   -D CMAKE_C_COMPILER=clang-cl ^
   -D CMAKE_CXX_COMPILER=clang-cl ^

@@ -11,11 +11,11 @@ cd "%BUILD_DIR%"
 
 echo.
 echo ### Running cmake
-:: Note: build type must be Release or RelWithDebInfo so we link against the
-:: release CRT DLLs just like all our other projects.
+set CMAKE_BUILD_TYPE=%BUILD_TYPE%
+if not %CMAKE_BUILD_TYPE% == Debug set CMAKE_BUILD_TYPE=RelWithDebInfo
 cmake .. ^
   -G Ninja ^
-  -D CMAKE_BUILD_TYPE=RelWithDebInfo ^
+  -D CMAKE_BUILD_TYPE=%CMAKE_BUILD_TYPE% ^
   -D CMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%" ^
   -D BUILD_SHARED_LIBS=YES ^
   -D INSTALL_PRIVATE_HEADERS=YES ^

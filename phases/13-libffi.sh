@@ -16,7 +16,7 @@ if [ ! -f configure ]; then
 fi
 
 echo "### Running configure"
-MSVCC="$PWD/msvcc.sh"
+MSVCC="$PWD/msvcc.sh -g"
 if [ "$ARCH" == "x86" ]; then
   MSVCC="$MSVCC -m32"
   TARGET=i686-pc-cygwin # cygwin suffix required for building DLL
@@ -25,6 +25,9 @@ elif [ "$ARCH" == "x64" ]; then
   TARGET=x86_64-pc-cygwin
 else
   echo Unknown ARCH: $ARCH && exit 1
+fi
+if [ "$BUILD_TYPE" == "Debug" ]; then
+  MSVCC="$MSVCC -DUSE_DEBUG_RTL"
 fi
 rm -rf $TARGET
 ./configure \

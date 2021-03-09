@@ -59,17 +59,26 @@ echo ### %INSTALL_ROOT%
 goto :eof
 
 :buildarch
+  :: set up Visual Studio developer environment
+  call :vsdevcmd || (echo Failed && exit 1)
+  
+  :: build DebuG/Release
+  for %%G in (%BUILD_TYPES%) do (
+    set BUILD_TYPE=%%G
+    call :build
+  )
+  goto :eof
+
+:build
   echo.
-  echo ######## BUILDING FOR %ARCH% ########
+  echo ######## BUILDING FOR %ARCH% %BUILD_TYPE% ########
   echo.
   
-  set INSTALL_PREFIX=%INSTALL_ROOT%\%ARCH%
+  set INSTALL_PREFIX=%INSTALL_ROOT%\%ARCH%\%BUILD_TYPE%
   
   for /f "usebackq delims=" %%i in (`call %BASH% 'cygpath -u "%INSTALL_PREFIX%"'`) do (
     set UNIX_INSTALL_PREFIX=%%i
   )
-  
-  call :vsdevcmd || (echo Failed && exit 1)
 
   for %%f in (%ROOT_DIR%\phases\*-*.*) do (
     echo.
