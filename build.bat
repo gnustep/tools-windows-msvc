@@ -72,7 +72,6 @@ goto :eof
 :build
   echo.
   echo ######## BUILDING FOR %ARCH% %BUILD_TYPE% ########
-  echo.
   
   set INSTALL_PREFIX=%INSTALL_ROOT%\%ARCH%\%BUILD_TYPE%
   
@@ -83,7 +82,6 @@ goto :eof
   for %%f in (%ROOT_DIR%\phases\*-*.*) do (
     echo.
     echo ###### %%~nf ######
-    echo.
     
     if %%~xf == .bat (
       call %%f || (echo Failed && exit 1)
@@ -93,6 +91,9 @@ goto :eof
       echo Error invalid phase: %%f && exit 1
     )
   )
+  
+  :: always clean projects for subsequent architectures
+  set NO_CLEAN=false
   
   goto :eof
 

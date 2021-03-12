@@ -18,7 +18,7 @@ if not defined BASH set BASH=msys2_shell -defterm -no-start -msys2 -full-path -h
 
 :: Common CMake options
 set CMAKE_BUILD_TYPE=%BUILD_TYPE%
-if %BUILD_TYPE% == Release set CMAKE_BUILD_TYPE=RelWithDebInfo
+if "%BUILD_TYPE%" == "Release" set CMAKE_BUILD_TYPE=RelWithDebInfo
 set CMAKE_OPTIONS=^
   -G Ninja ^
   -D CMAKE_BUILD_TYPE=%CMAKE_BUILD_TYPE% ^

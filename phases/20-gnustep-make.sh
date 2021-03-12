@@ -8,6 +8,7 @@ export REPO=https://github.com/gnustep/tools-make.git
 
 cd "$SRCROOT/$PROJECT"
 
+echo
 echo "### Running configure"
 CONFIGURE_OPTS=
 if [ "$BUILD_TYPE" == "Debug" ]; then

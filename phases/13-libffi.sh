@@ -12,9 +12,9 @@ if [ ! -f configure ]; then
   echo
   echo "### Running autogen"
   ./autogen.sh
-  echo
 fi
 
+echo
 echo "### Running configure"
 MSVCC="$PWD/msvcc.sh -g"
 if [ "$ARCH" == "x86" ]; then

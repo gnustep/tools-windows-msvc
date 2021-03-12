@@ -13,9 +13,26 @@ exit /b %errorlevel%
   
   cd "%SRCROOT%"
   
+  :: clone project if needed
   if not exist "%PROJECT%" (
+    echo.
     echo ### Cloning project
     git clone --recursive %REPO% %PROJECT% || exit /b 1
+  )
+  
+  cd %PROJECT%
+  
+  if not [%NO_CLEAN%] == [true] (
+    echo.
+    echo ### Cleaning project
+    git reset --hard
+    git clean -qfdx
+  )
+  
+  for /F "tokens=*" %%P in ('dir /b /s ^"%ROOT_DIR%\patches\%PROJECT%-*.patch^" 2^>nul') do (
+    echo.
+    echo ### Applying %%~nxP
+    git apply %%P
   )
   
   exit /b 0

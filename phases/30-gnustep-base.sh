@@ -8,6 +8,7 @@ export REPO=https://github.com/gnustep/libs-base.git
 
 cd "$SRCROOT/$PROJECT"
 
+echo
 echo "### Loading GNUstep environment"
 . "$UNIX_INSTALL_PREFIX/share/GNUstep/Makefiles/GNUstep.sh"
 
