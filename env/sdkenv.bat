@@ -15,3 +15,13 @@ if not defined INSTALL_ROOT set INSTALL_ROOT=C:\GNUstep
 :: installed in MSYS2. We could instead pass paths into MSYS2, but this doesn't
 :: work because of spaces in Windows paths.
 if not defined BASH set BASH=msys2_shell -defterm -no-start -msys2 -full-path -here -c
+
+:: Common CMake options
+set CMAKE_BUILD_TYPE=%BUILD_TYPE%
+if %BUILD_TYPE% == Release set CMAKE_BUILD_TYPE=RelWithDebInfo
+set CMAKE_OPTIONS=^
+  -G Ninja ^
+  -D CMAKE_BUILD_TYPE=%CMAKE_BUILD_TYPE% ^
+  -D CMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%" ^
+  -D CMAKE_C_COMPILER=clang-cl ^
+  -D CMAKE_CXX_COMPILER=clang-cl ^

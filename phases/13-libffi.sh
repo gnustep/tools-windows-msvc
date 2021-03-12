@@ -48,4 +48,5 @@ echo "### Installing"
 cd $TARGET
 install -D -t "$UNIX_INSTALL_PREFIX"/include/ include/*.h
 install -D -t "$UNIX_INSTALL_PREFIX"/lib/ .libs/libffi-*.dll
+install -D -t "$UNIX_INSTALL_PREFIX"/lib/ .libs/libffi-*.pdb
 install .libs/libffi-*.lib "$UNIX_INSTALL_PREFIX"/lib/ffi.lib
