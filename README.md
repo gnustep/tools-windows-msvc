@@ -36,7 +36,7 @@ The MSYS2 installation is required to provide the Bash shell and Unix tools requ
 - Autoconf/Automake
 - libtool
 
-These can be installed via Pacman inside a MSYS2 shell:
+These can be installed via Pacman inside a MSYS2 shell:  
 `pacman -S --needed make autoconf automake libtool`
 
 Building
@@ -60,5 +60,6 @@ The scripts currently provide at least the minimum set of libraries needed to bu
   - [ ] libxml2
   - [ ] libxslt
 - [ ] Build Pthreads-win32 from source (to match CRT version, or update GNUstep to use Windows threading APIs directly)
+- [ ] Add parameters to build script e.g. for changing install prefix
 - [ ] Fix tests in GNUstep Base
 - [ ] Add CI and provide pre-built binaries
