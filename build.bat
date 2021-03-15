@@ -60,7 +60,7 @@ goto :eof
 
 :buildarch
   :: set up Visual Studio developer environment
-  call :vsdevcmd || (echo Failed && exit 1)
+  call :vsdevcmd || exit 1
   
   :: build DebuG/Release
   for %%G in (%BUILD_TYPES%) do (
@@ -119,7 +119,7 @@ goto :eof
     )
     goto :eof
   )
-  :: Instance or command prompt not found
+  echo Error: Visual Studio installation could not be found.
   exit /b 2
 
 :error_missing_command
