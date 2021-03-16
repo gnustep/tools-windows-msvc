@@ -15,12 +15,14 @@ echo "### Loading GNUstep environment"
 
 echo
 echo "### Running configure"
-# ICU flags are specified manually as our ICU does not have pkg-config info
+# manually specifly flags for ICU and libxml2 below because they don't have pkg-config info
 ./configure \
   --host=$TARGET \
-  --disable-tls --disable-xml
+  --disable-tls \
   ICU_CFLAGS="-I$UNIX_INSTALL_PREFIX/include" \
   ICU_LIBS="-L$UNIX_INSTALL_PREFIX/lib -licuin -licuuc -licudt" \
+  XML_CFLAGS="-I$UNIX_INSTALL_PREFIX/include" \
+  XML_LIBS="-L$UNIX_INSTALL_PREFIX/lib -lxml2" \
 
 echo
 echo "### Building"
