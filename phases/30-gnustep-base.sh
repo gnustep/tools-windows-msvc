@@ -19,10 +19,6 @@ echo "### Running configure"
   --disable-tls --disable-icu --disable-xml
 
 echo
-echo "### Cleaning"
-make clean
-
-echo
 echo "### Building"
 make -j`nproc`
 

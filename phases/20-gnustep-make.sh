@@ -22,9 +22,5 @@ fi
   $CONFIGURE_OPTS
 
 echo
-echo "### Cleaning"
-make clean
-
-echo
 echo "### Installing"
 make install
