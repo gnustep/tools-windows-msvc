@@ -12,6 +12,10 @@ The toolchain currently consists of the following libraries:
 - [libobjc2](https://github.com/gnustep/libobjc2) (using gnustep-2.0 runtime)
 - [libdispatch](https://github.com/apple/swift-corelibs-libdispatch) (official Apple release from the Swift Core Libraries)
 - [libffi](https://github.com/libffi/libffi)
+- [libiconv](https://github.com/kiyolee/libiconv-win-build)
+- [libxml2](https://github.com/GNOME/libxml2)
+- [libxslt](https://github.com/GNOME/libxslt)
+- [ICU](https://github.com/unicode-org/icu)
 - [Pthreads-win32](http://www.sourceware.org/pthreads-win32/)
 
 Prerequisites for Building
@@ -75,7 +79,9 @@ Note that the `GNUSTEP_WITH_DLL` definition is always required to enable annotat
 
 Status
 ------
-The scripts currently provide at least the minimum set of libraries needed to build GNUstep Base. Some GNUstep functionality might not be available due to missing dependencies. Also, as support for using GNUstep with the MSVC ABI has only been recently added, and GNUstep support for Windows might not be as complete as on Unixes, many tests are still failing for various reasons. Following is a list of some of the open items.
+As support for using GNUstep with the MSVC ABI has only been recently added, and GNUstep support for Windows might not be as complete as on Unixes, many tests are still failing for various reasons.
+
+Following is a list of some of the open items.
 
 - [ ] Add support for building libraries for x86 (currently blocked by [libdispatch build issue](https://bugs.swift.org/browse/SR-14314))
 - [ ] Add support for building on x86 host (currently only Windows x64 is supported)
