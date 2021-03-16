@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2019
+    strategy:
+      matrix:
+        arch: [x86, x64]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MSYS
+          # make Windows packages like Clang available in MSYS
+          path-type: inherit
+          # install MSYS packages
+          install: make autoconf automake libtool
+      - name: Delete MinGW gmake
+        # delete /c/Strawberry/c/bin/gmake built for MinGW that is found on runners, because we must use make built for MSYS
+        run: if GMAKE_PATH=`which gmake`; then rm -f "$GMAKE_PATH"; fi
+        shell: msys2 {0}
+      - name: Install Windows packages
+        run: choco install ninja
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.arch }}
+      - name: Build toolchain
+        run: |
+          :: use msys2.cmd from setup-msys2 as Bash shell, as it doesn't have msys2_shell.cmd used normally by build.bat
+          set "BASH=msys2 -c"
+          set "INSTALL_ROOT=%cd%\.."
+          build.bat
+        shell: cmd
