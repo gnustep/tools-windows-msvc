@@ -22,7 +22,7 @@ The MSYS2 installation is required to provide the Bash shell and Unix tools requ
 
 **Windows tools**
 
-- Visual Studio
+- Visual Studio 2019
 - Git (`choco install git`)
 - CMake (`choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'`)
 - Ninja (`choco install ninja`)
@@ -81,7 +81,7 @@ The scripts currently provide at least the minimum set of libraries needed to bu
 - [ ] Add support for building on x86 host (currently only Windows x64 is supported)
 - [ ] Add missing dependencies:
   - [x] libiconv
-  - [ ] ICU
+  - [x] ICU
   - [ ] libxml2
   - [ ] libxslt
 - [ ] Build Pthreads-win32 from source (to match CRT version, or update GNUstep to use Windows threading APIs directly)

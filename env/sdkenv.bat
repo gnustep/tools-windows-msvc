@@ -7,6 +7,7 @@ popd
 if not defined ARCHITECTURES set ARCHITECTURES=x64
 if not defined BUILD_TYPES set BUILD_TYPES=Debug Release
 if not defined SRCROOT set SRCROOT=%ROOT_DIR%\src
+if not defined CACHE_ROOT set CACHE_ROOT=%ROOT_DIR%\cache
 if not defined INSTALL_ROOT set INSTALL_ROOT=C:\GNUstep
 
 :: This is how we call into the MSYS2 shell. -full-path is needed so that

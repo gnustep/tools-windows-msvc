@@ -7,6 +7,9 @@ call %~dp0..\env\sdkenv.bat
 call :%*
 exit /b %errorlevel%
 
+:loadenv
+  exit /b 0
+
 :prepare_project
   if not defined PROJECT (echo Missing PROJECT && exit /b 1)
   if not defined REPO (echo Missing REPO && exit /b 1)
