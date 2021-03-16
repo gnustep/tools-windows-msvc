@@ -28,9 +28,9 @@ echo ### Installing
 ninja install || exit /b 1
 
 :: Install PDB files
-copy /Y BlocksRuntime.pdb "%INSTALL_PREFIX%\lib\"
-copy /Y dispatch.pdb "%INSTALL_PREFIX%\lib\"
+xcopy /Y /F BlocksRuntime.pdb "%INSTALL_PREFIX%\lib\"
+xcopy /Y /F dispatch.pdb "%INSTALL_PREFIX%\lib\"
 
 :: Move DLLs from bin to lib directory.
-move "%INSTALL_PREFIX%\bin\BlocksRuntime.dll" "%INSTALL_PREFIX%\lib\"
-move "%INSTALL_PREFIX%\bin\dispatch.dll" "%INSTALL_PREFIX%\lib\"
+move /Y "%INSTALL_PREFIX%\bin\BlocksRuntime.dll" "%INSTALL_PREFIX%\lib\"
+move /Y "%INSTALL_PREFIX%\bin\dispatch.dll" "%INSTALL_PREFIX%\lib\"

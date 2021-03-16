@@ -27,4 +27,4 @@ echo ### Installing
 ninja install || exit /b 1
 
 :: Install PDB files
-copy /Y objc.pdb "%INSTALL_PREFIX%\lib\"
+xcopy /Y /F objc.pdb "%INSTALL_PREFIX%\lib\"
