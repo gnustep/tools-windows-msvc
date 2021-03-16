@@ -79,7 +79,7 @@ goto :eof
     set UNIX_INSTALL_PREFIX=%%i
   )
 
-  for %%f in (%ROOT_DIR%\phases\*-*.*) do (
+  for %%f in (%ROOT_DIR%\phases\??-*.*) do (
     echo.
     echo ###### %%~nf ######
     
