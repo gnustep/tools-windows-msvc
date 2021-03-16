@@ -3,6 +3,7 @@ set -e
 
 export PROJECT=libffi
 export REPO=https://github.com/libffi/libffi.git
+export TAG=
 
 `dirname $0`/common.bat prepare_project
 

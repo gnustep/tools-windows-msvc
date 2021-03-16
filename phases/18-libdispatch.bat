@@ -1,6 +1,7 @@
 
 set PROJECT=libdispatch
 set REPO=https://github.com/apple/swift-corelibs-libdispatch.git
+set TAG=
 
 call "%~dp0\common.bat" prepare_project || exit /b 1
 

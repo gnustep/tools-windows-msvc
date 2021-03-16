@@ -1,6 +1,7 @@
 
 set PROJECT=libobjc2
 set REPO=https://github.com/gnustep/libobjc2.git
+set TAG=
 
 call "%~dp0\common.bat" prepare_project || exit /b 1
 

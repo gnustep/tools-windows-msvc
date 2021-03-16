@@ -3,6 +3,7 @@ set -e
 
 export PROJECT=gnustep-make
 export REPO=https://github.com/gnustep/tools-make.git
+export TAG=
 
 `dirname $0`/common.bat prepare_project
 
