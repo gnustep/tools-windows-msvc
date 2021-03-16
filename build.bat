@@ -28,7 +28,7 @@ where ninja
 if %errorlevel% neq 0 call :error_missing_command ninja
 where clang-cl
 if %errorlevel% neq 0 call :error_missing_command clang-cl, "choco install llvm"
-where msys2_shell
+call %BASH% 'true'
 if %errorlevel% neq 0 call :error_missing_command MSYS2, "choco install msys2"
 call %BASH% 'which make 2>/dev/null'
 if %errorlevel% neq 0 call :error_missing_command make, "pacman -S make"
