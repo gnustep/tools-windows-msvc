@@ -16,7 +16,7 @@ echo
 echo "### Running configure"
 ./configure \
   --host=$TARGET \
-  --disable-iconv --disable-tls --disable-icu --disable-xml
+  --disable-tls --disable-icu --disable-xml
 
 echo
 echo "### Cleaning"

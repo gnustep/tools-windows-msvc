@@ -80,7 +80,7 @@ The scripts currently provide at least the minimum set of libraries needed to bu
 - [ ] Add support for building libraries for x86 (currently blocked by [libdispatch build issue](https://bugs.swift.org/browse/SR-14314))
 - [ ] Add support for building on x86 host (currently only Windows x64 is supported)
 - [ ] Add missing dependencies:
-  - [ ] libiconv
+  - [x] libiconv
   - [ ] ICU
   - [ ] libxml2
   - [ ] libxslt
