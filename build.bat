@@ -92,6 +92,9 @@ goto :eof
     )
   )
   
+  :: don't update projects for subsequent architectures to avoid mismatching builds
+  set NO_UPDATE=true
+  
   :: always clean projects for subsequent architectures
   set NO_CLEAN=false
   
