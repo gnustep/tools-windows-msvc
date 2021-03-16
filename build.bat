@@ -18,26 +18,30 @@ call RefreshEnv.cmd >nul
 :: Load environment
 call %~dp0\env\sdkenv.bat
 
+:: set up Visual Studio developer environment for finding prerequisites below
+set ARCH=x64
+call :vsdevcmd || exit 1
+
 :: Check if all required commands are installed
 echo ### Checking prerequisites
 where git
-if %errorlevel% neq 0 call :error_missing_command git
+if %errorlevel% neq 0 call :error_missing_command git, "'choco install git'"
 where cmake
-if %errorlevel% neq 0 call :error_missing_command cmake, "choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'"
+if %errorlevel% neq 0 call :error_missing_command cmake, "Visual Studio or 'choco install cmake --installargs ADD_CMAKE_TO_PATH=System'"
 where ninja
-if %errorlevel% neq 0 call :error_missing_command ninja
+if %errorlevel% neq 0 call :error_missing_command ninja, "'choco install ninja'"
 where clang-cl
-if %errorlevel% neq 0 call :error_missing_command clang-cl, "choco install llvm"
+if %errorlevel% neq 0 call :error_missing_command clang-cl, "Visual Studio or 'choco install llvm'"
 call %BASH% 'true'
-if %errorlevel% neq 0 call :error_missing_command MSYS2, "choco install msys2"
+if %errorlevel% neq 0 call :error_missing_command MSYS2, "'choco install msys2'"
 call %BASH% 'which make 2>/dev/null'
-if %errorlevel% neq 0 call :error_missing_command make, "pacman -S make"
+if %errorlevel% neq 0 call :error_missing_command make, "'pacman -S make' in MSYS2"
 call %BASH% 'which autoconf 2>/dev/null'
-if %errorlevel% neq 0 call :error_missing_command autoconf, "pacman -S autoconf"
+if %errorlevel% neq 0 call :error_missing_command autoconf, "'pacman -S autoconf' in MSYS2"
 call %BASH% 'which automake 2>/dev/null'
-if %errorlevel% neq 0 call :error_missing_command automake, "pacman -S automake"
+if %errorlevel% neq 0 call :error_missing_command automake, "'pacman -S automake' in MSYS2"
 call %BASH% 'which libtool 2>/dev/null'
-if %errorlevel% neq 0 call :error_missing_command libtool, "pacman -S libtool"
+if %errorlevel% neq 0 call :error_missing_command libtool, "'pacman -S libtool' in MSYS2"
 
 :: Create directories
 if not exist "%SRCROOT%" (mkdir "%SRCROOT%")
@@ -45,11 +49,11 @@ if not exist "%INSTALL_ROOT%" (mkdir "%INSTALL_ROOT%")
 
 :: Run phases
 for %%G in (%ARCHITECTURES%) do (
+  :: Reset environment so we can call vcvarsall.bat again
+  call RefreshEnv.cmd >nul
+  
   set ARCH=%%G
   call :buildarch
-  
-  :: Reset environment so we can call vcvarsall.bat multiple times
-  call RefreshEnv.cmd >nul
 )
 
 echo.
@@ -126,7 +130,7 @@ goto :eof
   exit /b 2
 
 :error_missing_command
-  if [%2] == [] (set install_cmd="choco install %1") else (set install_cmd=%2)
-  if not x%install_cmd:pacman=% == x%install_cmd% (set "install_hint= in MSYS2")
-  echo Error: %1 not found. Please install via %install_cmd%%install_hint%.
+  echo.
+  echo Error: %1 not found.
+  echo Please install %1 via %~2.
   exit 1

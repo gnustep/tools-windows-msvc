@@ -27,10 +27,10 @@ The MSYS2 installation is required to provide the Bash shell and Unix tools requ
 **Windows tools**
 
 - Visual Studio 2019
+- Clang (via Visual Studio or `choco install llvm`)
+- CMake (via Visual Studio or `choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'`)
 - Git (`choco install git`)
-- CMake (`choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'`)
 - Ninja (`choco install ninja`)
-- Clang (`choco install llvm`)
 - MSYS2 (`choco install msys2`)
 
 **Unix tools**
