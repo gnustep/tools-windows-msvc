@@ -91,4 +91,4 @@ Following is a list of some of the open items.
 - [ ] Add parameters to build script e.g. for changing install prefix
 - [ ] Figure out building Objective-C code in Visual Studio
 - [ ] Fix tests in GNUstep Base
-- [ ] Add CI and provide pre-built binaries
+- [ ] Provide pre-built binaries
