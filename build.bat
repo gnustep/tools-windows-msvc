@@ -16,7 +16,9 @@ endlocal
 call %~dp0\env\sdkenv.bat || exit 1
 
 :: Check if all required commands are installed
+echo.
 echo ### Checking prerequisites
+echo Using Bash shell: %BASH%
 where git
 if %errorlevel% neq 0 call :error_missing_command git, "'choco install git'"
 where cmake
@@ -27,13 +29,13 @@ where clang-cl
 if %errorlevel% neq 0 call :error_missing_command clang-cl, "Visual Studio or 'choco install llvm'"
 call %BASH% 'true'
 if %errorlevel% neq 0 call :error_missing_command MSYS2, "'choco install msys2'"
-call %BASH% 'which make 2>/dev/null'
+call %BASH% 'which make'
 if %errorlevel% neq 0 call :error_missing_command make, "'pacman -S make' in MSYS2"
-call %BASH% 'which autoconf 2>/dev/null'
+call %BASH% 'which autoconf'
 if %errorlevel% neq 0 call :error_missing_command autoconf, "'pacman -S autoconf' in MSYS2"
-call %BASH% 'which automake 2>/dev/null'
+call %BASH% 'which automake'
 if %errorlevel% neq 0 call :error_missing_command automake, "'pacman -S automake' in MSYS2"
-call %BASH% 'which libtool 2>/dev/null'
+call %BASH% 'which libtool'
 if %errorlevel% neq 0 call :error_missing_command libtool, "'pacman -S libtool' in MSYS2"
 
 :: Create directories
