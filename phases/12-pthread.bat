@@ -1,4 +1,6 @@
 
+call "%~dp0\common.bat" loadenv || exit /b 1
+
 set PTHREAD_RELEASE_URL=ftp://sourceware.org/pub/pthreads-win32/prebuilt-dll-2-9-1-release
 
 cd "%INSTALL_PREFIX%" || exit /b 1
