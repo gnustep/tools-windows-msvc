@@ -6,8 +6,13 @@ set TAG=
 call "%~dp0\common.bat" prepare_project || exit /b 1
 
 :: determine Visual Studio version
-for /f "usebackq delims=" %%i in (`"%ROOT_DIR%\bin\vswhere.exe" -latest -property catalog_productLineVersion`) do (
-  set VSVERSION=%%i
+if "%VisualStudioVersion:~0,3%" == "16." set VSVERSION=2019
+if "%VisualStudioVersion:~0,3%" == "15." set VSVERSION=2017
+if "%VisualStudioVersion:~0,3%" == "14." set VSVERSION=2015
+
+if "%VSVERSION%" == "" (
+  echo Error: unknown or unsupported Visual Studio version "%VisualStudioVersion%"
+  exit /b 1
 )
 
 cd "%SRCROOT%\%PROJECT%\build-VS%VSVERSION%" || exit /b 1

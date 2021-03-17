@@ -44,11 +44,11 @@ These can be installed via Pacman inside a MSYS2 shell:
 
 Building the Toolchain
 ----------------------
-Run the [build.bat](build.bat) script from a Command Prompt (cmd) to build the toolchain.
+Run the [build.bat](build.bat) script in either a x86 or x64 Native Tools Command Prompt from Visual Studio to build the toolchain for x86 or x64.
 
 For each of the libraries, the script automatically downloads the source via Git into the `src` subdirectory, and then builds and installs it.
 
-The toolchain is installed into `C:\GNUstep\[x64|x86]\[Debug|Release]`.
+The toolchain is installed into `C:\GNUstep\[x86|x64]\[Debug|Release]`.
 
 Using the Toolchain
 -------------------
@@ -84,7 +84,6 @@ As support for using GNUstep with the MSVC ABI has only been recently added, and
 Following is a list of some of the open items.
 
 - [ ] Add support for building libdispatch for x86 (currently blocked by [libdispatch build issue](https://bugs.swift.org/browse/SR-14314))
-- [ ] Add support for building on x86 host (currently only Windows x64 is supported)
 - [ ] Build Pthreads-win32 from source (to match CRT version, or update GNUstep to use Windows threading APIs directly)
 - [ ] Add parameters to build script e.g. for changing install prefix
 - [ ] Figure out building Objective-C code in Visual Studio

@@ -12,15 +12,8 @@ IF "%selfWrapped%"=="" (
 )
 endlocal
 
-:: Reset environment
-call RefreshEnv.cmd >nul
-
 :: Load environment
-call %~dp0\env\sdkenv.bat
-
-:: set up Visual Studio developer environment for finding prerequisites below
-set ARCH=x64
-call :vsdevcmd || exit 1
+call %~dp0\env\sdkenv.bat || exit 1
 
 :: Check if all required commands are installed
 echo ### Checking prerequisites
@@ -47,13 +40,10 @@ if %errorlevel% neq 0 call :error_missing_command libtool, "'pacman -S libtool' 
 if not exist "%SRCROOT%" (mkdir "%SRCROOT%")
 if not exist "%INSTALL_ROOT%" (mkdir "%INSTALL_ROOT%")
 
-:: Run phases
-for %%G in (%ARCHITECTURES%) do (
-  :: Reset environment so we can call vcvarsall.bat again
-  call RefreshEnv.cmd >nul
-  
-  set ARCH=%%G
-  call :buildarch
+:: Run phases for Debug/Release
+for %%G in (%BUILD_TYPES%) do (
+  set BUILD_TYPE=%%G
+  call :build
 )
 
 echo.
@@ -61,17 +51,6 @@ echo ### Finished building GNUstep into:
 echo ### %INSTALL_ROOT%
 
 goto :eof
-
-:buildarch
-  :: set up Visual Studio developer environment
-  call :vsdevcmd || exit 1
-  
-  :: build DebuG/Release
-  for %%G in (%BUILD_TYPES%) do (
-    set BUILD_TYPE=%%G
-    call :build
-  )
-  goto :eof
 
 :build
   echo.
@@ -103,31 +82,6 @@ goto :eof
   set NO_CLEAN=false
   
   goto :eof
-
-:vsdevcmd
-  :: https://github.com/microsoft/vswhere/wiki/Start-Developer-Command-Prompt
-  for /f "usebackq delims=" %%i in (`"%ROOT_DIR%\bin\vswhere.exe" -latest -property installationPath`) do (
-    :: This assumes we are on a Windows x64 installation
-    if "%ARCH%" == "x86" (
-      call "%%i\VC\Auxiliary\Build\vcvarsall.bat" x64_x86 || exit 1
-      set TARGET=i686-pc-windows
-      set CFLAGS=-m32
-      set CXXFLAGS=-m32
-      set LDFLAGS=-fuse-ld=lld -m32
-    ) else if "%ARCH%" == "x64" (
-      call "%%i\VC\Auxiliary\Build\vcvarsall.bat" x64 || exit 1
-      set TARGET=x86_64-pc-windows
-      set CFLAGS=
-      set CXXFLAGS=
-      set LDFLAGS=-fuse-ld=lld
-    ) else (
-      echo Unknown ARCH: %ARCH%
-      exit /b 1
-    )
-    goto :eof
-  )
-  echo Error: Visual Studio installation could not be found.
-  exit /b 2
 
 :error_missing_command
   echo.
