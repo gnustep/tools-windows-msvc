@@ -5,6 +5,12 @@ set TAG=
 
 call "%~dp0\common.bat" prepare_project || exit /b 1
 
+if "%ARCH%" == "x86" (
+  echo Skipping libdispatch for x86
+  echo Blocked on issue: https://bugs.swift.org/browse/SR-14314
+  exit /b 0
+)
+
 set BUILD_DIR="%SRCROOT%\%PROJECT%\build-%ARCH%-%BUILD_TYPE%"
 if exist "%BUILD_DIR%" (rmdir /S /Q "%BUILD_DIR%" || exit /b 1)
 mkdir "%BUILD_DIR%" || exit /b 1
