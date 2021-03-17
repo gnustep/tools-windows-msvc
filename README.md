@@ -2,7 +2,8 @@
 GNUstep Windows MSVC Toolchain
 ==============================
 
-![CI](https://github.com/gnustep/tools-windows-msvc/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/gnustep/tools-windows-msvc/actions/workflows/ci.yml/badge.svg)](https://github.com/gnustep/tools-windows-msvc/actions/workflows/ci.yml?query=branch%3Amaster)
+
 
 This project comprises a collection of scripts to build a modern GNUstep toolchain (with support for blocks and ARC) for the Windows MSVC ABI. The toolchain can then be used to integrate Objective-C code in any Windows app (without using MinGW).
 
