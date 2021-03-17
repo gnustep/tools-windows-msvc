@@ -48,7 +48,7 @@ for %%G in (%BUILD_TYPES%) do (
 
 echo.
 echo ### Finished building GNUstep into:
-echo ### %INSTALL_ROOT%
+echo ### %INSTALL_ROOT%\%ARCH%
 
 goto :eof
 
