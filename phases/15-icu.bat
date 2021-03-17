@@ -15,8 +15,8 @@ for %%a in ("%ICU_RELEASE_URL%") do (
    set ICU_RELEASE_NAME=%%~na
 )
 
-if not exist "%CACHE_ROOT%" (mkdir "%CACHE_ROOT%")
-cd "%CACHE_ROOT%"
+if not exist "%CACHE_ROOT%" (mkdir "%CACHE_ROOT%" || exit /b 1)
+cd "%CACHE_ROOT%" || exit /b 1
 
 if not exist %ICU_RELEASE_FILE% (
   echo.
@@ -32,11 +32,11 @@ if not exist %ICU_RELEASE_NAME% (
 
 echo.
 echo ### Installing
-cd %ICU_RELEASE_NAME%
-pushd bin*
+cd %ICU_RELEASE_NAME% || exit /b 1
+pushd bin* || exit /b 1
 xcopy /Y /F "icu*.dll" "%INSTALL_PREFIX%\lib\" || exit /b 1
 popd
-pushd lib*
+pushd lib* || exit /b 1
 xcopy /Y /F "icu*.lib" "%INSTALL_PREFIX%\lib\" || exit /b 1
 popd
 xcopy /Y /F /S "include\*" "%INSTALL_PREFIX%\include\" || exit /b 1

@@ -8,7 +8,7 @@ call "%~dp0\common.bat" prepare_project || exit /b 1
 set BUILD_DIR="%SRCROOT%\%PROJECT%\build-%ARCH%-%BUILD_TYPE%"
 if exist "%BUILD_DIR%" (rmdir /S /Q "%BUILD_DIR%" || exit /b 1)
 mkdir "%BUILD_DIR%" || exit /b 1
-cd "%BUILD_DIR%"
+cd "%BUILD_DIR%" || exit /b 1
 
 echo.
 echo ### Running cmake

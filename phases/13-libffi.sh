@@ -7,7 +7,7 @@ export TAG=
 
 `dirname $0`/common.bat prepare_project
 
-cd "$SRCROOT/$PROJECT"
+cd "$SRCROOT/$PROJECT" || exit /b 1
 
 if [ ! -f configure ]; then
   echo

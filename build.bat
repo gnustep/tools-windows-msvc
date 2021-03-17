@@ -37,8 +37,8 @@ call %BASH% 'which libtool 2>/dev/null'
 if %errorlevel% neq 0 call :error_missing_command libtool, "'pacman -S libtool' in MSYS2"
 
 :: Create directories
-if not exist "%SRCROOT%" (mkdir "%SRCROOT%")
-if not exist "%INSTALL_ROOT%" (mkdir "%INSTALL_ROOT%")
+if not exist "%SRCROOT%" (mkdir "%SRCROOT%" || exit 1)
+if not exist "%INSTALL_ROOT%" (mkdir "%INSTALL_ROOT%" || exit 1)
 
 :: Run phases for Debug/Release
 for %%G in (%BUILD_TYPES%) do (
