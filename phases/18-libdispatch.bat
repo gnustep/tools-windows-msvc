@@ -18,12 +18,15 @@ cd "%BUILD_DIR%" || exit /b 1
 
 echo.
 echo ### Running cmake
-:: CXX and linker flags below are to produce PDBs for release builds
+:: CXX and linker flags below are to produce PDBs for release builds.
+:: BlocksRuntime parameters provided to use blocks runtime from libobjc2 with libdispatch-own-blocksruntime.patch.
 cmake .. %CMAKE_OPTIONS% ^
   -D BUILD_SHARED_LIBS=YES ^
   -D INSTALL_PRIVATE_HEADERS=YES ^
   -D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/Zi" ^
   -D CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
+  -D BlocksRuntime_INCLUDE_DIR=%INSTALL_PREFIX%\include ^
+  -D BlocksRuntime_LIBRARIES=%INSTALL_PREFIX%\lib\objc.lib ^
   || exit /b 1
 
 echo.
@@ -34,10 +37,8 @@ echo.
 echo ### Installing
 ninja install || exit /b 1
 
-:: Install PDB files
-xcopy /Y /F BlocksRuntime.pdb "%INSTALL_PREFIX%\lib\"
+:: Install PDB file
 xcopy /Y /F dispatch.pdb "%INSTALL_PREFIX%\lib\"
 
-:: Move DLLs from bin to lib directory.
-move /Y "%INSTALL_PREFIX%\bin\BlocksRuntime.dll" "%INSTALL_PREFIX%\lib\"
+:: Move DLL from bin to lib directory.
 move /Y "%INSTALL_PREFIX%\bin\dispatch.dll" "%INSTALL_PREFIX%\lib\"
