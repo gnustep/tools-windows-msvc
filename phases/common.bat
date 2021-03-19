@@ -8,7 +8,7 @@ call :%*
 exit /b %errorlevel%
 
 :loadenv
-  exit /b 0
+  goto :eof
 
 :prepare_project
   if not defined PROJECT (echo Missing PROJECT && exit /b 1)
@@ -35,26 +35,7 @@ exit /b %errorlevel%
   if not [%NO_UPDATE%] == [true] (
     echo.
     if "%TAG%" == "" (
-      :: check if we should update project
-      set GIT_BRANCH=NONE
-      for /f "usebackq delims=" %%i in (`git symbolic-ref --short -q HEAD`) do (
-        set GIT_BRANCH=%%i
-      )
-      if not [%GIT_BRANCH%] == [NONE] (
-        :: check if current branch has a remote
-        set GIT_REMOTE=NONE
-        for /f "usebackq delims=" %%i in (`git config --get branch.%GIT_BRANCH%.remote`) do (
-          set GIT_REMOTE=%%i
-        )
-        if not [%GIT_REMOTE%] == [NONE] (
-          echo ### Updating project
-          git pull --ff-only || exit /b 1
-        ) else (
-          echo ### NOT updating project [no remote for branch %GIT_BRANCH%]
-        )
-      ) else (
-        echo NOT updating project [not on branch]
-      )
+      call :update_project
     ) else (
       echo ### Checking out %TAG%
       git fetch --tags || exit /b 1
@@ -72,4 +53,40 @@ exit /b %errorlevel%
     git apply %%P
   )
   
-  exit /b 0
+  goto :eof
+
+:update_project
+  :: check if we should update project
+  set GIT_BRANCH=NONE
+  for /f "usebackq delims=" %%i in (`git symbolic-ref --short -q HEAD`) do (
+    call :set_git_branch %%i
+  )
+  if not [%GIT_BRANCH%] == [NONE] (
+    call :update_project_2
+  ) else (
+    echo NOT updating project [not on branch]
+  )
+  goto :eof
+
+:update_project_2
+  :: check if current branch has a remote
+  set GIT_REMOTE=NONE
+  for /f "usebackq delims=" %%i in (`git config --get branch.%GIT_BRANCH%.remote`) do (
+    call :set_git_remote %%i
+  )
+  if not [%GIT_REMOTE%] == [NONE] (
+    echo ### Updating project
+    git pull --ff-only || exit /b 1
+  ) else (
+    echo ### NOT updating project [no remote for branch %GIT_BRANCH%]
+  )
+  goto :eof
+
+:set_git_branch
+  set GIT_BRANCH=%1
+  goto :eof
+  
+:set_git_remote
+  set GIT_REMOTE=%1
+  goto :eof
+    
