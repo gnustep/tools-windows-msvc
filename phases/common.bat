@@ -53,6 +53,14 @@ exit /b %errorlevel%
     git apply %%P
   )
   
+  if defined ADDITIONAL_PATCHES_DIR (
+    for /F "tokens=*" %%P in ('dir /b /s ^"%ADDITIONAL_PATCHES_DIR%\%PROJECT%-*.patch^" 2^>nul') do (
+      echo.
+      echo ### Applying %%~nxP
+      git apply %%P
+    )
+  )
+  
   goto :eof
 
 :update_project
