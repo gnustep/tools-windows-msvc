@@ -4,8 +4,7 @@ GNUstep Windows MSVC Toolchain
 
 [![CI](https://github.com/gnustep/tools-windows-msvc/actions/workflows/ci.yml/badge.svg)](https://github.com/gnustep/tools-windows-msvc/actions/workflows/ci.yml?query=branch%3Amaster)
 
-
-This project comprises a collection of scripts to build a modern GNUstep toolchain (with support for blocks and ARC) for the Windows MSVC ABI. The toolchain can then be used to integrate Objective-C code in any Windows app (without using MinGW).
+This project comprises a collection of scripts to build a modern GNUstep toolchain, with support for blocks and Automatic Reference Counting (ARC), using Clang and the Visual Studio toolchain with the MSVC ABI. The toolchain can then be used to integrate Objective-C code in any Windows app, without using MinGW.
 
 Libraries
 ---------
@@ -72,7 +71,7 @@ When building in a Bash environment (like an MSYS2 shell), the `gnustep-config` 
 The  `clang-cl` driver can also be used to build Objective-C code, but requires prefixing some of the options using the `-Xclang` modifier to pass them directly to Clang:
 
     # build test.m to produce an object file test.obj
-    clang-cl -I C:\GNUstep\x64\Debug\include -fobjc-runtime=gnustep-2.0 -Xclang -fexceptions -Xclang -fobjc-exceptions -fblocks -DGNUSTEP_WITH_DLL /MDd /c test.m
+    clang-cl -I C:\GNUstep\x64\Debug\include -fobjc-runtime=gnustep-2.0 -Xclang -fexceptions -Xclang -fobjc-exceptions -fblocks -DGNUSTEP -DGNUSTEP_WITH_DLL -DGNUSTEP_RUNTIME=1 -D_NONFRAGILE_ABI=1 -D_NATIVE_OBJC_EXCEPTIONS -DGSWARN -DGSDIAGNOSE /MDd /c test.m
     
     # link object file into executable
     clang-cl test.obj gnustep-base.lib objc.lib dispatch.lib /MDd -o test.exe
