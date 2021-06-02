@@ -95,7 +95,6 @@ As support for using GNUstep with the MSVC ABI has only been recently added, and
 
 Following is a list of some of the open items.
 
-- [ ] Add support for building libdispatch for x86 (currently blocked by [libdispatch build issue](https://bugs.swift.org/browse/SR-14314))
 - [ ] Figure out building Objective-C code in Visual Studio
 - [ ] Fix tests in GNUstep Base
 - [ ] Provide pre-built binaries
