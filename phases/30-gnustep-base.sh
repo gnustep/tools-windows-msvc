@@ -3,7 +3,7 @@ set -e
 
 export PROJECT=gnustep-base
 export REPO=https://github.com/gnustep/libs-base.git
-export TAG=
+export TAG=win-locks
 
 `dirname $0`/common.bat prepare_project
 
