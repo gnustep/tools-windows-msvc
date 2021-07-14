@@ -19,7 +19,6 @@ The toolchain currently consists of the following libraries:
 - [libxml2](https://github.com/GNOME/libxml2)
 - [libxslt](https://github.com/GNOME/libxslt)
 - [ICU](https://github.com/unicode-org/icu)
-- [Pthreads-win32](http://www.sourceware.org/pthreads-win32/)
 
 Prerequisites for Building
 --------------------------
@@ -87,7 +86,6 @@ As support for using GNUstep with the MSVC ABI has only been recently added, and
 Following is a list of some of the open items.
 
 - [ ] Add support for building libdispatch for x86 (currently blocked by [libdispatch build issue](https://bugs.swift.org/browse/SR-14314))
-- [ ] Build Pthreads-win32 from source (to match CRT version, or update GNUstep to use Windows threading APIs directly)
 - [ ] Add parameters to build script e.g. for changing install prefix
 - [ ] Figure out building Objective-C code in Visual Studio
 - [ ] Fix tests in GNUstep Base
