@@ -6,9 +6,8 @@ export PROJECT=gnustep-base
 export GITHUB_REPO=gnustep/libs-base
 export TAG=
 
-# Load environment
-../env/sdkenv.bat
-./common.bat prepare_project
+# load environment and prepare project
+../scripts/common.bat prepare_project
 
 cd "$SRCROOT/$PROJECT"
 

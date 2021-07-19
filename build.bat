@@ -13,7 +13,7 @@ IF "%selfWrapped%"=="" (
 endlocal
 
 :: Load environment
-call %~dp0\env\sdkenv.bat || exit 1
+call %~dp0\scripts\sdkenv.bat || exit 1
 
 :: Check if all required commands are installed
 echo.

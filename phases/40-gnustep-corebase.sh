@@ -7,9 +7,8 @@ export PROJECT=gnustep-corebase
 export GITHUB_REPO=triplef/libs-corebase
 export TAG=windows-msvc
 
-# Load environment
-../env/sdkenv.bat
-./common.bat prepare_project
+# load environment and prepare project
+../scripts/common.bat prepare_project
 
 cd "$SRCROOT/$PROJECT"
 

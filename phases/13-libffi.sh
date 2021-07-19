@@ -6,9 +6,8 @@ export PROJECT=libffi
 export GITHUB_REPO=libffi/libffi
 export TAG=`./get-latest-github-release-tag.sh $GITHUB_REPO`
 
-# Load environment
-../env/sdkenv.bat
-./common.bat prepare_project
+# load environment and prepare project
+../scripts/common.bat prepare_project
 
 cd "$SRCROOT/$PROJECT" || exit /b 1
 

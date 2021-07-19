@@ -5,9 +5,8 @@ set PROJECT=libiconv
 set GITHUB_REPO=kiyolee/libiconv-win-build
 set TAG=
 
-:: Load environment
-call "%~dp0\..\env\sdkenv.bat"
-call "%~dp0\common.bat" prepare_project || exit /b 1
+:: load environment and prepare project
+call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
 
 :: determine Visual Studio version
 if "%VisualStudioVersion:~0,3%" == "16." set VSVERSION=2019

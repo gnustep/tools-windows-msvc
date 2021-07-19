@@ -1,7 +1,10 @@
 @echo off
-setlocal
+
+:: load environment
+call "%~dp0\sdkenv.bat"
 
 :: Call subroutine passed as argument
+setlocal
 call :%*
 exit /b %errorlevel%
 

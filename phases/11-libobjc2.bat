@@ -5,9 +5,8 @@ set PROJECT=libobjc2
 set GITHUB_REPO=gnustep/libobjc2
 set TAG=
 
-:: Load environment
-call "%~dp0\..\env\sdkenv.bat"
-call "%~dp0\common.bat" prepare_project || exit /b 1
+:: load environment and prepare project
+call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
 
 set BUILD_DIR="%SRCROOT%\%PROJECT%\build-%ARCH%-%BUILD_TYPE%"
 if exist "%BUILD_DIR%" (rmdir /S /Q "%BUILD_DIR%" || exit /b 1)

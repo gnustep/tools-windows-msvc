@@ -5,9 +5,8 @@ set PROJECT=libdispatch
 set GITHUB_REPO=apple/swift-corelibs-libdispatch
 set TAG=
 
-:: Load environment
-call "%~dp0\..\env\sdkenv.bat"
-call "%~dp0\common.bat" prepare_project || exit /b 1
+:: load environment and prepare project
+call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
 
 if "%ARCH%" == "x86" (
   echo Skipping libdispatch for x86

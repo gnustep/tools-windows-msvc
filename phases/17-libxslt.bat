@@ -10,9 +10,8 @@ for /f "usebackq delims=" %%i in (`call %BASH% './get-latest-github-release-tag.
   set TAG=%%i
 )
 
-:: Load environment
-call "%~dp0\..\env\sdkenv.bat"
-call "%~dp0\common.bat" prepare_project || exit /b 1
+:: load environment and prepare project
+call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
 
 cd "%SRCROOT%\%PROJECT%\win32" || exit /b 1
 
