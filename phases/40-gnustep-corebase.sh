@@ -33,7 +33,7 @@ echo "### Running configure"
 
 echo
 echo "### Building"
-make #-j`nproc`
+make -j`nproc`
 
 echo
 echo "### Installing"
