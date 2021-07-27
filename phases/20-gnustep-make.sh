@@ -1,5 +1,7 @@
 #!/bin/sh
-set -e
+set -eo pipefail
+shopt -s inherit_errexit
+
 cd `dirname $0`
 
 export PROJECT=gnustep-make
