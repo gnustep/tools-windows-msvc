@@ -6,7 +6,7 @@ set GITHUB_REPO=GNOME/libxml2
 
 :: get the latest release tag from GitHub
 cd %~dp0
-for /f "usebackq delims=" %%i in (`call %BASH% './get-latest-github-release-tag.sh %GITHUB_REPO%'`) do (
+for /f "usebackq delims=" %%i in (`call %BASH% '../scripts/get-latest-github-release-tag.sh %GITHUB_REPO%'`) do (
   set TAG=%%i
 )
 

@@ -4,7 +4,7 @@ cd `dirname $0`
 
 export PROJECT=libffi
 export GITHUB_REPO=libffi/libffi
-export TAG=`./get-latest-github-release-tag.sh $GITHUB_REPO`
+export TAG=`../scripts/get-latest-github-release-tag.sh $GITHUB_REPO`
 
 # load environment and prepare project
 ../scripts/common.bat prepare_project
