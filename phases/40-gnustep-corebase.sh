@@ -29,9 +29,6 @@ echo "### Running configure"
   CFLAGS="$CFLAGS -I$UNIX_INSTALL_PREFIX/include" \
   CPPFLAGS="$CPPFLAGS -I$UNIX_INSTALL_PREFIX/include" \
   LDFLAGS="$LDFLAGS -L$UNIX_INSTALL_PREFIX/lib" \
-  `# manually specifly flags for ICU because we don't have pkg-config info` \
-  ICU_CFLAGS="-I$UNIX_INSTALL_PREFIX/include" \
-  ICU_LIBS="-L$UNIX_INSTALL_PREFIX/lib -licuin -licuuc -licudt" \
 
 echo
 echo "### Building"
