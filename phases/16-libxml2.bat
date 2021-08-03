@@ -42,3 +42,6 @@ echo ### Installing
 :: (the wildcard suffix is required to suppress the "file or directory" prompt)
 xcopy /Y /F "bin.msvc\libxml2_a.lib" "%INSTALL_PREFIX%\lib\xml2.lib*" || exit /b 1
 xcopy /Y /F "%SRCROOT%\%PROJECT%\include\libxml\*.h" "%INSTALL_PREFIX%\include\libxml\" || exit /b 1
+
+:: write pkgconfig file
+call "%~dp0\..\scripts\common.bat" write_pkgconfig libxml-2.0 %TAG% -DLIBXML_STATIC -lxml2 -licu || exit /b 1

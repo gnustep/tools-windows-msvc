@@ -50,3 +50,6 @@ xcopy /Y /F "bin.msvc\libxslt_a.lib" "%INSTALL_PREFIX%\lib\xslt.lib*" || exit /b
 xcopy /Y /F "bin.msvc\libexslt_a.lib" "%INSTALL_PREFIX%\lib\exslt.lib*" || exit /b 1
 xcopy /Y /F /S "%SRCROOT%\%PROJECT%\libxslt\*.h" "%INSTALL_PREFIX%\include\libxslt\" || exit /b 1
 xcopy /Y /F /S "%SRCROOT%\%PROJECT%\libexslt\*.h" "%INSTALL_PREFIX%\include\libexslt\" || exit /b 1
+
+:: write pkgconfig file
+call "%~dp0\..\scripts\common.bat" write_pkgconfig libxslt %TAG% "" -lxslt "" libxml-2.0 || exit /b 1

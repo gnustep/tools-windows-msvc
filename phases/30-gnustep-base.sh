@@ -19,12 +19,9 @@ echo "### Loading GNUstep environment"
 
 echo
 echo "### Running configure"
-# manually specifly flags for libxml2 below because they don't have pkg-config info
 ./configure \
   --host=$TARGET \
   --disable-tls \
-  XML_CFLAGS="-I$UNIX_INSTALL_PREFIX/include -DLIBXML_STATIC" \
-  XML_LIBS="-L$UNIX_INSTALL_PREFIX/lib -lxml2" \
 
 echo
 echo "### Building"

@@ -105,4 +105,38 @@ exit /b %errorlevel%
 :set_git_remote
   set GIT_REMOTE=%1
   goto :eof
-    
+
+:write_pkgconfig
+  set PKGCONFIG_NAME=%~1
+  set PKGCONFIG_VERSION=%~2
+  set PKGCONFIG_CFLAGS=%~3
+  set PKGCONFIG_LIBS=%~4
+  set PKGCONFIG_LIBS_PRIVATE=%~5
+  set PKGCONFIG_REQUIRES=%~6
+  
+  :: trim "v" version prefix
+  if /i "%PKGCONFIG_VERSION:~0,1%" == "v" (
+    set PKGCONFIG_VERSION=%PKGCONFIG_VERSION:~1%
+  )
+  
+  :: use forward slashes for prefix path
+  set PKGCONFIG_PREFIX=%INSTALL_PREFIX:\=/%
+  
+  if not exist "%INSTALL_PREFIX%\lib\pkgconfig" (mkdir "%INSTALL_PREFIX%\lib\pkgconfig" || exit /b 1)
+  
+  echo Writing pkgconfig file...
+  (
+    echo prefix=%PKGCONFIG_PREFIX%
+    echo exec_prefix=${prefix}
+    echo libdir=${exec_prefix}/lib
+    echo includedir=${prefix}/include
+    echo.
+    echo Name: %PKGCONFIG_NAME%
+    echo Version: %PKGCONFIG_VERSION%
+    echo Description: %PKGCONFIG_NAME%
+    echo Requires: %PKGCONFIG_REQUIRES%
+    echo.
+    echo Cflags: -I${includedir} %PKGCONFIG_CFLAGS%
+    echo Libs: -L${libdir} %PKGCONFIG_LIBS%
+    echo Libs.private: %PKGCONFIG_LIBS_PRIVATE%
+  ) > %INSTALL_PREFIX%\lib\pkgconfig\%PKGCONFIG_NAME%.pc

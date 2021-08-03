@@ -51,6 +51,7 @@ echo
 echo "### Installing"
 # make install throws errors for DLL builds, so we install manually instead
 cd $TARGET
+install -D -t "$UNIX_INSTALL_PREFIX"/lib/pkgconfig/ *.pc
 install -D -t "$UNIX_INSTALL_PREFIX"/include/ include/*.h
 install -D -t "$UNIX_INSTALL_PREFIX"/lib/ .libs/libffi-*.dll
 install -D -t "$UNIX_INSTALL_PREFIX"/lib/ .libs/libffi-*.pdb
