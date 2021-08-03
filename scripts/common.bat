@@ -41,14 +41,14 @@ exit /b %errorlevel%
   
   if not [%NO_UPDATE%] == [true] (
     echo.
-	:: check out tag/branch if any
+    :: check out tag/branch if any
     if not "%TAG%" == "" (
       echo ### Checking out %TAG%
       git fetch --tags || exit /b 1
       git checkout -q %TAG% || exit /b 1
     )
-	
-	call :update_project
+    
+    call :update_project
     
     :: update submodules if needed (also init in case submodule was added)
     git submodule sync --recursive || exit /b 1

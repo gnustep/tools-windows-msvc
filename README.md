@@ -48,7 +48,17 @@ Building the Toolchain
 ----------------------
 Run the [build.bat](build.bat) script in either a x86 or x64 Native Tools Command Prompt from Visual Studio to build the toolchain for x86 or x64.
 
-For each of the libraries, the script automatically downloads the source via Git into the `src` subdirectory, and then builds and installs it.
+```
+Usage: build.bat
+  --prefix INSTALL_ROOT    Install toolchain into given directory (default: C:\GNUstep)
+  --type Debug/Release     Build only the given build type (default: both)
+  --only PHASE             Re-build only the given phase (e.g. "gnustep-base")
+  --only-dependencies      Build only GNUstep dependencies
+  --patches DIR            Apply additional patches from given directory
+  -h, --help, /?           Print usage information and exit
+```
+
+For each of the libraries, the script automatically downloads the source via Git into the `src` subdirectory, builds, and installs it.
 
 The toolchain is installed into `C:\GNUstep\[x86|x64]\[Debug|Release]`.
 
@@ -86,7 +96,6 @@ As support for using GNUstep with the MSVC ABI has only been recently added, and
 Following is a list of some of the open items.
 
 - [ ] Add support for building libdispatch for x86 (currently blocked by [libdispatch build issue](https://bugs.swift.org/browse/SR-14314))
-- [ ] Add parameters to build script e.g. for changing install prefix
 - [ ] Figure out building Objective-C code in Visual Studio
 - [ ] Fix tests in GNUstep Base
 - [ ] Provide pre-built binaries
