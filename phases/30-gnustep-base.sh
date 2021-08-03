@@ -1,11 +1,12 @@
 #!/bin/sh
 set -e
+cd `dirname $0`
 
 export PROJECT=gnustep-base
-export REPO=https://github.com/gnustep/libs-base.git
+export GITHUB_REPO=gnustep/libs-base
 export TAG=
 
-`dirname $0`/common.bat prepare_project
+./common.bat prepare_project
 
 cd "$SRCROOT/$PROJECT"
 
@@ -21,7 +22,7 @@ echo "### Running configure"
   --disable-tls \
   ICU_CFLAGS="-I$UNIX_INSTALL_PREFIX/include" \
   ICU_LIBS="-L$UNIX_INSTALL_PREFIX/lib -licuin -licuuc -licudt" \
-  XML_CFLAGS="-I$UNIX_INSTALL_PREFIX/include" \
+  XML_CFLAGS="-I$UNIX_INSTALL_PREFIX/include -DLIBXML_STATIC" \
   XML_LIBS="-L$UNIX_INSTALL_PREFIX/lib -lxml2" \
 
 echo

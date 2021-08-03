@@ -1,6 +1,8 @@
+@echo off
+setlocal
 
 set PROJECT=libiconv
-set REPO=https://github.com/kiyolee/libiconv-win-build.git
+set GITHUB_REPO=kiyolee/libiconv-win-build
 set TAG=
 
 call "%~dp0\common.bat" prepare_project || exit /b 1

@@ -1,7 +1,14 @@
+@echo off
+setlocal
 
 set PROJECT=libxml2
-set REPO=https://github.com/GNOME/libxml2.git
-set TAG=v2.9.10
+set GITHUB_REPO=GNOME/libxml2
+
+:: get the latest release tag from GitHub
+cd %~dp0
+for /f "usebackq delims=" %%i in (`call %BASH% './get-latest-github-release-tag.sh %GITHUB_REPO%'`) do (
+  set TAG=%%i
+)
 
 call "%~dp0\common.bat" prepare_project || exit /b 1
 

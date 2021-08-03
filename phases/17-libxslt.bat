@@ -1,7 +1,14 @@
+@echo off
+setlocal
 
 set PROJECT=libxslt
-set REPO=https://github.com/GNOME/libxslt.git
-set TAG=v1.1.34
+set GITHUB_REPO=GNOME/libxslt
+
+:: get the latest release tag from GitHub
+cd %~dp0
+for /f "usebackq delims=" %%i in (`call %BASH% './get-latest-github-release-tag.sh %GITHUB_REPO%'`) do (
+  set TAG=%%i
+)
 
 call "%~dp0\common.bat" prepare_project || exit /b 1
 

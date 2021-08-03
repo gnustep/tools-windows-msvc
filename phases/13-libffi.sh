@@ -1,11 +1,12 @@
 #!/bin/sh
 set -e
+cd `dirname $0`
 
 export PROJECT=libffi
-export REPO=https://github.com/libffi/libffi.git
-export TAG=
+export GITHUB_REPO=libffi/libffi
+export TAG=`./get-latest-github-release-tag.sh $GITHUB_REPO`
 
-`dirname $0`/common.bat prepare_project
+./common.bat prepare_project
 
 cd "$SRCROOT/$PROJECT" || exit /b 1
 

@@ -1,12 +1,13 @@
 #!/bin/sh
 set -e
+cd `dirname $0`
 
 export PROJECT=gnustep-corebase
 # FIXME: should be switched to the official repo once this has been merged
-export REPO=https://github.com/triplef/libs-corebase.git
+export GITHUB_REPO=triplef/libs-corebase
 export TAG=windows-msvc
 
-`dirname $0`/common.bat prepare_project
+./common.bat prepare_project
 
 cd "$SRCROOT/$PROJECT"
 

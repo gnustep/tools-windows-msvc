@@ -1,4 +1,5 @@
 @echo off
+setlocal
 
 :: Load environment
 call %~dp0..\env\sdkenv.bat
@@ -12,7 +13,13 @@ exit /b %errorlevel%
 
 :prepare_project
   if not defined PROJECT (echo Missing PROJECT && exit /b 1)
-  if not defined REPO (echo Missing REPO && exit /b 1)
+  if not defined REPO (
+    if defined GITHUB_REPO (
+      set REPO=https://github.com/%GITHUB_REPO%.git
+    ) else (
+      echo Missing REPO && exit /b 1
+    )
+  )
   
   cd "%SRCROOT%"
   

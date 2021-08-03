@@ -1,11 +1,12 @@
 #!/bin/sh
 set -e
+cd `dirname $0`
 
 export PROJECT=gnustep-make
-export REPO=https://github.com/gnustep/tools-make.git
+export GITHUB_REPO=gnustep/tools-make
 export TAG=
 
-`dirname $0`/common.bat prepare_project
+./common.bat prepare_project
 
 cd "$SRCROOT/$PROJECT"
 

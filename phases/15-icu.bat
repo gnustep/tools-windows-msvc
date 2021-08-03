@@ -1,3 +1,5 @@
+@echo off
+setlocal
 
 call "%~dp0\common.bat" loadenv || exit /b 1
 
