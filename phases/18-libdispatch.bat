@@ -28,11 +28,11 @@ cmake .. %CMAKE_OPTIONS% ^
 
 echo.
 echo ### Building
-ninja || exit /b 1
+cmake %CMAKE_BUILD_OPTIONS% || exit /b 1
 
 echo.
 echo ### Installing
-ninja install || exit /b 1
+cmake %CMAKE_INSTALL_OPTIONS% || exit /b 1
 
 :: Install PDB file
 xcopy /Y /F dispatch.pdb "%INSTALL_PREFIX%\lib\"
