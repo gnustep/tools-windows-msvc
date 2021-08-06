@@ -3,6 +3,14 @@ setlocal
 
 call "%~dp0\..\scripts\common.bat" loadenv || exit /b 1
 
+:: ICU version to download from ICU releases
+set ICU_VERSION=69.1
+
+:: build download URL
+if "%ARCH%" == "x86" set ICU_ARCH=Win32
+if "%ARCH%" == "x64" set ICU_ARCH=Win64
+set ICU_RELEASE_URL=https://github.com/unicode-org/icu/releases/download/release-%ICU_VERSION:.=-%/icu4c-%ICU_VERSION:.=_%-%ICU_ARCH%-MSVC2019.zip
+
 :: determine whether we can use the Windows-provided ICU
 :: (requires Windows 10 version 1903 / build 18362 or later)
 for /f "tokens=4-6 delims=. " %%i in ('ver') do (
@@ -21,15 +29,6 @@ if %WIN_VERSION% GTR 10 (
 if defined SKIP_ICU (
   echo Using system-provided ICU DLL ^(requires Windows 10 version 1903 or later^)
   exit /b 0
-)
-
-if "%ARCH%" == "x86" (
-  set ICU_RELEASE_URL=https://github.com/unicode-org/icu/releases/download/release-69-1/icu4c-69_1-Win32-MSVC2019.zip
-) else if "%ARCH%" == "x64" (
-  set ICU_RELEASE_URL=https://github.com/unicode-org/icu/releases/download/release-69-1/icu4c-69_1-Win64-MSVC2019.zip
-) else (
-  echo Unknown ARCH: %ARCH%
-  exit /b 1
 )
 
 for %%a in ("%ICU_RELEASE_URL%") do (
@@ -62,3 +61,8 @@ pushd lib* || exit /b 1
 xcopy /Y /F "icu*.lib" "%INSTALL_PREFIX%\lib\" || exit /b 1
 popd
 xcopy /Y /F /S "include\*" "%INSTALL_PREFIX%\include\" || exit /b 1
+
+:: write pkgconfig files
+call "%~dp0\..\scripts\common.bat" write_pkgconfig icu-i18n %ICU_VERSION% "" -licuin "" icu-uc || exit /b 1
+call "%~dp0\..\scripts\common.bat" write_pkgconfig icu-io %ICU_VERSION% "" -licuio "" icu-i18n || exit /b 1
+call "%~dp0\..\scripts\common.bat" write_pkgconfig icu-uc %ICU_VERSION% "" "-licuuc -licudt" || exit /b 1

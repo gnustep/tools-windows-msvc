@@ -18,6 +18,9 @@ cd "%SRCROOT%\%PROJECT%" || exit \b 1
 :: apply patch to use system-provided ICU DLL if applicable
 if not exist "%INSTALL_PREFIX%\lib\icu*.dll" (
   git apply "%ROOT_DIR%\patches\opt-libxml2-windows-icu.patch" || exit /b 1
+  set "LIBS_PRIVATE=-licu"
+) else (
+  set "LIBS_PRIVATE=-licuin -licuuc -licudt"
 )
 
 cd "win32" || exit /b 1
@@ -51,4 +54,4 @@ xcopy /Y /F "bin.msvc\libxml2_a.lib" "%INSTALL_PREFIX%\lib\xml2.lib*" || exit /b
 xcopy /Y /F "%SRCROOT%\%PROJECT%\include\libxml\*.h" "%INSTALL_PREFIX%\include\libxml\" || exit /b 1
 
 :: write pkgconfig file
-call "%~dp0\..\scripts\common.bat" write_pkgconfig libxml-2.0 %TAG% -DLIBXML_STATIC -lxml2 -licu || exit /b 1
+call "%~dp0\..\scripts\common.bat" write_pkgconfig libxml-2.0 %TAG% -DLIBXML_STATIC -lxml2 "%LIBS_PRIVATE%" || exit /b 1
