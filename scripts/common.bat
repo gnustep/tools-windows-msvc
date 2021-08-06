@@ -48,7 +48,7 @@ exit /b %errorlevel%
       git checkout -q %TAG% || exit /b 1
     )
     
-    call :update_project
+    call :update_project || exit /b 1
     
     :: update submodules if needed (also init in case submodule was added)
     git submodule sync --recursive || exit /b 1
@@ -75,10 +75,10 @@ exit /b %errorlevel%
   :: check if we should update project
   set GIT_BRANCH=NONE
   for /f "usebackq delims=" %%i in (`git symbolic-ref --short -q HEAD`) do (
-    call :set_git_branch %%i
+    call :set_git_branch %%i || exit /b 1
   )
   if not [%GIT_BRANCH%] == [NONE] (
-    call :update_project_2
+    call :update_project_2 || exit /b 1
   ) else if "%TAG%" == "" (
     echo NOT updating project [not on branch]
   )
@@ -88,7 +88,7 @@ exit /b %errorlevel%
   :: check if current branch has a remote
   set GIT_REMOTE=NONE
   for /f "usebackq delims=" %%i in (`git config --get branch.%GIT_BRANCH%.remote`) do (
-    call :set_git_remote %%i
+    call :set_git_remote %%i || exit /b 1
   )
   if not [%GIT_REMOTE%] == [NONE] (
     echo ### Updating project
