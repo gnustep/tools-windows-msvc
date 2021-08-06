@@ -98,17 +98,6 @@ if %errorlevel% neq 0 call :error_missing_command automake, "'pacman -S automake
 call %BASH% 'which libtool'
 if %errorlevel% neq 0 call :error_missing_command libtool, "'pacman -S libtool' in MSYS2"
 
-if not defined ONLY_PHASE (
-  :: keep backup of previous build if any
-  if exist "%INSTALL_ROOT%\%ARCH%" (
-    move /Y "%INSTALL_ROOT%\%ARCH%" "%INSTALL_ROOT%\%ARCH%.bak" || exit 1
-  )
-  :: remove previous failed build if any
-  if exist "%INSTALL_ROOT%\%ARCH%.failed" (
-    rmdir /S /Q "%INSTALL_ROOT%\%ARCH%.failed" || exit 1
-  )
-)
-
 :: create directories
 if not exist "%SRCROOT%" (mkdir "%SRCROOT%" || exit 1)
 if not exist "%INSTALL_ROOT%\%ARCH%" (mkdir "%INSTALL_ROOT%\%ARCH%" || exit 1)
@@ -118,9 +107,6 @@ for %%G in (%BUILD_TYPES%) do (
   set BUILD_TYPE=%%G
   call :build
 )
-
-:: remove backup if all went well
-if exist "%INSTALL_ROOT%\%ARCH%.bak" (rmdir /S /Q "%INSTALL_ROOT%\%ARCH%.bak" || exit 1)
 
 echo.
 echo ### Finished building GNUstep into:
@@ -138,6 +124,17 @@ goto :eof
     set UNIX_INSTALL_PREFIX=%%i
   )
   
+  if not defined ONLY_PHASE (
+    :: keep backup of previous build if any
+    if exist "%INSTALL_PREFIX%" (
+      move /Y "%INSTALL_PREFIX%" "%INSTALL_PREFIX%.bak" || exit 1
+    )
+    :: remove previous failed build if any
+    if exist "%INSTALL_PREFIX%.failed" (
+      rmdir /S /Q "%INSTALL_PREFIX%.failed" || exit 1
+    )
+  )
+  
   for %%F in (%ROOT_DIR%\phases\??-*.*) do (
     call :set_phase_vars %%F
     if defined ONLY_PHASE (
@@ -152,6 +149,9 @@ goto :eof
       call :build_phase
     )
   )
+  
+  :: remove backup if all went well
+  if exist "%INSTALL_PREFIX%.bak" (rmdir /S /Q "%INSTALL_PREFIX%.bak" || exit 1)
   
   :: don't update projects for subsequent build types to avoid mismatching builds
   set NO_UPDATE=true
@@ -197,7 +197,7 @@ goto :eof
   echo https://github.com/gnustep/tools-windows-msvc
   echo.
   echo Usage: %SCRIPT_NAME%
-  echo   --prefix INSTALL_ROOT    Install toolchain into given directory (default: C:\GNUstep)
+  echo   --prefix INSTALL_ROOT    Install into given directory (default: C:\GNUstep), followed by [x86^|x64]\[Debug^|Release]
   echo   --type Debug/Release     Build only the given build type (default: both)
   echo   --only PHASE             Re-build only the given phase (e.g. "gnustep-base")
   echo   --only-dependencies      Build only GNUstep dependencies
