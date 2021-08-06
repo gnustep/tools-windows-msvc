@@ -58,14 +58,14 @@ exit /b %errorlevel%
   for /F "tokens=*" %%P in ('dir /b /s ^"%ROOT_DIR%\patches\%PROJECT%-*.patch^" 2^>nul') do (
     echo.
     echo ### Applying %%~nxP
-    git apply %%P
+    git apply %%P || exit /b 1
   )
   
   if defined ADDITIONAL_PATCHES_DIR (
     for /F "tokens=*" %%P in ('dir /b /s ^"%ADDITIONAL_PATCHES_DIR%\%PROJECT%-*.patch^" 2^>nul') do (
       echo.
       echo ### Applying %%~nxP
-      git apply %%P
+      git apply %%P || exit /b 1
     )
   )
   
