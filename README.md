@@ -18,7 +18,7 @@ The toolchain currently consists of the following libraries:
 - [libiconv](https://github.com/kiyolee/libiconv-win-build)
 - [libxml2](https://github.com/GNOME/libxml2)
 - [libxslt](https://github.com/GNOME/libxslt)
-- [ICU](https://docs.microsoft.com/en-us/windows/win32/intl/international-components-for-unicode--icu-) (DLL provided by Windows 10 version 1903 or later)
+- [ICU](https://docs.microsoft.com/en-us/windows/win32/intl/international-components-for-unicode--icu-) (using system-provided DLL on Windows 10 version 1903 or later)
 
 Prerequisites for Building
 --------------------------

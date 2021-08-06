@@ -13,7 +13,14 @@ for /f "usebackq delims=" %%i in (`call %BASH% '../scripts/get-latest-github-rel
 :: load environment and prepare project
 call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
 
-cd "%SRCROOT%\%PROJECT%\win32" || exit /b 1
+cd "%SRCROOT%\%PROJECT%" || exit \b 1
+
+:: apply patch to use system-provided ICU DLL if applicable
+if not exist "%INSTALL_PREFIX%\lib\icu*.dll" (
+  git apply "%ROOT_DIR%\patches\opt-libxml2-windows-icu.patch" || exit /b 1
+)
+
+cd "win32" || exit /b 1
 
 echo.
 echo ### Running configure
