@@ -30,5 +30,7 @@ echo.
 echo ### Installing
 ninja install || exit /b 1
 
-:: Install PDB files
-xcopy /Y /F objc.pdb "%INSTALL_PREFIX%\lib\"
+:: move DLL to bin and install PDB files
+if not exist "%INSTALL_PREFIX%\bin\" mkdir "%INSTALL_PREFIX%\bin\" || exit /b 1
+if exist "%INSTALL_PREFIX%\lib\objc.dll" move /Y "%INSTALL_PREFIX%\lib\objc.dll" "%INSTALL_PREFIX%\bin\" || exit /b 1
+xcopy /Y /F objc.pdb "%INSTALL_PREFIX%\bin\" || exit /b 1

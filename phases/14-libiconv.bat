@@ -39,7 +39,7 @@ echo.
 echo ### Installing
 :: rename libiconv.lib to iconv.lib to allow linking using -liconv
 :: (the wildcard suffix is required to suppress the "file or directory" prompt)
-xcopy /Y /F %BUILD_DIR%\libiconv.lib "%INSTALL_PREFIX%\lib\iconv.lib*"
-xcopy /Y /F %BUILD_DIR%\libiconv.dll "%INSTALL_PREFIX%\lib\"
-xcopy /Y /F %BUILD_DIR%\libiconv.pdb "%INSTALL_PREFIX%\lib\"
-xcopy /Y /F /S "%SRCROOT%\%PROJECT%\include\*" "%INSTALL_PREFIX%\include\"
+xcopy /Y /F %BUILD_DIR%\libiconv.lib "%INSTALL_PREFIX%\lib\iconv.lib*" || exit /b 1
+xcopy /Y /F %BUILD_DIR%\libiconv.dll "%INSTALL_PREFIX%\bin\" || exit /b 1
+xcopy /Y /F %BUILD_DIR%\libiconv.pdb "%INSTALL_PREFIX%\bin\" || exit /b 1
+xcopy /Y /F /S "%SRCROOT%\%PROJECT%\include\*" "%INSTALL_PREFIX%\include\" || exit /b 1

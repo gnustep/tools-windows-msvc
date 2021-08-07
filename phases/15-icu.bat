@@ -55,7 +55,7 @@ echo.
 echo ### Installing
 cd %ICU_RELEASE_NAME% || exit /b 1
 pushd bin* || exit /b 1
-xcopy /Y /F "icu*.dll" "%INSTALL_PREFIX%\lib\" || exit /b 1
+xcopy /Y /F "icu*.dll" "%INSTALL_PREFIX%\bin\" || exit /b 1
 popd
 pushd lib* || exit /b 1
 xcopy /Y /F "icu*.lib" "%INSTALL_PREFIX%\lib\" || exit /b 1

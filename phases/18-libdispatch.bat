@@ -40,8 +40,5 @@ echo.
 echo ### Installing
 ninja install || exit /b 1
 
-:: Install PDB file
-xcopy /Y /F dispatch.pdb "%INSTALL_PREFIX%\lib\"
-
-:: Move DLL from bin to lib directory.
-move /Y "%INSTALL_PREFIX%\bin\dispatch.dll" "%INSTALL_PREFIX%\lib\"
+:: install PDB file
+xcopy /Y /F dispatch.pdb "%INSTALL_PREFIX%\bin\" || exit /b 1
