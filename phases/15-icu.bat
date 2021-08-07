@@ -1,15 +1,9 @@
 @echo off
 setlocal
 
+set GITHUB_REPO=unicode-org/icu
+
 call "%~dp0\..\scripts\common.bat" loadenv || exit /b 1
-
-:: ICU version to download from ICU releases
-set ICU_VERSION=69.1
-
-:: build download URL
-if "%ARCH%" == "x86" set ICU_ARCH=Win32
-if "%ARCH%" == "x64" set ICU_ARCH=Win64
-set ICU_RELEASE_URL=https://github.com/unicode-org/icu/releases/download/release-%ICU_VERSION:.=-%/icu4c-%ICU_VERSION:.=_%-%ICU_ARCH%-MSVC2019.zip
 
 :: determine whether we can use the Windows-provided ICU
 :: (requires Windows 10 version 1903 / build 18362 or later)
@@ -30,6 +24,26 @@ if defined SKIP_ICU (
   echo Using system-provided ICU DLL ^(requires Windows 10 version 1903 or later^)
   exit /b 0
 )
+
+:: get the latest release tag from GitHub
+cd %~dp0
+if not defined ICU_VERSION (
+  for /f "usebackq delims=" %%i in (`call %BASH% '../scripts/get-latest-github-release-tag.sh %GITHUB_REPO%'`) do (
+    for /f "tokens=2,3 delims=-" %%j in ("%%i") do (
+      set ICU_VERSION=%%j.%%k
+    )
+  )
+)
+if not defined ICU_VERSION (
+  echo Error getting latest ICU release
+  exit /b 1
+)
+echo Using ICU %ICU_VERSION%
+
+:: build download URL
+if "%ARCH%" == "x86" set ICU_ARCH=Win32
+if "%ARCH%" == "x64" set ICU_ARCH=Win64
+set ICU_RELEASE_URL=https://github.com/%GITHUB_REPO%/releases/download/release-%ICU_VERSION:.=-%/icu4c-%ICU_VERSION:.=_%-%ICU_ARCH%-MSVC2019.zip
 
 for %%a in ("%ICU_RELEASE_URL%") do (
    set ICU_RELEASE_FILE=%%~nxa
