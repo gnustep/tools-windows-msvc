@@ -126,6 +126,9 @@ goto :eof
   
   if not defined ONLY_PHASE (
     :: keep backup of previous build if any
+    if exist "%INSTALL_PREFIX%.bak" (
+      rmdir /S /Q "%INSTALL_PREFIX%.bak" || exit 1
+    )
     if exist "%INSTALL_PREFIX%" (
       move /Y "%INSTALL_PREFIX%" "%INSTALL_PREFIX%.bak" || exit 1
     )
