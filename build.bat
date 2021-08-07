@@ -39,7 +39,7 @@ if defined BUILD_TYPES (
   )
 )
 if defined ADDITIONAL_PATCHES_DIR (
-  if not exist ADDITIONAL_PATCHES_DIR (
+  if not exist "%ADDITIONAL_PATCHES_DIR%" (
     echo Error: patches directory does not exist
     echo     %ADDITIONAL_PATCHES_DIR%
     exit 1
