@@ -15,12 +15,13 @@ call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
 
 cd "%SRCROOT%\%PROJECT%" || exit \b 1
 
-:: apply patch to use system-provided ICU DLL if applicable
-if not exist "%INSTALL_PREFIX%\lib\icu*.dll" (
+:: check which ICU libraries to link
+if exist "%INSTALL_PREFIX%\lib\icuin.lib" (
+  set "LIBS_PRIVATE=-licuin -licuuc -licudt"
+) else (
+  echo Using system-provided ICU DLL ^(requires Windows 10 version 1903 or later^)
   git apply "%ROOT_DIR%\patches\opt-libxml2-windows-icu.patch" || exit /b 1
   set "LIBS_PRIVATE=-licu"
-) else (
-  set "LIBS_PRIVATE=-licuin -licuuc -licudt"
 )
 
 cd "win32" || exit /b 1
