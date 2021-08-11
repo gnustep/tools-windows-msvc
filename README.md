@@ -40,9 +40,10 @@ The MSYS2 installation is required to provide the Bash shell and Unix tools requ
 - Make
 - Autoconf/Automake
 - libtool
+- pkg-config
 
 These can be installed via Pacman inside a MSYS2 shell:  
-`pacman -S --needed make autoconf automake libtool`
+`pacman -S --needed make autoconf automake libtool pkg-config`
 
 Building the Toolchain
 ----------------------

@@ -16,7 +16,7 @@ jobs:
           # make Windows packages like Clang available in MSYS
           path-type: inherit
           # install MSYS packages
-          install: make autoconf automake libtool
+          install: make autoconf automake libtool pkg-config
       - name: Delete MinGW gmake
         # delete /c/Strawberry/c/bin/gmake built for MinGW that is found on runners, because we must use make built for MSYS
         run: if GMAKE_PATH=`which gmake`; then rm -f "$GMAKE_PATH"; fi

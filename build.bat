@@ -97,6 +97,8 @@ call %BASH% 'which automake'
 if %errorlevel% neq 0 call :error_missing_command automake, "'pacman -S automake' in MSYS2"
 call %BASH% 'which libtool'
 if %errorlevel% neq 0 call :error_missing_command libtool, "'pacman -S libtool' in MSYS2"
+call %BASH% 'which pkg-config'
+if %errorlevel% neq 0 call :error_missing_command libtool, "'pacman -S pkg-config' in MSYS2"
 
 :: create directories
 if not exist "%SRCROOT%" (mkdir "%SRCROOT%" || exit 1)
