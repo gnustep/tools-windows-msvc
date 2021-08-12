@@ -39,26 +39,11 @@ if "%ARCH%" == "x86" (
   exit /b 1
 )
 
-:: add flags for cross compilation
-if not "%VSCMD_ARG_HOST_ARCH%" == "" (
-  if not "%VSCMD_ARG_HOST_ARCH%" == "%ARCH%" (
-    if "%ARCH%" == "x86" (
-      set FLAGS=-m32
-    ) else if "%ARCH%" == "x64" (
-      set FLAGS=-m64
-    )
-    set "CFLAGS=%FLAGS% %CFLAGS%"
-    set "CXXFLAGS=%FLAGS% %CXXFLAGS%"
-    set "LDFLAGS=%FLAGS% %LDFLAGS%"
-  )
-)
-
 :: Common CMake options
+set CMAKE_ARCH=%ARCH%
+if "%ARCH%" == "x86" set CMAKE_ARCH=Win32
 set CMAKE_BUILD_TYPE=%BUILD_TYPE%
 if "%BUILD_TYPE%" == "Release" set CMAKE_BUILD_TYPE=RelWithDebInfo
-set CMAKE_OPTIONS=^
-  -G Ninja ^
-  -D CMAKE_BUILD_TYPE=%CMAKE_BUILD_TYPE% ^
-  -D CMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%" ^
-  -D CMAKE_C_COMPILER=clang-cl ^
-  -D CMAKE_CXX_COMPILER=clang-cl ^
+set CMAKE_OPTIONS=-T ClangCL -A %CMAKE_ARCH% -DCMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%"
+set CMAKE_BUILD_OPTIONS=--build . --config %CMAKE_BUILD_TYPE% -- -m
+set CMAKE_INSTALL_OPTIONS=--build . --config %CMAKE_BUILD_TYPE% --target install

@@ -32,7 +32,6 @@ The MSYS2 installation is required to provide the Bash shell and Unix tools requ
 - Clang (via Visual Studio or `choco install llvm`)
 - CMake (via Visual Studio or `choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'`)
 - Git (`choco install git`)
-- Ninja (`choco install ninja`)
 - MSYS2 (`choco install msys2`)
 
 **Unix tools**
@@ -95,7 +94,6 @@ As support for using GNUstep with the MSVC ABI has only been recently added, and
 
 Following is a list of some of the open items.
 
-- [ ] Add support for building libdispatch for x86 (currently blocked by [libdispatch build issue](https://bugs.swift.org/browse/SR-14314))
 - [ ] Figure out building Objective-C code in Visual Studio
 - [ ] Fix tests in GNUstep Base
 - [ ] Provide pre-built binaries

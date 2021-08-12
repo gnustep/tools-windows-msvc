@@ -21,8 +21,6 @@ jobs:
         # delete /c/Strawberry/c/bin/gmake built for MinGW that is found on runners, because we must use make built for MSYS
         run: if GMAKE_PATH=`which gmake`; then rm -f "$GMAKE_PATH"; fi
         shell: msys2 {0}
-      - name: Install Windows packages
-        run: choco install ninja
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ matrix.arch }}
