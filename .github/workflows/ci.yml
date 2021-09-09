@@ -1,10 +1,18 @@
 name: CI
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 5 1 * *'
 
 jobs:
   build:
+    name: ${{ matrix.arch }}
     runs-on: windows-2019
+    # don't run pull requests from local branches twice
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
     strategy:
       matrix:
         arch: [x86, x64]
@@ -30,6 +38,19 @@ jobs:
         run: |
           :: use msys2.cmd from setup-msys2 as Bash shell, as it doesn't have msys2_shell.cmd used normally by build.bat
           set "BASH=msys2 -c"
-          set "INSTALL_ROOT=%cd%\.."
           build.bat
         shell: cmd
+      - name: Package release
+        run: |
+          tar -a -cf GNUstep-Windows-MSVC-${{matrix.arch}}.zip C:\GNUstep\${{matrix.arch}}
+      - name: Update GitHub prerelease
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: GNUstep-Windows-MSVC-${{matrix.arch}}.zip
+          tag: latest
+          release_name: "Latest Build"
+          body: " "
+          prerelease: true
+          overwrite: true
