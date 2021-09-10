@@ -6,8 +6,10 @@ GNUstep Windows MSVC Toolchain
 
 This project comprises a collection of scripts to build a modern GNUstep toolchain, with support for blocks and Automatic Reference Counting (ARC), using Clang and the Visual Studio toolchain with the MSVC ABI. The toolchain can then be used to integrate Objective-C code in any Windows app, without using MinGW.
 
+
 Libraries
 ---------
+
 The toolchain currently consists of the following libraries:
 
 - [GNUstep Base Library](https://github.com/gnustep/libs-base) (Foundation)
@@ -20,52 +22,17 @@ The toolchain currently consists of the following libraries:
 - [libxslt](https://github.com/GNOME/libxslt)
 - [ICU](https://docs.microsoft.com/en-us/windows/win32/intl/international-components-for-unicode--icu-) (using system-provided DLL on Windows 10 version 1903 or later)
 
-Prerequisites for Building
---------------------------
-Building the toolchain require the following tools to be installed and available in the PATH. Their presence is verified when building the toolchain.
 
-The MSYS2 installation is required to provide the Bash shell and Unix tools required to build some of the libraries, but no MinGW packages are needed. The Windows Clang installation is used to build all libraries.
+Installation
+------------
 
-**Windows tools**
+To install a pre-built release, download it from [the releases on GitHub](https://github.com/gnustep/tools-windows-msvc/releases) and unpack it into into `C:\GNUstep` (this location is required if you plan on using the `gnustep-config` script).
 
-- Visual Studio 2019
-- Clang (via Visual Studio or `choco install llvm`)
-- CMake (via Visual Studio or `choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'`)
-- Git (`choco install git`)
-- Ninja (`choco install ninja`)
-- MSYS2 (`choco install msys2`)
-
-**Unix tools**
-
-- Make
-- Autoconf/Automake
-- libtool
-- pkg-config
-
-These can be installed via Pacman inside a MSYS2 shell:  
-`pacman -S --needed make autoconf automake libtool pkg-config`
-
-Building the Toolchain
-----------------------
-Run the [build.bat](build.bat) script in either a x86 or x64 Native Tools Command Prompt from Visual Studio to build the toolchain for x86 or x64.
-
-```
-Usage: build.bat
-  --prefix INSTALL_ROOT    Install toolchain into given directory (default: C:\GNUstep)
-  --type Debug/Release     Build only the given build type (default: both)
-  --only PHASE             Re-build only the given phase (e.g. "gnustep-base")
-  --only-dependencies      Build only GNUstep dependencies
-  --patches DIR            Apply additional patches from given directory
-  -h, --help, /?           Print usage information and exit
-```
-
-For each of the libraries, the script automatically downloads the source via Git into the `src` subdirectory, builds, and installs it.
-
-The toolchain is installed into `C:\GNUstep\[x86|x64]\[Debug|Release]`.
 
 Using the Toolchain
 -------------------
-Building and linking Objective-C code using the toolchain requires a number of compiler and linker flags.
+
+Building and linking Objective-C code using the toolchain and `clang` requires a number of compiler and linker flags.
 
 When building in a Bash environment (like an MSYS2 shell), the `gnustep-config` tool can be used to query the necessary flags for building and linking:
 
@@ -90,13 +57,57 @@ Specify `/MDd` for debug builds, and `/MD` for release builds, in order to link 
 
 Note that the `GNUSTEP_WITH_DLL` definition is always required to enable annotation of the Objective-C objects defined in the GNUstep Base DLL with `__declspec(dllexport)`.
 
-Status
-------
-As support for using GNUstep with the MSVC ABI has only been recently added, and GNUstep support for Windows might not be as complete as on Unixes, many tests are still failing for various reasons.
 
-Following is a list of some of the open items.
+Status and Known Issues
+-----------------------
 
-- [ ] Add support for building libdispatch for x86 (currently blocked by [libdispatch build issue](https://bugs.swift.org/browse/SR-14314))
-- [ ] Figure out building Objective-C code in Visual Studio
-- [ ] Fix tests in GNUstep Base
-- [ ] Provide pre-built binaries
+The toolchain is fully usable on x64. On x86, libdispatch is not available due to a [build error](https://bugs.swift.org/browse/SR-14314).
+
+Note that GNUstep support for Windows is not as complete as on Unixes, and some [tests in GNUstep Base](https://github.com/gnustep/libs-base/actions/workflows/main.yml?query=branch%3Amaster) are still failing.
+
+
+Prerequisites for Building
+--------------------------
+
+Building the toolchain require the following tools to be installed and available in the PATH. Their presence is verified when building the toolchain.
+
+The MSYS2 installation is required to provide the Bash shell and Unix tools required to build some of the libraries, but no MinGW packages are needed. The Windows Clang installation is used to build all libraries.
+
+**Windows tools**
+
+- Visual Studio 2019
+- Clang (via Visual Studio or `choco install llvm`)
+- CMake (via Visual Studio or `choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'`)
+- Git (`choco install git`)
+- Ninja (`choco install ninja`)
+- MSYS2 (`choco install msys2`)
+
+**Unix tools**
+
+- Make
+- Autoconf/Automake
+- libtool
+- pkg-config
+
+These can be installed via Pacman inside a MSYS2 shell:  
+`pacman -S --needed make autoconf automake libtool pkg-config`
+
+
+Building the Toolchain
+----------------------
+
+Run the [build.bat](build.bat) script in either a x86 or x64 Native Tools Command Prompt from Visual Studio to build the toolchain for x86 or x64.
+
+```
+Usage: build.bat
+  --prefix INSTALL_ROOT    Install toolchain into given directory (default: C:\GNUstep)
+  --type Debug/Release     Build only the given build type (default: both)
+  --only PHASE             Re-build only the given phase (e.g. "gnustep-base")
+  --only-dependencies      Build only GNUstep dependencies
+  --patches DIR            Apply additional patches from given directory
+  -h, --help, /?           Print usage information and exit
+```
+
+For each of the libraries, the script automatically downloads the source via Git into the `src` subdirectory, builds, and installs it.
+
+The toolchain is installed into `C:\GNUstep\[x86|x64]\[Debug|Release]`.
