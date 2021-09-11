@@ -51,6 +51,5 @@ jobs:
           file: GNUstep-Windows-MSVC-${{matrix.arch}}.zip
           tag: latest
           release_name: "Latest Build"
-          body: " "
           prerelease: true
           overwrite: true
