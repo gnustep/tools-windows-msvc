@@ -57,6 +57,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: GNUstep-Windows-MSVC-${{matrix.arch}}.zip
+          name: GNUstep-Windows-MSVC-${{matrix.arch}}
 
   prerelease:
     needs: build
@@ -75,4 +76,4 @@ jobs:
           automatic_release_tag: latest
           prerelease: true
           title: "Latest Build"
-          files: GNUstep-Windows-MSVC-*.tar.xz
+          files: "**/GNUstep-Windows-MSVC-*.zip"
