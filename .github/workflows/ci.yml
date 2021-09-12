@@ -21,6 +21,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
       - uses: msys2/setup-msys2@v2
         with:
           msystem: MSYS
@@ -28,24 +29,44 @@ jobs:
           path-type: inherit
           # install MSYS packages
           install: make autoconf automake libtool pkg-config
+
       - name: Delete MinGW gmake
         # delete /c/Strawberry/c/bin/gmake built for MinGW that is found on runners, because we must use make built for MSYS
         run: if GMAKE_PATH=`which gmake`; then rm -f "$GMAKE_PATH"; fi
         shell: msys2 {0}
+
       - name: Install Windows packages
         run: choco install ninja
+
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ matrix.arch }}
+
       - name: Build toolchain
         run: |
           :: use msys2.cmd from setup-msys2 as Bash shell, as it doesn't have msys2_shell.cmd used normally by build.bat
           set "BASH=msys2 -c"
           build.bat
         shell: cmd
+
       - name: Package release
         run: |
           tar -a -cf GNUstep-Windows-MSVC-${{matrix.arch}}.zip C:\GNUstep\${{matrix.arch}}
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: GNUstep-Windows-MSVC-${{matrix.arch}}.zip
+
+  prerelease:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/master' }}
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+
       - name: Update GitHub prerelease
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: marvinpinto/action-automatic-releases@latest
@@ -54,4 +75,4 @@ jobs:
           automatic_release_tag: latest
           prerelease: true
           title: "Latest Build"
-          files: GNUstep-Windows-MSVC-${{matrix.arch}}.zip
+          files: GNUstep-Windows-MSVC-*.tar.xz
