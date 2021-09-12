@@ -13,9 +13,12 @@ jobs:
     runs-on: windows-2019
     # don't run pull requests from local branches twice
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
+
     strategy:
+      fail-fast: false
       matrix:
         arch: [x86, x64]
+
     steps:
       - uses: actions/checkout@v2
       - uses: msys2/setup-msys2@v2
@@ -45,11 +48,10 @@ jobs:
           tar -a -cf GNUstep-Windows-MSVC-${{matrix.arch}}.zip C:\GNUstep\${{matrix.arch}}
       - name: Update GitHub prerelease
         if: ${{ github.ref == 'refs/heads/master' }}
-        uses: svenstaro/upload-release-action@v2
+        uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: GNUstep-Windows-MSVC-${{matrix.arch}}.zip
-          tag: latest
-          release_name: "Latest Build"
+          automatic_release_tag: latest
           prerelease: true
-          overwrite: true
+          title: "Latest Build"
+          files: GNUstep-Windows-MSVC-${{matrix.arch}}.zip
