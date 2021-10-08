@@ -23,13 +23,8 @@ if not defined INSTALL_ROOT set INSTALL_ROOT=C:\GNUstep
 :: work because of spaces in Windows paths.
 if not defined BASH set BASH=msys2_shell -defterm -no-start -msys2 -full-path -here -c
 
-:: determine compile flags
-set ARCH=%VSCMD_ARG_TGT_ARCH%
-set CFLAGS=
-set CXXFLAGS=
-set LDFLAGS=-fuse-ld=lld
-
 :: determine target triple
+set ARCH=%VSCMD_ARG_TGT_ARCH%
 if "%ARCH%" == "x86" (
   set TARGET=i686-pc-windows
 ) else if "%ARCH%" == "x64" (
@@ -39,19 +34,12 @@ if "%ARCH%" == "x86" (
   exit /b 1
 )
 
-:: add flags for cross compilation
-if not "%VSCMD_ARG_HOST_ARCH%" == "" (
-  if not "%VSCMD_ARG_HOST_ARCH%" == "%ARCH%" (
-    if "%ARCH%" == "x86" (
-      set FLAGS=-m32
-    ) else if "%ARCH%" == "x64" (
-      set FLAGS=-m64
-    )
-    set "CFLAGS=%FLAGS% %CFLAGS%"
-    set "CXXFLAGS=%FLAGS% %CXXFLAGS%"
-    set "LDFLAGS=%FLAGS% %LDFLAGS%"
-  )
-)
+:: compile flags
+:: - target flags are required to ensure clang builds for x86 vs x64
+:: - LLD linker is required for linking Objective C
+set CFLAGS=--target=%TARGET%
+set CXXFLAGS=--target=%TARGET%
+set LDFLAGS=-fuse-ld=lld
 
 :: Common CMake options
 set CMAKE_BUILD_TYPE=%BUILD_TYPE%
@@ -62,5 +50,3 @@ set CMAKE_OPTIONS=^
   -D CMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%" ^
   -D CMAKE_C_COMPILER=clang-cl ^
   -D CMAKE_CXX_COMPILER=clang-cl ^
-  -D CMAKE_C_COMPILER_TARGET=%TARGET% ^
-  -D CMAKE_CXX_COMPILER_TARGET=%TARGET% ^
