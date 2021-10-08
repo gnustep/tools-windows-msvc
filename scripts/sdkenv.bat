@@ -27,21 +27,28 @@ if not defined BASH set BASH=msys2_shell -defterm -no-start -msys2 -full-path -h
 set ARCH=%VSCMD_ARG_TGT_ARCH%
 if "%ARCH%" == "x86" (
   set TARGET=i686-pc-windows
+  set MFLAG=-m32
 ) else if "%ARCH%" == "x64" (
   set TARGET=x86_64-pc-windows
+  set MFLAG=-m64
 ) else (
   echo Unknown target architecture: %ARCH%
   exit /b 1
 )
 
-:: compile flags
-:: - target flags are required to ensure clang builds for x86 vs x64
+:: compiler/linker flags
+:: - -m32/64 flags are required to ensure the right architecture is built and linked,
+::   and setting these via CFLAGS doesn't work because GNUstep Make ignores those,
+::   so we set them as part of the compiler instead
 :: - LLD linker is required for linking Objective C
-set CFLAGS=--target=%TARGET%
-set CXXFLAGS=--target=%TARGET%
+if not defined CC set CC=clang %MFLAG%
+if not defined CXX set CXX=clang++ %MFLAG%
+if not defined OBJCC set OBJCC=clang %MFLAG%
+if not defined OBJCXX set OBJCXX=clang++ %MFLAG%
 set LDFLAGS=-fuse-ld=lld
 
-:: Common CMake options
+:: common CMake options
+:: - CMAKE_C(XX)_COMPILER_TARGET are required to ensure the right architecture is built and linked
 set CMAKE_BUILD_TYPE=%BUILD_TYPE%
 if "%BUILD_TYPE%" == "Release" set CMAKE_BUILD_TYPE=RelWithDebInfo
 set CMAKE_OPTIONS=^
@@ -50,3 +57,5 @@ set CMAKE_OPTIONS=^
   -D CMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%" ^
   -D CMAKE_C_COMPILER=clang-cl ^
   -D CMAKE_CXX_COMPILER=clang-cl ^
+  -D CMAKE_C_COMPILER_TARGET=%TARGET% ^
+  -D CMAKE_CXX_COMPILER_TARGET=%TARGET% ^
