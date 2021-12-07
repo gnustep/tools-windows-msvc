@@ -22,6 +22,7 @@ echo "### Running configure"
 ./configure \
   --host=$TARGET \
   --disable-tls \
+  $GNUSTEP_BASE_OPTIONS
 
 echo
 echo "### Building"
