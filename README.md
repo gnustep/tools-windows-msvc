@@ -3,7 +3,7 @@
 
 [![CI](https://github.com/gnustep/tools-windows-msvc/actions/workflows/ci.yml/badge.svg)](https://github.com/gnustep/tools-windows-msvc/actions/workflows/ci.yml?query=branch%3Amaster)
 
-This project comprises a collection of scripts to build a modern GNUstep toolchain, with support for blocks and Automatic Reference Counting (ARC), using LLVM/Clang and the Visual Studio toolchain. The toolchain can be used to integrate Objective-C code in any Windows app, including Visual Studio projects (see below), without using MinGW.
+This project comprises a collection of scripts to build a modern GNUstep toolchain, with support for blocks and Automatic Reference Counting (ARC), using LLVM/Clang and the Visual Studio toolchain. The toolchain can be used to integrate Objective-C code in any Windows app, including Visual Studio projects using LLVM/Clang (see below), without using MinGW.
 
 
 ## Libraries
@@ -72,8 +72,8 @@ Choose a name for the project and create the project. In this example, we choose
 
 #### Edit Project Properties
 
-1. Right click the project in Solution Explorer, and select Properties.
-2. In "General" change "Platform Toolset" to LLVM (clang-cl). MSVC does not support compiling Objective-C source files.
+1. Right-click the project in Solution Explorer and select "Properties".
+2. In "General" change "Platform Toolset" to "LLVM (clang-cl)". MSVC does not support compiling Objective-C source files.
 3. In "VC++ Directories" add the following for toolchain headers and libraries to be found: 
     * Include Directories: `C:\GNUstep\$(LibrariesArchitecture)\$(Configuration)\include`
     * Library Directories: `C:\GNUstep\$(LibrariesArchitecture)\$(Configuration)\lib`
@@ -81,14 +81,14 @@ Choose a name for the project and create the project. In this example, we choose
   `GNUSTEP;GNUSTEP_WITH_DLL;GNUSTEP_RUNTIME=1;_NONFRAGILE_ABI=1;_NATIVE_OBJC_EXCEPTIONS`
 5. Add required compiler options in C/C++ > Command Line > Additional Options:  
   `-fobjc-runtime=gnustep-2.0 -Xclang -fexceptions -Xclang -fobjc-exceptions -fblocks -Xclang -fobjc-arc`  
-  Leave out the last option if you don't want to use Automatic Reference Counting (ARC).
+  Remove the last two options (`-Xclang -fobjc-arc`) if you don't want to use Automatic Reference Counting (ARC).
 6. Link required libraries in Linker > Input > Additional Dependencies:  
   `gnustep-base.lib;objc.lib;dispatch.lib`
 
 #### Edit Project File
 
-1. Right click the project in Solution Explorer and select "Unload Project".
-2. Double click on the project again and to open the raw vcxproj file.
+1. Right-click the project in Solution Explorer and select "Unload Project".
+2. Double-click on the project again and to open the raw vcxproj file.
 3. Above the last line `</Project>` add the following to copy the GNUstep DLLs to the output directory.
    ```
    <ItemGroup>
@@ -102,9 +102,10 @@ Choose a name for the project and create the project. In this example, we choose
 
 #### Edit Source File Properties
 
-1. Right click on the `ObjCHello.cpp` source file and rename it to `ObjCHello.m` (or `ObjCHello.mm` for Objective-C++).
-2. Right click on the `ObjCHello.m` file and select Properties.
-3. In C/C++ > Advanced, clear the "Compile As" option. This tells MSBuild to not set /TP or /TC flags when compiling the file and build the file as Objective-C(++) based on the file extension.
+1. Right-click on the `ObjCHello.cpp` source file and rename it to `ObjCHello.m` (or `ObjCHello.mm` for Objective-C++).
+2. Right-click on each Objective-C(++) file in the project and select "Properties".
+3. In C/C++ > Advanced, clear the "Compile As" option.  
+This means the file will be built as Objective-C(++) based on the file extension (by not setting `/TC`/`/TP` flags that otherwise cause the file to be built as C/C++ irrespective of its extension).
 
 ### Add Objective-C Code and Run
 
