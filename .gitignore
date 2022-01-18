@@ -1,2 +1,8 @@
 /src
 /cache
+
+# Visual Studio
+*.user
+.vs/
+Debug/
+Release/
