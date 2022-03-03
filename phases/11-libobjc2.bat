@@ -16,10 +16,8 @@ cd "%BUILD_DIR%" || exit /b 1
 echo.
 echo ### Running cmake
 :: GNUSTEP_CONFIG is set to empty string to prevent CMake from finding it in install root.
-:: Tests currently disabled to avoid build error with Visual Studio 17.1 (https://github.com/gnustep/libobjc2/issues/225)
 cmake .. %CMAKE_OPTIONS% ^
   -D GNUSTEP_CONFIG= ^
-  -D TESTS=OFF ^
   || exit /b 1
 
 echo.
