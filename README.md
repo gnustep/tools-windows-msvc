@@ -30,7 +30,7 @@ You should end up with the folders `C:\GNUstep\x64\Debug` and `C:\GNUstep\x64\Re
 
 ## Using the Toolchain from the Command Line
 
-Building and linking Objective-C code using the toolchain and `clang` requires a number of compiler and linker flags.
+Building and linking Objective-C code using the toolchain and Clang requires a number of compiler and linker flags.
 
 When building in a Bash environment (like an MSYS2 shell), the `gnustep-config` tool can be used to query the necessary flags for building and linking:
 
@@ -43,7 +43,7 @@ When building in a Bash environment (like an MSYS2 shell), the `gnustep-config` 
     # link object file into executable
     clang `gnustep-config --base-libs` -ldispatch -o test.exe test.o
 
-The  `clang-cl` driver can also be used to build Objective-C code, but requires prefixing some of the options using the `-Xclang` modifier to pass them directly to Clang:
+Alternatively, `clang-cl.exe` can be used to build Objective-C code directly in a Visual Studio environment like the "x64 Native Tools Command Prompt". Note that this requires prefixing some of the required compiler flags with `-Xclang` to pass them directly to Clang:
 
     # build test.m to produce an object file test.obj
     clang-cl -I C:\GNUstep\x64\Debug\include -fobjc-runtime=gnustep-2.0 -Xclang -fexceptions -Xclang -fobjc-exceptions -fblocks -DGNUSTEP -DGNUSTEP_WITH_DLL -DGNUSTEP_RUNTIME=1 -D_NONFRAGILE_ABI=1 -D_NATIVE_OBJC_EXCEPTIONS /MDd /c test.m
@@ -51,7 +51,7 @@ The  `clang-cl` driver can also be used to build Objective-C code, but requires 
     # link object file into executable
     clang-cl test.obj gnustep-base.lib objc.lib dispatch.lib /MDd -o test.exe
 
-Specify `/MDd` for debug builds, and `/MD` for release builds, in order to link against the same run-time libraries as the DLLs in `C:\GNUstep\x64\Debug` and `C:\GNUstep\x64\Release` respectively.
+Specify `/MDd` for debug builds, and `/MD` for release builds, in order to link against the same runtime libraries as the DLLs in `C:\GNUstep\x64\Debug` and `C:\GNUstep\x64\Release` respectively.
 
 Note that the `GNUSTEP_WITH_DLL` definition is always required to enable annotation of the Objective-C objects defined in the GNUstep Base DLL with `__declspec(dllexport)`.
 
