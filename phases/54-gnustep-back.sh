@@ -4,9 +4,9 @@ shopt -s inherit_errexit
 
 cd `dirname $0`
 
-export PROJECT=gnustep-gui
-export GITHUB_REPO=gnustep/libs-gui
-export TAG=windows-msvc-fixes-additional
+export PROJECT=gnustep-back
+export GITHUB_REPO=gnustep/libs-back
+export TAG=
 
 # load environment and prepare project
 ../scripts/common.bat prepare_project
