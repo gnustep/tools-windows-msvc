@@ -32,4 +32,6 @@ ninja install || exit /b 1
 
 :: move DLL to bin and install PDB files
 if not exist "%INSTALL_PREFIX%\bin\" mkdir "%INSTALL_PREFIX%\bin\" || exit /b 1
+if exist "%INSTALL_PREFIX%\lib\freetype.dll" move /Y "%INSTALL_PREFIX%\lib\freetype.dll" "%INSTALL_PREFIX%\lib\freetype2.dll" || exit /b 1
 if exist "%INSTALL_PREFIX%\lib\freetype.dll" move /Y "%INSTALL_PREFIX%\lib\freetype.dll" "%INSTALL_PREFIX%\bin\" || exit /b 1
+if exist "%INSTALL_PREFIX%\lib\freetype2.dll" move /Y "%INSTALL_PREFIX%\lib\freetype.dll" "%INSTALL_PREFIX%\bin\" || exit /b 1

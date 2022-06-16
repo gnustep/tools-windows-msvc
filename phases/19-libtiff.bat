@@ -3,7 +3,7 @@ setlocal
 
 set PROJECT=libtiff
 set REPO=https://gitlab.com/libtiff/libtiff.git
-set TAG=
+set TAG=v4.1.0
 
 :: load environment and prepare project
 call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
