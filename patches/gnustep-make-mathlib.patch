@@ -1,0 +1,13 @@
+diff --git a/target.make b/target.make
+index 8b3126c0..b73150f6 100644
+--- a/target.make
++++ b/target.make
+@@ -36,7 +36,7 @@ endif
+ #
+ TARGET_SYSTEM_LIBS = $(CONFIG_SYSTEM_LIBS)
+ ifneq ($(GNUSTEP_TARGET_OS), windows)
+-	TARGET_SYSTEM_LIBS += -lm
++#	TARGET_SYSTEM_LIBS += -lm
+ endif
+ 
+ # All code we build needs to be thread-safe nowadays
