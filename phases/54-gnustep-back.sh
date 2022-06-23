@@ -22,6 +22,7 @@ echo "### Running configure"
 
 export FREETYPE_CFLAGS="-I/c/GNUstep/${ARCH}/${BUILD_TYPE}/include/freetype2 -I/c/GNUstep/${ARCH}/${BUILD_TYPE}/include/libpng16"
 export FREETYPE_LIBS="-L/c/GNUstep/${ARCH}/${BUILD_TYPE}/lib"
+export LDFLAGS="-L/mingw64/lib"
 
 ./configure --enable-graphics=winlib \
 	    --enable-server=win32 \
