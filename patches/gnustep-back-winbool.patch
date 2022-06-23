@@ -1,8 +1,30 @@
 diff --git a/Source/win32/WIN32Server.m b/Source/win32/WIN32Server.m
-index baab917..332dc38 100644
+index baab917..6e3fcd1 100644
 --- a/Source/win32/WIN32Server.m
 +++ b/Source/win32/WIN32Server.m
-@@ -187,7 +187,7 @@ BOOL CALLBACK LoadDisplayMonitorInfo(HMONITOR hMonitor,
+@@ -63,6 +63,21 @@
+ 
+ #include <math.h>
+ 
++// category for accessing private ivars...
++@interface NSView (_GSPrivate_)
++
++- (struct _rFlagsType) rFlags;
++
++- (NSArray *) cursorRects;
++
++@end
++
++@interface GSTrackingRect (_GSPrivate_)
++
++- (NSRect) rectangle;
++
++@end
++
+ // To update the cursor..
+ static BOOL update_cursor = NO;
+ static BOOL should_handle_cursor = NO;
+@@ -187,7 +202,7 @@ BOOL CALLBACK LoadDisplayMonitorInfo(HMONITOR hMonitor,
  - (void) callback: (id)sender
  {
    MSG msg;
@@ -11,3 +33,50 @@ index baab917..332dc38 100644
  //NSLog(@"Callback");
    while ((bRet = PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) != 0)
      { 
+@@ -2942,9 +2957,9 @@ process_mouse_event(WIN32Server *svr, HWND hwnd, WPARAM wParam, LPARAM lParam,
+ 
+       subview = [[gswin contentView] hitTest: eventLocation];
+       
+-      if (subview != nil && subview->_rFlags.valid_rects)
++      if (subview != nil && [subview rFlags].valid_rects)
+ 	{
+-	  NSArray *tr = subview->_cursor_rects;
++	  NSArray *tr = [subview cursorRects];
+ 	  NSUInteger count = [tr count];
+ 
+ 	  // Loop through cursor rectangles
+@@ -2966,7 +2981,7 @@ process_mouse_event(WIN32Server *svr, HWND hwnd, WPARAM wParam, LPARAM lParam,
+ 		  /*
+ 		   * Check for presence of point in rectangle.
+ 		   */
+-		  now = NSMouseInRect(eventLocation, r->rectangle, NO);
++		  now = NSMouseInRect(eventLocation, [r rectangle], NO);
+ 
+ 		  // Mouse inside
+ 		  if (now)
+diff --git a/configure b/configure
+index cd97dc9..5158905 100755
+--- a/configure
++++ b/configure
+@@ -5932,7 +5932,7 @@ else
+ fi
+ 
+ if test "$have_gdi32" = yes; then
+-  WIN32_LIBS="-lgdi32 -lm"
++  WIN32_LIBS="-lgdi32"
+ fi
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lmsimg32" >&5
+ $as_echo_n "checking for main in -lmsimg32... " >&6; }
+diff --git a/configure.ac b/configure.ac
+index 88a80f5..60ca76b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -393,7 +393,7 @@ AC_CHECK_LIB(X11, XInternAtoms,
+ #--------------------------------------------------------------------
+ AC_CHECK_LIB(gdi32, main, have_gdi32=yes, have_gdi32=no)
+ if test "$have_gdi32" = yes; then
+-  WIN32_LIBS="-lgdi32 -lm"
++  WIN32_LIBS="-lgdi32"
+ fi
+ AC_CHECK_LIB(msimg32, main, have_msimg32=yes, have_msimg32=no)
+ if test "$have_msimg32" = yes; then
