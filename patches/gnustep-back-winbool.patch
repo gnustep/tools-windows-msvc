@@ -135,10 +135,10 @@ index def325b..29e0f7c 100644
        hdc = GetDC(NULL);
        logfont.lfCharSet = DEFAULT_CHARSET;
 diff --git a/Source/winlib/WIN32FontInfo.m b/Source/winlib/WIN32FontInfo.m
-index 19c52ce..343aaec 100644
+index 19c52ce..d1d20eb 100644
 --- a/Source/winlib/WIN32FontInfo.m
 +++ b/Source/winlib/WIN32FontInfo.m
-@@ -41,6 +41,56 @@ NSString *win32_font_family(NSString *fontName);
+@@ -41,6 +41,64 @@ NSString *win32_font_family(NSString *fontName);
  - (BOOL) setupAttributes;
  @end
  
@@ -190,12 +190,20 @@ index 19c52ce..343aaec 100644
 +
 +- (void) setFontBBox: (NSRect)r;
 +
++- (void) setWeight: w;
++
++- (int) weight;
++
++- (NSFontTraitMask) traits;
++
++- (void) setTraits: (NSFontTraitMask)t;
++
 +@end
 +
  @implementation WIN32FontInfo
  
  - initWithFontName: (NSString*)name
-@@ -54,8 +104,8 @@ NSString *win32_font_family(NSString *fontName);
+@@ -54,8 +112,8 @@ NSString *win32_font_family(NSString *fontName);
      }
  
    [super init];
@@ -206,7 +214,7 @@ index 19c52ce..343aaec 100644
  
    if (![self setupAttributes])
      {
-@@ -193,7 +243,7 @@ NSLog(@"No glyph for U%d", c);
+@@ -193,7 +251,7 @@ NSLog(@"No glyph for U%d", c);
  
  - (NSCharacterSet*) coveredCharacterSet
  {
@@ -215,7 +223,7 @@ index 19c52ce..343aaec 100644
      {
        NSMutableCharacterSet	*ms;
        unsigned	count; 
-@@ -222,7 +272,7 @@ NSLog(@"No glyph for U%d", c);
+@@ -222,7 +280,7 @@ NSLog(@"No glyph for U%d", c);
            gs->cbThis = count;
            if ((unsigned)GetFontUnicodeRanges(hdc, gs) == count)
              {
@@ -224,7 +232,7 @@ index 19c52ce..343aaec 100644
                if (gs->flAccel == 1 /* GS_8BIT_INDICES */)
                  {
                    for (count = 0; count < gs->cRanges; count++)
-@@ -250,11 +300,11 @@ NSLog(@"No glyph for U%d", c);
+@@ -250,11 +308,11 @@ NSLog(@"No glyph for U%d", c);
          }
        SelectObject(hdc, old);
        DeleteDC(hdc);
@@ -238,7 +246,7 @@ index 19c52ce..343aaec 100644
  }
  
  - (void) drawString: (NSString*)string
-@@ -266,7 +316,7 @@ NSLog(@"No glyph for U%d", c);
+@@ -266,7 +324,7 @@ NSLog(@"No glyph for U%d", c);
    old = SelectObject(hdc, hFont);
    TextOutW(hdc,
      p.x,
@@ -247,7 +255,7 @@ index 19c52ce..343aaec 100644
      (const unichar*)[string cStringUsingEncoding: NSUnicodeStringEncoding],
      [string length]); 
    SelectObject(hdc, old);
-@@ -278,7 +328,7 @@ NSLog(@"No glyph for U%d", c);
+@@ -278,7 +336,7 @@ NSLog(@"No glyph for U%d", c);
    HFONT old;
  
    old = SelectObject(hdc, hFont);
@@ -256,7 +264,7 @@ index 19c52ce..343aaec 100644
    SelectObject(hdc, old);
  }
  
-@@ -300,17 +350,17 @@ NSLog(@"No glyph for U%d", c);
+@@ -300,17 +358,17 @@ NSLog(@"No glyph for U%d", c);
      {
        buf[i] = (WORD)s[i];
      }
@@ -277,7 +285,7 @@ index 19c52ce..343aaec 100644
  }
  
  - (void) appendBezierPathWithGlyphs: (NSGlyph *)glyphs
-@@ -437,29 +487,29 @@ NSLog(@"No glyph for U%d", c);
+@@ -437,29 +495,29 @@ NSLog(@"No glyph for U%d", c);
    NSRange range;
  
    //NSLog(@"Creating Font %@ of size %f", fontName, matrix[0]);
@@ -313,7 +321,7 @@ index 19c52ce..343aaec 100644
        DeleteDC(hdc);
        return NO;
      }
-@@ -470,20 +520,20 @@ NSLog(@"No glyph for U%d", c);
+@@ -470,27 +528,28 @@ NSLog(@"No glyph for U%d", c);
    DeleteDC(hdc);
  
    // Fill the ivars
@@ -335,6 +343,11 @@ index 19c52ce..343aaec 100644
 -			(float)metric.tmMaxCharWidth,
 -			(float)metric.tmHeight);
 -
+-  weight = win32_font_weight(metric.tmWeight);
+-
+-  traits = 0;
+-  if (weight >= 9)
+-    traits |= NSBoldFontMask;
 +  [self setXHeight: [self ascender] * 0.5];
 +  [self setMaximumAdvancement: NSMakeSize((float)metric.tmMaxCharWidth, 0.0)];
 +
@@ -343,9 +356,18 @@ index 19c52ce..343aaec 100644
 +				(float)metric.tmMaxCharWidth,
 +				(float)metric.tmHeight)];
 +	
-   weight = win32_font_weight(metric.tmWeight);
++  [self setWeight: win32_font_weight(metric.tmWeight)];
++
++  [self setTraits: 0];
++  if ([self weight] >= 9)
++    [self setTraits: [self traits] |= NSBoldFontMask];
+   else
+-    traits |= NSUnboldFontMask;
++    [self setTraits: [self traits] |= NSUnboldFontMask];
++  // traits |= NSUnboldFontMask;
  
-   traits = 0;
+   if (metric.tmItalic)
+     traits |= NSItalicFontMask;
 diff --git a/configure b/configure
 index cd97dc9..5158905 100755
 --- a/configure
