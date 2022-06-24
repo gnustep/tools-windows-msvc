@@ -1,3 +1,89 @@
+diff --git a/Source/GSFontInfo.m b/Source/GSFontInfo.m
+index cb667faad..2a0fdd6b6 100644
+--- a/Source/GSFontInfo.m
++++ b/Source/GSFontInfo.m
+@@ -868,3 +868,81 @@ static GSFontEnumerator *sharedEnumerator = nil;
+ }
+ 
+ @end
++
++@implementation GSFontEnumerator (_GSPrivate_)
++
++- (NSMutableDictionary *) allFontFamilies
++{
++  return allFontFamilies;
++}
++
++- (NSArray *) allFontNames
++{
++  return allFontNames;
++}
++
++- (void) setAllFontFamilies: (NSMutableDictionary *)d
++{
++  allFontFamilies = d;
++}
++
++- (void) setAllFontNames: (NSArray *)a
++{
++  allFontNames = a;
++}
++
++@end
++
++@implementation GSFontInfo (_GSPrivate_)
++
++- (NSString *) fontName
++{
++  return fontName;
++}
++
++- (const CGFloat *)matrix
++{
++  return matrix;
++}
++
++- (NSString *) familyName
++{
++  return familyName;
++}
++
++- (NSCharacterSet *) coveredCharacterSet
++{
++  return coveredCharacterSet;
++}
++
++- (unsigned) numberOfGlyphs
++{
++  return numberOfGlyphs;
++}
++
++- (CGFloat) ascender
++{
++  return ascender;
++}
++
++- (CGFloat) descender
++{
++  return descender;
++}
++
++- (BOOL) isFixedPitch
++{
++  return isFixedPitch;
++}
++
++- (BOOL) isBaseFont
++{
++  return isBaseFont;
++}
++
++- (CGFloat) xHeight
++{
++  return xHeight;
++}
++
++@end
 diff --git a/Source/GSTrackingRect.m b/Source/GSTrackingRect.m
 index dc805af86..1971ca87a 100644
 --- a/Source/GSTrackingRect.m
