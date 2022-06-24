@@ -134,6 +134,56 @@ index def325b..29e0f7c 100644
  	
        hdc = GetDC(NULL);
        logfont.lfCharSet = DEFAULT_CHARSET;
+diff --git a/Source/winlib/WIN32FontInfo.m b/Source/winlib/WIN32FontInfo.m
+index 19c52ce..288ddac 100644
+--- a/Source/winlib/WIN32FontInfo.m
++++ b/Source/winlib/WIN32FontInfo.m
+@@ -41,6 +41,34 @@ NSString *win32_font_family(NSString *fontName);
+ - (BOOL) setupAttributes;
+ @end
+ 
++@interface WIN32FontInfo (_GSPrivate_)
++
++- (void) setFontName: (NSString *)n;
++
++- (NSString *) fontName;
++
++- (void) setMatrix: (const CGFloat *)m;
++
++- (const CGFloat *)matrix;
++
++- (NSString *) familyName;
++
++- (NSCharacterSet *) coveredCharacterSet;
++
++- (unsigned) numberOfGlyphs;
++
++- (CGFloat) ascender;
++
++- (CGFloat) descender;
++
++- (BOOL) isFixedPitch;
++
++- (BOOL) isBaseFont;
++
++- (CGFloat) xHeight;
++
++@end
++
+ @implementation WIN32FontInfo
+ 
+ - initWithFontName: (NSString*)name
+@@ -54,8 +82,8 @@ NSString *win32_font_family(NSString *fontName);
+     }
+ 
+   [super init];
+-  ASSIGN(fontName, name);
+-  memcpy(matrix, fmatrix, sizeof(matrix));
++  [self setFontName: name]; // ASSIGN(fontName, name);
++  [self setMatrix: fmatrix]; // memcpy(matrix, fmatrix, sizeof(matrix));
+ 
+   if (![self setupAttributes])
+     {
 diff --git a/configure b/configure
 index cd97dc9..5158905 100755
 --- a/configure
