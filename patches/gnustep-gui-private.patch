@@ -1,8 +1,8 @@
 diff --git a/Source/GSFontInfo.m b/Source/GSFontInfo.m
-index cb667faad..6309cae78 100644
+index cb667faad..bce97aa3f 100644
 --- a/Source/GSFontInfo.m
 +++ b/Source/GSFontInfo.m
-@@ -868,3 +868,91 @@ static GSFontEnumerator *sharedEnumerator = nil;
+@@ -868,3 +868,146 @@ static GSFontEnumerator *sharedEnumerator = nil;
  }
  
  @end
@@ -53,9 +53,19 @@ index cb667faad..6309cae78 100644
 +  return matrix;
 +}
 +
++- (void) setFamilyName: (NSString *)n
++{
++  ASSIGN(familyName, n);
++}
++
 +- (NSString *) familyName
 +{
 +  return familyName;
++}
++
++- (void) setCoveredCharacterSet: (NSCharacterSet *)c
++{
++  ASSIGN(coveredCharacterSet, c);
 +}
 +
 +- (NSCharacterSet *) coveredCharacterSet
@@ -63,9 +73,19 @@ index cb667faad..6309cae78 100644
 +  return coveredCharacterSet;
 +}
 +
++- (void) setNumberOfGlyphs: (unsigned)n
++{
++  numberOfGlyphs = n;
++}
++
 +- (unsigned) numberOfGlyphs
 +{
 +  return numberOfGlyphs;
++}
++
++- (void) setAscender: (CGFloat)a
++{
++  ascender = a;
 +}
 +
 +- (CGFloat) ascender
@@ -73,9 +93,19 @@ index cb667faad..6309cae78 100644
 +  return ascender;
 +}
 +
++- (void) setDescender: (unsigned)d
++{
++  descender = d;
++}
++
 +- (CGFloat) descender
 +{
 +  return descender;
++}
++
++- (void) setFixedPitch: (BOOL)f
++{
++  isFixedPitch = f;
 +}
 +
 +- (BOOL) isFixedPitch
@@ -83,14 +113,39 @@ index cb667faad..6309cae78 100644
 +  return isFixedPitch;
 +}
 +
++- (void) setBaseFont: (BOOL)f
++{
++  isBaseFont = f;
++}
++
 +- (BOOL) isBaseFont
 +{
 +  return isBaseFont;
 +}
 +
++- (void) setXHeight: (CGFloat)h
++{
++  xHeight = h;
++}
++
 +- (CGFloat) xHeight
 +{
 +  return xHeight;
++}
++
++- (void) setMaximumAdvancment: (NSSize)s
++{
++  maximumAdvancement = s;
++}
++
++- (NSSize) maximumAdvancement
++{
++  return maximumAdvancement;
++}
++
++- (void) setFontBBox: (NSRect)r
++{
++  fontBBox = r;
 +}
 +
 +@end
