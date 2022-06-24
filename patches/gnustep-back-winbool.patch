@@ -135,7 +135,7 @@ index def325b..29e0f7c 100644
        hdc = GetDC(NULL);
        logfont.lfCharSet = DEFAULT_CHARSET;
 diff --git a/Source/winlib/WIN32FontInfo.m b/Source/winlib/WIN32FontInfo.m
-index 19c52ce..d1d20eb 100644
+index 19c52ce..4ad69ab 100644
 --- a/Source/winlib/WIN32FontInfo.m
 +++ b/Source/winlib/WIN32FontInfo.m
 @@ -41,6 +41,64 @@ NSString *win32_font_family(NSString *fontName);
@@ -360,10 +360,10 @@ index 19c52ce..d1d20eb 100644
 +
 +  [self setTraits: 0];
 +  if ([self weight] >= 9)
-+    [self setTraits: [self traits] |= NSBoldFontMask];
++    [self setTraits: [self traits] | NSBoldFontMask];
    else
 -    traits |= NSUnboldFontMask;
-+    [self setTraits: [self traits] |= NSUnboldFontMask];
++    [self setTraits: [self traits] | NSUnboldFontMask];
 +  // traits |= NSUnboldFontMask;
  
    if (metric.tmItalic)
