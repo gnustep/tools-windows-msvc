@@ -1,3 +1,17 @@
+diff --git a/GNUmakefile b/GNUmakefile
+index 03ad17f..054c4a5 100644
+--- a/GNUmakefile
++++ b/GNUmakefile
+@@ -47,7 +47,8 @@ include ./Version
+ #
+ # The list of subproject directories
+ #
+-SUBPROJECTS = Source Tools
++SUBPROJECTS = Source \
++#	Tools
+ 
+ ifneq ($(fonts), no)
+ SUBPROJECTS += Fonts
 diff --git a/Source/win32/WIN32Server.m b/Source/win32/WIN32Server.m
 index baab917..6e3fcd1 100644
 --- a/Source/win32/WIN32Server.m
