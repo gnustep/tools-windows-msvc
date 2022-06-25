@@ -1,12 +1,34 @@
+diff --git a/Headers/AppKit/DPSOperators.h b/Headers/AppKit/DPSOperators.h
+index 3641eae9b..9d87082b3 100644
+--- a/Headers/AppKit/DPSOperators.h
++++ b/Headers/AppKit/DPSOperators.h
+@@ -461,6 +461,18 @@ static inline void
+ GSDrawImage(GSCTXT *ctxt, NSRect rect, void * imageref)
+ __attribute__((unused));
+ 
++/*
++ * Simple method to pull private ivar methods
++ */
++@implementation NSGraphicsContext (_GSPrivate_)
++
++- (const gsMethodTable *) methods
++{
++  return methods;
++}
++
++@end
++
+ /* ----------------------------------------------------------------------- */
+ /* Postscript Client functions */
+ /* ----------------------------------------------------------------------- */
 diff --git a/Source/GSFontInfo.m b/Source/GSFontInfo.m
-index cb667faad..10f80f748 100644
+index cb667faad..e8cce4466 100644
 --- a/Source/GSFontInfo.m
 +++ b/Source/GSFontInfo.m
-@@ -867,4 +867,168 @@ static GSFontEnumerator *sharedEnumerator = nil;
-   return fontDescriptor;
+@@ -868,3 +868,171 @@ static GSFontEnumerator *sharedEnumerator = nil;
  }
  
-+@end
+ @end
 +
 +@implementation GSFontEnumerator (_GSPrivate_)
 +
@@ -169,8 +191,12 @@ index cb667faad..10f80f748 100644
 +  traits = t;
 +}
 +
++- (void) setMostCompatibleStringEncoding: (NSStringEncoding)e
++{
++  mostCompatibleStringEncoding = e;
++}
 +
- @end
++@end
 diff --git a/Source/GSTrackingRect.m b/Source/GSTrackingRect.m
 index dc805af86..1971ca87a 100644
 --- a/Source/GSTrackingRect.m
