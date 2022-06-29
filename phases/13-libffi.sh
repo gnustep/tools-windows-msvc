@@ -31,6 +31,9 @@ if [ "$ARCH" == "x86" ]; then
 elif [ "$ARCH" == "x64" ]; then
   MSVCC="$MSVCC -m64"
   TARGET=x86_64-pc-cygwin
+elif [ "$ARCH" == "arm64" ]; then
+  MSVCC="$MSVCC -marm64"
+  TARGET=aarch64-pc-cygwin
 else
   echo Unknown ARCH: $ARCH && exit 1
 fi
