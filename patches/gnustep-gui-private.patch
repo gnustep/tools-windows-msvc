@@ -831,10 +831,19 @@ index d3bf78e6b..052ed12c8 100644
  + (NSGraphicsContext *) graphicsContextWithAttributes: (NSDictionary *)attributes;
  + (NSGraphicsContext *) graphicsContextWithWindow: (NSWindow *)aWindow;
 diff --git a/Source/GSFontInfo.m b/Source/GSFontInfo.m
-index cb667faad..e8cce4466 100644
+index cb667faad..9de4ca490 100644
 --- a/Source/GSFontInfo.m
 +++ b/Source/GSFontInfo.m
-@@ -868,3 +868,171 @@ static GSFontEnumerator *sharedEnumerator = nil;
+@@ -360,6 +360,8 @@ static GSFontEnumerator *sharedEnumerator = nil;
+                              matrix: (const CGFloat *)fmatrix
+ 			 screenFont: (BOOL)screenFont;
+ {
++  NSLog(@"################# %@ ######", NSStringFromClass(fontInfoClass));
++  NSLog(@"################# %@ ######", nfontName);
+   NSAssert(fontInfoClass,
+     @"Called with fontInfoClass unset."
+     @" The shared NSApplication instance must be created before methods that"
+@@ -868,3 +870,171 @@ static GSFontEnumerator *sharedEnumerator = nil;
  }
  
  @end
@@ -965,7 +974,7 @@ index cb667faad..e8cce4466 100644
 +  return xHeight;
 +}
 +
-+- (void) setMaximumAdvancment: (NSSize)s
++- (void) setMaximumAdvancement: (NSSize)s
 +{
 +  maximumAdvancement = s;
 +}

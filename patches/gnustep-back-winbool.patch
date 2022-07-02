@@ -149,7 +149,7 @@ index def325b..29e0f7c 100644
        hdc = GetDC(NULL);
        logfont.lfCharSet = DEFAULT_CHARSET;
 diff --git a/Source/winlib/WIN32FontInfo.m b/Source/winlib/WIN32FontInfo.m
-index 19c52ce..5836874 100644
+index 19c52ce..b4b7472 100644
 --- a/Source/winlib/WIN32FontInfo.m
 +++ b/Source/winlib/WIN32FontInfo.m
 @@ -41,6 +41,66 @@ NSString *win32_font_family(NSString *fontName);
@@ -198,7 +198,7 @@ index 19c52ce..5836874 100644
 +
 +- (CGFloat) xHeight;
 +
-+- (void) setMaximumAdvancment: (NSSize)s;
++- (void) setMaximumAdvancement: (NSSize)s;
 +
 +- (NSSize) maximumAdvancement;
 +
@@ -337,7 +337,7 @@ index 19c52ce..5836874 100644
        DeleteDC(hdc);
        return NO;
      }
-@@ -470,35 +530,35 @@ NSLog(@"No glyph for U%d", c);
+@@ -470,35 +530,36 @@ NSLog(@"No glyph for U%d", c);
    DeleteDC(hdc);
  
    // Fill the ivars
@@ -365,7 +365,8 @@ index 19c52ce..5836874 100644
 -  if (weight >= 9)
 -    traits |= NSBoldFontMask;
 +  [self setXHeight: [self ascender] * 0.5];
-+  [self setMaximumAdvancement: NSMakeSize((float)metric.tmMaxCharWidth, 0.0)];
++  [self setMaximumAdvancement: NSMakeSize((float)metric.tmMaxCharWidth,
++					  0.0)];
 +
 +  [self setFontBBox: NSMakeRect((float)(0),
 +				(float)(0 - metric.tmAscent),
