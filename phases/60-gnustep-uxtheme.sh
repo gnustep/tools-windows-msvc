@@ -17,8 +17,6 @@ echo
 echo "### Loading GNUstep environment"
 . "$UNIX_INSTALL_PREFIX/share/GNUstep/Makefiles/GNUstep.sh"
 
-export LDFLAGS="-L/mingw64/lib"
-
 echo
 echo "### Building"
 make -j`nproc`
