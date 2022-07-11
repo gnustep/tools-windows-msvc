@@ -830,6 +830,48 @@ index d3bf78e6b..052ed12c8 100644
  + (BOOL) currentContextDrawingToScreen;
  + (NSGraphicsContext *) graphicsContextWithAttributes: (NSDictionary *)attributes;
  + (NSGraphicsContext *) graphicsContextWithWindow: (NSWindow *)aWindow;
+diff --git a/Headers/AppKit/NSMenu.h b/Headers/AppKit/NSMenu.h
+index 398749666..74db2f884 100644
+--- a/Headers/AppKit/NSMenu.h
++++ b/Headers/AppKit/NSMenu.h
+@@ -418,6 +418,9 @@ APPKIT_EXPORT_CLASS
+   NSString *_name;
+ }
+ 
++// private
++- (NSWindow *) window;
++
+ /** Returns the memory allocation zone used to create instances of this class.
+  */
+ + (NSZone*) menuZone;
+diff --git a/Headers/AppKit/NSSavePanel.h b/Headers/AppKit/NSSavePanel.h
+index db7351b7e..8ab70e89d 100644
+--- a/Headers/AppKit/NSSavePanel.h
++++ b/Headers/AppKit/NSSavePanel.h
+@@ -123,6 +123,10 @@ APPKIT_EXPORT_CLASS
+   GSSavePanelCompletionHandler _completionHandler;
+ }
+ 
++// private
++- (void) setFullFileName: (NSString *)f;
++
++
+ /*
+  * Getting the NSSavePanel shared instance
+  */
+diff --git a/Headers/AppKit/NSWindow.h b/Headers/AppKit/NSWindow.h
+index 6a4bf0637..02748a3f2 100644
+--- a/Headers/AppKit/NSWindow.h
++++ b/Headers/AppKit/NSWindow.h
+@@ -371,6 +371,8 @@ PACKAGE_SCOPE
+  */
+ + (CGFloat) minFrameWidthWithTitle: (NSString *)aTitle
+                          styleMask: (NSUInteger)aStyle;
++// private
++- (GSWindowDecorationView *) windowView;
+ 
+ #if OS_API_VERSION(MAC_OS_X_VERSION_10_3, GS_API_LATEST)
+ - (NSRect) contentRectForFrameRect: (NSRect)frameRect;
 diff --git a/Source/GSFontInfo.m b/Source/GSFontInfo.m
 index cb667faad..21134f6ac 100644
 --- a/Source/GSFontInfo.m
@@ -1039,6 +1081,38 @@ index 9cdfb2e58..8d86b502e 100644
  + (void) initialize
  {
    if (contextLock == nil)
+diff --git a/Source/NSMenu.m b/Source/NSMenu.m
+index f38d650aa..5e7d2edfd 100644
+--- a/Source/NSMenu.m
++++ b/Source/NSMenu.m
+@@ -606,6 +606,11 @@ static BOOL menuBarVisible = YES;
+     }
+ }
+ 
++- (NSWindow *) window
++{
++  return _aWindow;
++}
++
+ + (void) setMenuZone: (NSZone*)zone
+ {
+   menuZone = zone;
+diff --git a/Source/NSSavePanel.m b/Source/NSSavePanel.m
+index 2c6c786bd..8d59a6719 100644
+--- a/Source/NSSavePanel.m
++++ b/Source/NSSavePanel.m
+@@ -129,6 +129,11 @@ setPath(NSBrowser *browser, NSString *path)
+ 
+ @implementation NSSavePanel (PrivateMethods)
+ 
++- (void) setFullFileName: (NSString *)f
++{
++  ASSIGN(_fullFileName, f);
++}
++
+ - (NSDragOperation) draggingEntered: (id <NSDraggingInfo>)sender
+ {
+   NSPasteboard *pb;
 diff --git a/Source/NSView.m b/Source/NSView.m
 index 21b3c3b0c..af3f41bc4 100644
 --- a/Source/NSView.m
@@ -1061,3 +1135,19 @@ index 21b3c3b0c..af3f41bc4 100644
 +}
 +
 +@end
+diff --git a/Source/NSWindow.m b/Source/NSWindow.m
+index ae62ae4a0..67adc6c7b 100644
+--- a/Source/NSWindow.m
++++ b/Source/NSWindow.m
+@@ -701,6 +701,11 @@ static NSMapTable *windowmaps = NULL;
+ static NSMapTable *windowUndoManagers = NULL;
+ static NSNotificationCenter *nc = nil;
+ 
++- (GSWindowDecorationView *) windowView
++{
++  return _wv;
++}
++
+ /*
+  * Class methods
+  */
