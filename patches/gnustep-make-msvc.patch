@@ -16,7 +16,7 @@ index f132fe95..46cd71f9 100644
  # If building on MinGW, also mark the application as a 'GUI'
  # application.  This prevents an ugly terminal window from being
 diff --git a/target.make b/target.make
-index 8b3126c0..b73150f6 100644
+index 8b3126c0..e1e50051 100644
 --- a/target.make
 +++ b/target.make
 @@ -36,7 +36,7 @@ endif
@@ -28,3 +28,17 @@ index 8b3126c0..b73150f6 100644
  endif
  
  # All code we build needs to be thread-safe nowadays
+@@ -979,11 +979,12 @@ HAVE_SHARED_LIBS = yes
+ SHARED_LIB_LINK_CMD     = \
+ 	$(LD) $(SHARED_LD_PREFLAGS) -g -Wl,-dll \
+ 	-Wl,-implib:$(LIB_LINK_OBJ_DIR)/$(LIB_LINK_VERSION_FILE) \
+-	-Wl,-pdb:$(LIB_LINK_OBJ_DIR)/$(LIB_LINK_PDB_FILE) \
+ 	$(ALL_LDFLAGS) -o $(LIB_LINK_OBJ_DIR)/$(LIB_LINK_DLL_FILE) $^ \
+ 	$(INTERNAL_LIBRARIES_DEPEND_UPON) \
+ 	$(SHARED_LD_POSTFLAGS)
+ 
++#	-Wl,-pdb:$(LIB_LINK_OBJ_DIR)/$(LIB_LINK_PDB_FILE) \
++
+ AFTER_INSTALL_SHARED_LIB_CMD =
+ AFTER_INSTALL_SHARED_LIB_CHOWN =
+ 
