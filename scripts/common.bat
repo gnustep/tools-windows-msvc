@@ -32,14 +32,20 @@ exit /b %errorlevel%
   
   cd %PROJECT%
   
-  if not [%NO_CLEAN%] == [true] (
+  if defined NO_CLEAN (
+    echo.
+    echo ### Skipping project cleanup
+  ) else (
     echo.
     echo ### Cleaning project
     git reset --hard || exit /b 1
     git clean -qfdx || exit /b 1
   )
   
-  if not [%NO_UPDATE%] == [true] (
+  if defined NO_UPDATE (
+    echo.
+    echo ### Skipping project update
+  ) else (
     echo.
     :: check out tag/branch if any
     if not "%TAG%" == "" (

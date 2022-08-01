@@ -25,6 +25,8 @@ set "ROOT_DIR=%~dp0"
   if /i "%~1" == "--type" set "BUILD_TYPES=%~2" & shift & shift & goto getopts
   if /i "%~1" == "--only" set "ONLY_PHASE=%~2" & shift & shift & goto getopts
   if /i "%~1" == "--only-dependencies" set ONLY_DEPENDENCIES=1 & shift & goto getopts
+  if /i "%~1" == "--no-clean" set NO_CLEAN=1 & shift & goto getopts
+  if /i "%~1" == "--no-update" set NO_UPDATE=1 & shift & goto getopts
   if /i "%~1" == "--patches" set "ADDITIONAL_PATCHES_DIR=%~2" & shift & shift & goto getopts
   
   if not "%~1" == "" echo Unknown option: %~1 & exit 1
@@ -206,6 +208,8 @@ goto :eof
   echo   --type Debug/Release     Build only the given build type (default: both)
   echo   --only PHASE             Re-build only the given phase (e.g. "gnustep-base")
   echo   --only-dependencies      Build only GNUstep dependencies
+  echo   --no-clean               Skip the repository cleanup operation
+  echo   --no-update              Skip the repository update operation
   echo   --patches DIR            Apply additional patches from given directory
   echo   -h, --help, /?           Print usage information and exit
   exit 1
