@@ -126,10 +126,11 @@ Place a breakpoint at the line `NSLog(@"Hello Objective-C");` and run from Visua
 
 ## Status and Known Issues
 
-The toolchain is fully usable on x64. On x86, libdispatch is not available due to a [build error](https://bugs.swift.org/browse/SR-14314).
+- The toolchain is fully usable on x64. On x86, libdispatch is not available due to a [build error](https://bugs.swift.org/browse/SR-14314).
 
-Note that GNUstep support for Windows is not as complete as on Unixes, and some [tests in GNUstep Base](https://github.com/gnustep/libs-base/actions/workflows/main.yml?query=branch%3Amaster) are still failing.
+- Note that GNUstep support for Windows is not as complete as on Unixes, and some [tests in GNUstep Base](https://github.com/gnustep/libs-base/actions/workflows/main.yml?query=branch%3Amaster) are still failing.
 
+- The compilation will fail if the Windows username contains whitespace, e.g. 'John Appleseed'.
 
 ## Troubleshooting
 
