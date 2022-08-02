@@ -162,6 +162,9 @@ goto :eof
 
   :: don't update projects for subsequent build types to avoid mismatching builds
   set NO_UPDATE=1
+
+  :: always clean projects for subsequent build types
+  set NO_CLEAN=
   
   goto :eof
 
