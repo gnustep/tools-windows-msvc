@@ -159,12 +159,9 @@ goto :eof
   
   :: remove backup if all went well
   if exist "%INSTALL_PREFIX%.bak" (rmdir /S /Q "%INSTALL_PREFIX%.bak" || exit 1)
-  
+
   :: don't update projects for subsequent build types to avoid mismatching builds
-  set NO_UPDATE=true
-  
-  :: always clean projects for subsequent build types
-  set NO_CLEAN=false
+  set NO_UPDATE=1
   
   goto :eof
 
