@@ -132,7 +132,7 @@ Place a breakpoint at the line `NSLog(@"Hello Objective-C");` and run from Visua
 
 * The compilation will fail if the Windows home folder contains whitespace, e.g. `C:\Users\John Appleseed`.
 
-* When utilizing the built-in gnustep-make test suite's debug capabilities, the preferred debugger on Windows is **lldb**. lldb (from the Chocolatey package manager) links to `python310.dll`, but is not found if Python 3.10.x is not installed and added to PATH. Install Python3 manually using the official Python Installer. After downloading and executing the installer, select `Add to PATH` and proceed with the installation. You can now use the lldb debugger.
+* When utilizing the built-in gnustep-make test suite's debug capabilities, the preferred debugger on Windows is lldb. lldb (from the Chocolatey package manager) links to `python310.dll`, but is not found if Python 3.10.x is not installed and added to PATH. The error message is obscure and doesn't mention the missing dependency. Install Python3 manually using the official Python Installer. After downloading and executing the installer, select `Add to PATH` and proceed with the installation. You can now use the lldb debugger.
 
 ## Troubleshooting
 
