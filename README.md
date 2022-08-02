@@ -130,7 +130,7 @@ Place a breakpoint at the line `NSLog(@"Hello Objective-C");` and run from Visua
 
 * Note that GNUstep support for Windows is not as complete as on Unixes, and some [tests in GNUstep Base](https://github.com/gnustep/libs-base/actions/workflows/main.yml?query=branch%3Amaster) are still failing.
 
-* The compilation will fail if the Windows home folder contains whitespace, e.g. `C:\Users\John Appleseed`'.
+* The compilation will fail if the Windows home folder contains whitespace, e.g. `C:\Users\John Appleseed`.
 
 ## Troubleshooting
 
