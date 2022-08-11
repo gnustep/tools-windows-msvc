@@ -49,7 +49,7 @@ exit /b %errorlevel%
     echo.
     :: check out tag/branch if any
     if not "%TAG%" == "" (
-      echo ### Checking out %TAG%
+      echo ### Checking out "%TAG%"
       git fetch --tags || exit /b 1
       git checkout -q %TAG% || exit /b 1
     )
