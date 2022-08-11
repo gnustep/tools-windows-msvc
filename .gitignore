@@ -6,3 +6,10 @@
 .vs/
 Debug/
 Release/
+
+# VIM
+*.swp
+
+# tests
+tests/uwp-container-boilerplate/microsoft.system.package.metadata
+tests/uwp-container-boilerplate/GNUstepUWPTest.exe
