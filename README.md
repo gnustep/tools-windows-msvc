@@ -8,7 +8,7 @@ This project comprises a collection of scripts to build a modern GNUstep toolcha
 
 ## Libraries
 
-The toolchain currently consists of the following libraries:
+The toolchain consists of the following libraries:
 
 - [GNUstep Base Library](https://github.com/gnustep/libs-base) (Foundation)
 - [GNUstep CoreBase Library](https://github.com/gnustep/libs-corebase) (CoreFoundation)
@@ -18,6 +18,7 @@ The toolchain currently consists of the following libraries:
 - [libiconv](https://github.com/kiyolee/libiconv-win-build)
 - [libxml2](https://github.com/GNOME/libxml2)
 - [libxslt](https://github.com/GNOME/libxslt)
+- [libcurl](https://github.com/curl/curl)
 - [ICU](https://docs.microsoft.com/en-us/windows/win32/intl/international-components-for-unicode--icu-) (using system-provided DLL on Windows 10 version 1903 or later)
 
 
