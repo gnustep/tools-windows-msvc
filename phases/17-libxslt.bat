@@ -13,43 +13,40 @@ for /f "usebackq delims=" %%i in (`call %BASH% '../scripts/get-latest-github-rel
 :: load environment and prepare project
 call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
 
-cd "%SRCROOT%\%PROJECT%\win32" || exit /b 1
+set BUILD_DIR="%SRCROOT%\%PROJECT%\build-%ARCH%-%BUILD_TYPE%"
+if exist "%BUILD_DIR%" (rmdir /S /Q "%BUILD_DIR%" || exit /b 1)
+mkdir "%BUILD_DIR%" || exit /b 1
+cd "%BUILD_DIR%" || exit /b 1
+
+set MODULE_PATH="%INSTALL_PREFIX%\lib\cmake"
+set MODULE_PATH_ESCAPED=%MODULE_PATH:\=/%
 
 echo.
-echo ### Apply patches
-:: this commit are required for v1.1.34 to build on Windows
-:: (can be removed when updating to the next release)
-git cherry-pick --no-commit e2584eed1c84c18f16e42188c30d2c3d8e3e8853 || exit /b 1
-
-echo.
-echo ### Running configure
-set CONFIGURE_OPTS=
-if "%BUILD_TYPE%" == "Debug" (
-  set "CONFIGURE_OPTS=cruntime=/MDd debug=yes"
-)
-cscript configure.js ^
-  compiler=msvc ^
-  crypto=no xslt_debug=no ^
-  %CONFIGURE_OPTS% ^
-  "prefix=%INSTALL_PREFIX%" ^
-  "include=%INSTALL_PREFIX%\include" ^
-  "lib=%INSTALL_PREFIX%\lib" ^
-  "sodir=%INSTALL_PREFIX%\lib" ^
-  || exit /b 1
+echo ### Running cmake
+cmake .. %CMAKE_OPTIONS% ^
+-D BUILD_SHARED_LIBS=NO ^
+-D LIBXSLT_WITH_TESTS=NO ^
+-D LIBXSLT_WITH_PYTHON=NO ^
+-D CMAKE_PREFIX_PATH=%MODULE_PATH_ESCAPED% ^
+|| exit /b 1
 
 echo.
 echo ### Building
-:: we only build the static libraries
-nmake /f Makefile.msvc libxslta libexslta || exit /b 1
+ninja || exit /b 1
+
+::nmake /f Makefile.msvc libxslta libexslta || exit /b 1
 
 echo.
 echo ### Installing
-:: rename libxslt_a.lib to xslt.lib to allow linking using -lxslt
-:: (the wildcard suffix is required to suppress the "file or directory" prompt)
-xcopy /Y /F "bin.msvc\libxslt_a.lib" "%INSTALL_PREFIX%\lib\xslt.lib*" || exit /b 1
-xcopy /Y /F "bin.msvc\libexslt_a.lib" "%INSTALL_PREFIX%\lib\exslt.lib*" || exit /b 1
+if "%BUILD_TYPE%" == "Release" (
+  xcopy /Y /F "libxslts.lib" "%INSTALL_PREFIX%\lib\xslt.lib*" || exit /b 1
+  xcopy /Y /F "libexslts.lib" "%INSTALL_PREFIX%\lib\exslt.lib*" || exit /b 1
+) else (
+  xcopy /Y /F "libxsltsd.lib" "%INSTALL_PREFIX%\lib\xslt.lib*" || exit /b 1
+  xcopy /Y /F "libexsltsd.lib" "%INSTALL_PREFIX%\lib\exslt.lib*" || exit /b 1
+)
 xcopy /Y /F /S "%SRCROOT%\%PROJECT%\libxslt\*.h" "%INSTALL_PREFIX%\include\libxslt\" || exit /b 1
 xcopy /Y /F /S "%SRCROOT%\%PROJECT%\libexslt\*.h" "%INSTALL_PREFIX%\include\libexslt\" || exit /b 1
 
 :: write pkgconfig file
-call "%~dp0\..\scripts\common.bat" write_pkgconfig libxslt %TAG% "" -lxslt "" libxml-2.0 || exit /b 1
+call "%~dp0\..\scripts\common.bat" write_pkgconfig libxslt %TAG% -DLIBXSLT_STATIC -lxslt libxml-2.0 || exit /b 1
