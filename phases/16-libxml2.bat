@@ -13,7 +13,6 @@ for /f "usebackq delims=" %%i in (`call %BASH% '../scripts/get-latest-github-rel
 :: load environment and prepare project
 call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
 
-
 set BUILD_DIR="%SRCROOT%\%PROJECT%\build-%ARCH%-%BUILD_TYPE%"
 if exist "%BUILD_DIR%" (rmdir /S /Q "%BUILD_DIR%" || exit /b 1)
 mkdir "%BUILD_DIR%" || exit /b 1
