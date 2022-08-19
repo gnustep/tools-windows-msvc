@@ -45,6 +45,8 @@ if "%BUILD_TYPE%" == "Release" (
   xcopy /Y /F "libxsltsd.lib" "%INSTALL_PREFIX%\lib\xslt.lib*" || exit /b 1
   xcopy /Y /F "libexsltsd.lib" "%INSTALL_PREFIX%\lib\exslt.lib*" || exit /b 1
 )
+xcopy /Y /F /S "libxslt\*.h" "%INSTALL_PREFIX%\include\libxslt\" || exit /b 1
+xcopy /Y /F /S "libexslt\*.h" "%INSTALL_PREFIX%\include\libexslt\" || exit /b 1
 xcopy /Y /F /S "%SRCROOT%\%PROJECT%\libxslt\*.h" "%INSTALL_PREFIX%\include\libxslt\" || exit /b 1
 xcopy /Y /F /S "%SRCROOT%\%PROJECT%\libexslt\*.h" "%INSTALL_PREFIX%\include\libexslt\" || exit /b 1
 
