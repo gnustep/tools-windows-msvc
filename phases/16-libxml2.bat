@@ -21,7 +21,6 @@ if exist "%INSTALL_PREFIX%\lib\icuin.lib" (
 ) else (
   echo Using system-provided ICU DLL ^(requires Windows 10 version 1903 or later^)
   git apply "%ROOT_DIR%\patches\opt-libxml2-windows-icu.patch" || exit /b 1
-  git apply "%ROOT_DIR%\patches\opt-libxml2-icu-header.patch" || exit /b 1
   set "LIBS_PRIVATE=-licu"
 )
 
