@@ -1,3 +1,9 @@
+commit 47258f19b21afe1639a5c2b8fde0a6d231e98e15
+Author: Hugo Melder <service@hugomelder.com>
+Date:   Mon Aug 22 10:55:16 2022 +0200
+
+    Change icu include header
+
 diff --git a/encoding.c b/encoding.c
 index 5465359f..7fb09e4c 100644
 --- a/encoding.c
