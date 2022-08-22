@@ -51,4 +51,4 @@ xcopy /Y /F /S "%SRCROOT%\%PROJECT%\libxslt\*.h" "%INSTALL_PREFIX%\include\libxs
 xcopy /Y /F /S "%SRCROOT%\%PROJECT%\libexslt\*.h" "%INSTALL_PREFIX%\include\libexslt\" || exit /b 1
 
 :: write pkgconfig file
-call "%~dp0\..\scripts\common.bat" write_pkgconfig libxslt %TAG% -DLIBXSLT_STATIC -lxslt libxml-2.0 || exit /b 1
+call "%~dp0\..\scripts\common.bat" write_pkgconfig libxslt %TAG% -DLIBXSLT_STATIC -lxslt -lxml2 || exit /b 1
