@@ -1,16 +1,16 @@
-diff --git a/include/libxml/encoding.h b/include/libxml/encoding.h
-index c875af6f..1ddc9e30 100644
---- a/include/libxml/encoding.h
-+++ b/include/libxml/encoding.h
-@@ -28,7 +28,7 @@
- #include <iconv.h>
- #endif
+diff --git a/encoding.c b/encoding.c
+index 5465359f..7fb09e4c 100644
+--- a/encoding.c
++++ b/encoding.c
+@@ -44,7 +44,7 @@
+ #include "enc.h"
+ 
  #ifdef LIBXML_ICU_ENABLED
 -#include <unicode/ucnv.h>
 +#include <icu.h>
- #endif
- #ifdef __cplusplus
- extern "C" {
+ /* Size of pivot buffer, same as icu/source/common/ucnv.cpp CHUNK_SIZE */
+ #define ICU_PIVOT_BUF_SIZE 1024
+ typedef struct _uconv_t uconv_t;
 diff --git a/win32/Makefile.msvc b/win32/Makefile.msvc
 index f6a0182d..0dce87c0 100644
 --- a/win32/Makefile.msvc
