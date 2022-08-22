@@ -1,0 +1,34 @@
+commit 0fdd5ca705d06fe83f52243ff18c22094ca9b4a7
+Author: Hugo Melder <service@hugomelder.com>
+Date:   Fri Aug 19 19:50:01 2022 +0200
+
+    Fix static lib name
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e3d7c935..77c522ac 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -447,7 +447,6 @@ set_target_properties(
+ 	IMPORT_PREFIX lib
+ 	OUTPUT_NAME xml2
+ 	POSITION_INDEPENDENT_CODE ON
+-	PREFIX lib
+ 	VERSION ${PROJECT_VERSION}
+ )
+ 
+@@ -458,15 +457,6 @@ if(MSVC)
+ 			PROPERTIES
+ 			DEBUG_POSTFIX d
+ 		)
+-	else()
+-		set_target_properties(
+-			LibXml2
+-			PROPERTIES
+-			DEBUG_POSTFIX sd
+-			MINSIZEREL_POSTFIX s
+-			RELEASE_POSTFIX s
+-			RELWITHDEBINFO_POSTFIX s
+-		)
+ 	endif()
+ endif()
+ 
