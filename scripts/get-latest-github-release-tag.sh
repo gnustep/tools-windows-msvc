@@ -6,6 +6,8 @@
 set -e
 
 GITHUB_REPO=$1
+TAG_PREFIX=$2
+
 if [ -z $GITHUB_REPO ]; then
   echo "Usage: $0 <GitHub user>/<GitHub repository>"
   exit 1
@@ -15,5 +17,5 @@ fi
 curl -s https://api.github.com/repos/$GITHUB_REPO/tags \
   | grep '"name":' \
   | sed -E 's/.*"([^"]+)".*/\1/' \
-  | egrep '^(release\-|v)[0-9]+[\.-][0-9]+([\.-][0-9]+)?$' \
+  | egrep "^${TAG_PREFIX:-[a-z_-]+}[0-9]+[\._-][0-9]+([\._-][0-9]+)?\$" \
   | head -n 1

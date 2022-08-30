@@ -120,10 +120,8 @@ exit /b %errorlevel%
   set PKGCONFIG_LIBS_PRIVATE=%~5
   set PKGCONFIG_REQUIRES=%~6
   
-  :: trim "v" version prefix
-  if /i "%PKGCONFIG_VERSION:~0,1%" == "v" (
-    set PKGCONFIG_VERSION=%PKGCONFIG_VERSION:~1%
-  )
+  :: trim version prefix
+  call :trim_pkgconfig_version || exit /b 1
   
   :: use forward slashes for prefix path
   set PKGCONFIG_PREFIX=%INSTALL_PREFIX:\=/%
@@ -146,3 +144,16 @@ exit /b %errorlevel%
     echo Libs: -L${libdir} %PKGCONFIG_LIBS%
     echo Libs.private: %PKGCONFIG_LIBS_PRIVATE%
   ) > %INSTALL_PREFIX%\lib\pkgconfig\%PKGCONFIG_NAME%.pc
+  goto :eof
+
+:: trims prefix like "v" or "release-" from PKGCONFIG_VERSION
+:: and converts underscore version number delimiters to periods
+:trim_pkgconfig_version
+  echo %PKGCONFIG_VERSION:~0,1% | findstr /r [a-z_-] > nul
+  if %errorlevel% == 0 (
+    set PKGCONFIG_VERSION=%PKGCONFIG_VERSION:~1%
+    call :trim_pkgconfig_version || exit /b 1
+  ) else (
+    set PKGCONFIG_VERSION=%PKGCONFIG_VERSION:_=.%
+  )
+  exit /b 0

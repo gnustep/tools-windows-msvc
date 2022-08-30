@@ -28,7 +28,7 @@ if defined SKIP_ICU (
 :: get the latest release tag from GitHub
 cd %~dp0
 if not defined ICU_VERSION (
-  for /f "usebackq delims=" %%i in (`call %BASH% '../scripts/get-latest-github-release-tag.sh %GITHUB_REPO%'`) do (
+  for /f "usebackq delims=" %%i in (`call %BASH% '../scripts/get-latest-github-release-tag.sh %GITHUB_REPO% release-'`) do (
     for /f "tokens=2,3 delims=-" %%j in ("%%i") do (
       set ICU_VERSION=%%j.%%k
     )
