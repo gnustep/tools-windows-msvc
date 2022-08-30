@@ -6,9 +6,10 @@ set GITHUB_REPO=GNOME/libxml2
 
 :: get the latest release tag from GitHub
 cd %~dp0
-for /f "usebackq delims=" %%i in (`call %BASH% '../scripts/get-latest-github-release-tag.sh %GITHUB_REPO%'`) do (
-  set TAG=%%i
-)
+:: for /f "usebackq delims=" %%i in (`call %BASH% '../scripts/get-latest-github-release-tag.sh %GITHUB_REPO%'`) do (
+::  set TAG=%%i
+::)
+set TAG=v2.9.9
 
 :: load environment and prepare project
 call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
