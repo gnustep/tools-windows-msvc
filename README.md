@@ -126,9 +126,13 @@ Place a breakpoint at the line `NSLog(@"Hello Objective-C");` and run from Visua
 
 ## Status and Known Issues
 
-* The toolchain is fully usable on x64. On x86, libdispatch is not available due to a [build error](https://bugs.swift.org/browse/SR-14314).
+* The toolchain supports both x64 and x86. However, on x86 libdispatch is not available due to a [build error](https://bugs.swift.org/browse/SR-14314).
 
-* Note that GNUstep support for Windows is not as complete as on Unixes, and some [tests in GNUstep Base](https://github.com/gnustep/libs-base/actions/workflows/main.yml?query=branch%3Amaster) are still failing.
+* LLVM/Clang has the following known issues with Objective-C code on Windows. For the time being, it is recommended to use Clang 13 (e.g. from Visual Studio 2019), until Clang 16 has been released which fixes most of them.
+  - Using `@finally` crashing Clang ([issue](https://github.com/llvm/llvm-project/issues/43828), [issue](https://github.com/llvm/llvm-project/issues/51899))
+  - Exception handling with ARC causing access violation ([issue](https://github.com/gnustep/libobjc2/issues/222), fixed in Clang 15)
+  - Certain Objective-C++ code crashing Clang ([issue](https://github.com/llvm/llvm-project/issues/54556), affects Clang 14, fixed in Clang 15)
+  - Objective-C class methods not working with ARC ([issue](https://github.com/llvm/llvm-project/issues/56952), affects Clang 14, fixed in Clang 16)
 
 * The compilation will fail if the Windows home folder contains whitespace, e.g. `C:\Users\John Appleseed`.
 
