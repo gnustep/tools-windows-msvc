@@ -22,6 +22,7 @@ echo
 echo "### Running configure"
 ./configure \
   --host=$TARGET \
+  --disable-cfrunloop \
   `# specify environment since it doesn't use gnustep-config to get these` \
   CC="`gnustep-config --variable=CC`" \
   CPP="`gnustep-config --variable=CPP`" \
