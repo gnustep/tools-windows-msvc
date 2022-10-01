@@ -5,9 +5,8 @@ shopt -s inherit_errexit
 cd `dirname $0`
 
 export PROJECT=gnustep-corebase
-# FIXME: should be switched to the official repo once this has been merged
-export GITHUB_REPO=triplef/libs-corebase
-export TAG=windows-msvc
+export GITHUB_REPO=gnustep/libs-corebase
+export TAG=
 
 # load environment and prepare project
 ../scripts/common.bat prepare_project
