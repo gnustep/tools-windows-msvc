@@ -58,22 +58,6 @@ index 978c88fe3..05c92f9ad 100644
  #endif
  
    [self setInitialFirstResponder: 
-diff --git a/Source/NSAttributedString.m b/Source/NSAttributedString.m
-index 4328f0f97..cfca61f55 100644
---- a/Source/NSAttributedString.m
-+++ b/Source/NSAttributedString.m
-@@ -60,6 +60,11 @@
- #import "GNUstepGUI/GSTextConverter.h"
- #import "GSGuiPrivate.h"
- 
-+/* Redefine unavailable function when using the MSVC ABI on Windows. */
-+#ifdef _MSC_VER
-+#  define strncasecmp _strnicmp
-+#endif
-+
- /* Cache class pointers to avoid the expensive lookup by string. */ 
- static Class dictionaryClass = nil;
- static Class stringClass = nil;
 diff --git a/Source/NSFileWrapperExtensions.m b/Source/NSFileWrapperExtensions.m
 index b1842c5c2..cd145548c 100644
 --- a/Source/NSFileWrapperExtensions.m
@@ -175,18 +159,3 @@ index 21b3c3b0c..76eb16bba 100644
  	}
      }
  
-diff --git a/Source/NSWorkspace.m b/Source/NSWorkspace.m
-index 41dd7e496..aef73b3f8 100644
---- a/Source/NSWorkspace.m
-+++ b/Source/NSWorkspace.m
-@@ -32,7 +32,10 @@
- 
- #import "config.h"
- 
-+#if defined(HAVE_UNISTD_H)
- #include <unistd.h>
-+#endif
-+
- #include <sys/types.h>
- 
- #if defined(HAVE_GETMNTINFO)
