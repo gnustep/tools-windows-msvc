@@ -47,8 +47,8 @@ set ICU_RELEASE_URL=https://github.com/%GITHUB_REPO%/releases/download/release-%
 
 for %%a in ("%ICU_RELEASE_URL%") do (
    set ICU_RELEASE_FILE=%%~nxa
-   set ICU_RELEASE_NAME=%%~na
 )
+set ICU_RELEASE_FOLDER=%CACHE_ROOT%\icu
 
 if not exist "%CACHE_ROOT%" (mkdir "%CACHE_ROOT%" || exit /b 1)
 cd "%CACHE_ROOT%" || exit /b 1
@@ -59,15 +59,24 @@ if not exist %ICU_RELEASE_FILE% (
   curl -L -O# %ICU_RELEASE_URL% || exit /b 1
 )
 
-if not exist %ICU_RELEASE_NAME% (
-  echo.
-  echo ### Extracting release
-  powershell Expand-Archive %ICU_RELEASE_FILE% || exit /b 1
+if exist "%ICU_RELEASE_FOLDER%" (rmdir /S /Q "%ICU_RELEASE_FOLDER%" || exit 1)
+
+echo.
+echo ### Extracting release
+powershell Expand-Archive -DestinationPath "%ICU_RELEASE_FOLDER%" "%ICU_RELEASE_FILE%" || exit /b 1
+
+:: sometimes ICU releases just contain another ZIP file, so we need to extract that
+for /D %%d in ("%ICU_RELEASE_FOLDER%\*ICU*") do (
+  for /F %%f in ("%%~d\*.zip") do (
+    echo.
+    echo ### Extracting nested release %%~nxf
+    powershell Expand-Archive -DestinationPath "%ICU_RELEASE_FOLDER%" "%%f" || exit /b 1
+  )
 )
 
 echo.
 echo ### Installing
-cd %ICU_RELEASE_NAME% || exit /b 1
+cd %ICU_RELEASE_FOLDER% || exit /b 1
 pushd bin* || exit /b 1
 xcopy /Y /F "icu*.dll" "%INSTALL_PREFIX%\bin\" || exit /b 1
 popd
