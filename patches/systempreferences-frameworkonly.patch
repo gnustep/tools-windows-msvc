@@ -1,0 +1,13 @@
+diff --git a/GNUmakefile b/GNUmakefile
+index 46f08d6..082e408 100644
+--- a/GNUmakefile
++++ b/GNUmakefile
+@@ -41,7 +41,7 @@ include $(GNUSTEP_MAKEFILES)/common.make
+ #
+ # The list of subproject directories
+ #
+-SUBPROJECTS = PreferencePanes Modules SystemPreferences
++SUBPROJECTS = PreferencePanes
+ 
+ -include Makefile.preamble
+ 
