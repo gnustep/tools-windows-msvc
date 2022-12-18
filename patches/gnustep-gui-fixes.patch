@@ -13,6 +13,27 @@ index 97e456771..252db6cda 100644
  Themes \
  Tests
  
+diff --git a/Headers/Additions/GNUstepGUI/GSDisplayServer.h b/Headers/Additions/GNUstepGUI/GSDisplayServer.h
+index 07973f087..7b4376f81 100644
+--- a/Headers/Additions/GNUstepGUI/GSDisplayServer.h
++++ b/Headers/Additions/GNUstepGUI/GSDisplayServer.h
+@@ -181,6 +181,16 @@ APPKIT_EXPORT_CLASS
+ 
+ @end
+ 
++/* ----------------------------------------------------------------------- */
++/* GNUstep Server Operations */
++/* ----------------------------------------------------------------------- */
++@interface GSDisplayServer (ServiceOps)
++- (BOOL) isServiceInstalled: (NSString*)serviceName;
++- (BOOL) isServiceRunning: (NSString*)serviceName;
++- (BOOL) isDiscoveryServiceInstalled;
++- (BOOL) isDiscoveryServiceRunning;
++@end
++
+ /* ----------------------------------------------------------------------- */
+ /* GNUstep Event Operations */
+ /* ----------------------------------------------------------------------- */
 diff --git a/Headers/AppKit/DPSOperators.h b/Headers/AppKit/DPSOperators.h
 index 3641eae9b..2a143b677 100644
 --- a/Headers/AppKit/DPSOperators.h
@@ -963,6 +984,46 @@ index 978c88fe3..05c92f9ad 100644
  #endif
  
    [self setInitialFirstResponder: 
+diff --git a/Source/GSDisplayServer.m b/Source/GSDisplayServer.m
+index f752c18ec..e2dc1bf83 100644
+--- a/Source/GSDisplayServer.m
++++ b/Source/GSDisplayServer.m
+@@ -952,6 +952,35 @@ GSCurrentServer(void)
+ 
+ @end
+ 
++/* ----------------------------------------------------------------------- */
++/* GNUstep Service Operations */
++/* ----------------------------------------------------------------------- */
++@implementation GSDisplayServer (ServiceOps)
++- (BOOL) isServiceInstalled: (NSString*)serviceName
++{
++  [self subclassResponsibility: _cmd];
++  return NO;
++}
++
++- (BOOL) isServiceRunning: (NSString*)serviceName
++{
++  [self subclassResponsibility: _cmd];
++  return NO;
++}
++
++- (BOOL) isDiscoveryServiceInstalled
++{
++  [self subclassResponsibility: _cmd];
++  return NO;
++}
++
++- (BOOL) isDiscoveryServiceRunning
++{
++  [self subclassResponsibility: _cmd];
++  return NO;
++}
++@end
++
+ /* ----------------------------------------------------------------------- */
+ /* GNUstep Event Operations */
+ /* ----------------------------------------------------------------------- */
 diff --git a/Source/GSFontInfo.m b/Source/GSFontInfo.m
 index cb667faad..21134f6ac 100644
 --- a/Source/GSFontInfo.m
@@ -1156,6 +1217,19 @@ index dc805af86..1971ca87a 100644
 +}
 +
 +@end
+diff --git a/Source/GSXib5KeyedUnarchiver.m b/Source/GSXib5KeyedUnarchiver.m
+index 9c156842e..96d6707e9 100644
+--- a/Source/GSXib5KeyedUnarchiver.m
++++ b/Source/GSXib5KeyedUnarchiver.m
+@@ -1339,7 +1339,7 @@ didStartElement: (NSString*)elementName
+ 
+       [object setAlignment: NSCenterTextAlignment];
+       [object setBordered: NO];
+-      [object setEditable: NO];
++      // [object setEditable: NO];
+       [object setFont: font];
+       return AUTORELEASE(object);
+     }
 diff --git a/Source/NSFileWrapperExtensions.m b/Source/NSFileWrapperExtensions.m
 index b1842c5c2..cd145548c 100644
 --- a/Source/NSFileWrapperExtensions.m
@@ -1183,6 +1257,19 @@ index b1842c5c2..cd145548c 100644
  }
  
  @end
+diff --git a/Source/NSFont.m b/Source/NSFont.m
+index cac7b0537..8567d8675 100644
+--- a/Source/NSFont.m
++++ b/Source/NSFont.m
+@@ -1368,7 +1368,7 @@ static BOOL flip_hack;
+      	}
+       else
+         {
+-     	  self = RETAIN([NSFont fontWithName: name size: size]);
++     	  self = RETAIN([NSFont systemFontOfSize: size]); // RETAIN([NSFont fontWithName: name size: size]);
+      	}
+       if (self == nil)
+         {
 diff --git a/Source/NSGraphicsContext.m b/Source/NSGraphicsContext.m
 index 9cdfb2e58..8d86b502e 100644
 --- a/Source/NSGraphicsContext.m
