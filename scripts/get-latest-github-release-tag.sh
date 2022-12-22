@@ -3,8 +3,6 @@
 # Gets the latest tag of the form "vX.Y[.Z]" from a given GitHub repository.
 #
 
-set -e
-
 GITHUB_REPO=$1
 TAG_PREFIX=$2
 
@@ -13,9 +11,15 @@ if [ -z $GITHUB_REPO ]; then
   exit 1
 fi
 
-# get the tags JSON from the GitHub API and parse it manually
-curl --silent --show-error --fail-with-body https://api.github.com/repos/$GITHUB_REPO/tags \
-  | grep '"name":' \
-  | sed -E 's/.*"([^"]+)".*/\1/' \
-  | egrep "^${TAG_PREFIX:-[a-z_-]+}[0-9]+[\._-][0-9]+([\._-][0-9]+)?\$" \
-  | head -n 1
+# get the tags JSON from the GitHub API and parse it manually,
+# or output it to stderr if the server returns an error
+github_tags=`curl --silent --show-error --fail-with-body https://api.github.com/repos/$GITHUB_REPO/tags`
+if [ $? -eq 0 ]; then
+  echo "$github_tags" \
+    | grep '"name":' \
+    | sed -E 's/.*"([^"]+)".*/\1/' \
+    | egrep "^${TAG_PREFIX:-[a-z_-]+}[0-9]+[\._-][0-9]+([\._-][0-9]+)?\$" \
+    | head -n 1
+else
+  echo "$github_tags" >&2
+fi
