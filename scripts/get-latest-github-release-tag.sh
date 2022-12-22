@@ -6,14 +6,23 @@
 GITHUB_REPO=$1
 TAG_PREFIX=$2
 
-if [ -z $GITHUB_REPO ]; then
+if [ -z "$GITHUB_REPO" ]; then
   echo "Usage: $0 <GitHub user>/<GitHub repository>"
   exit 1
 fi
 
+# use GitHub token authentication on CI to prevent rate limit errors
+if [ -n "$GITHUB_TOKEN" ]; then
+  GITHUB_AUTHORIZATION_HEADER="Authorization: Bearer $GITHUB_TOKEN"
+fi
+
 # get the tags JSON from the GitHub API and parse it manually,
 # or output it to stderr if the server returns an error
-github_tags=`curl --silent --show-error --fail-with-body https://api.github.com/repos/$GITHUB_REPO/tags`
+github_tags=`curl \
+  --silent --show-error --fail-with-body \
+  --header "$GITHUB_AUTHORIZATION_HEADER" \
+  https://api.github.com/repos/$GITHUB_REPO/tags`
+
 if [ $? -eq 0 ]; then
   echo "$github_tags" \
     | grep '"name":' \
