@@ -20,7 +20,7 @@ jobs:
         arch: [x86, x64]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: msys2/setup-msys2@v2
         with:
@@ -56,7 +56,7 @@ jobs:
           tar -a -cf GNUstep-Windows-MSVC-${{matrix.arch}}.zip C:\GNUstep\${{matrix.arch}}
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           path: GNUstep-Windows-MSVC-${{matrix.arch}}.zip
           name: GNUstep-Windows-MSVC-${{matrix.arch}}
@@ -68,7 +68,7 @@ jobs:
 
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
 
       - name: Update GitHub prerelease
         if: ${{ github.ref == 'refs/heads/master' }}
