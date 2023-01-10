@@ -6,7 +6,8 @@ cd `dirname $0`
 
 export PROJECT=gnustep-back
 export GITHUB_REPO=gnustep/libs-back
-export TAG=keysight-staging
+#export TAG=keysight-staging
+export TAG=
 
 # load environment and prepare project
 ../scripts/common.bat prepare_project
