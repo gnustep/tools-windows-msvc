@@ -5,7 +5,7 @@ shopt -s inherit_errexit
 cd `dirname $0`
 
 export PROJECT=gnustep-base
-export GITHUB_REPO=gnustep/libs-base
+export GITHUB_REPO=keysight-eggplant/libs-base
 export TAG=
 
 # load environment and prepare project
