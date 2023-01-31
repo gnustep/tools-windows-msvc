@@ -49,7 +49,7 @@ Alternatively, `clang-cl.exe` can be used to build Objective-C code directly in 
     clang-cl -I C:\GNUstep\x64\Debug\include -fobjc-runtime=gnustep-2.0 -Xclang -fexceptions -Xclang -fobjc-exceptions -fblocks -DGNUSTEP -DGNUSTEP_WITH_DLL -DGNUSTEP_RUNTIME=1 -D_NONFRAGILE_ABI=1 -D_NATIVE_OBJC_EXCEPTIONS /MDd /c test.m
     
     # link object file into executable
-    clang-cl test.obj gnustep-base.lib objc.lib dispatch.lib /MDd -o test.exe
+    clang-cl test.obj gnustep-base.lib objc.lib dispatch.lib /MDd -o test.exe /link /LIBPATH:C:\GNUstep\x64\Debug\lib
 
 Specify `/MDd` for debug builds, and `/MD` for release builds, in order to link against the same runtime libraries as the DLLs in `C:\GNUstep\x64\Debug` and `C:\GNUstep\x64\Release` respectively.
 
@@ -138,6 +138,7 @@ Place a breakpoint at the line `NSLog(@"Hello Objective-C");` and run from Visua
 
 * When utilizing the built-in gnustep-make test suite's debug capabilities, the preferred debugger on Windows is lldb. lldb (from the Chocolatey package manager) links to `python310.dll`, but is not found if Python 3.10.x is not installed and added to PATH. The error message is obscure and doesn't mention the missing dependency. Install Python3 manually using the official Python Installer. After downloading and executing the installer, select `Add to PATH` and proceed with the installation. You can now use the lldb debugger.
 
+
 ## Troubleshooting
 
 ### Compile Errors
@@ -153,7 +154,7 @@ Please ensure that you have cleared the "Compile As" property of the file.
 * `cannot open input file 'gnustep-base.lib'`  
 Please ensure that you correctly set "Library Directories".
 
-* ` unresolved external symbol __objc_load referenced in function .objcv2_load_function`  
+* `unresolved external symbol __objc_load referenced in function .objcv2_load_function`  
 Please ensure that you added the required linking options in Linker > Input > Additional Dependencies.
 
 * `relocation against symbol in discarded section: __start_.objcrt$SEL`  
@@ -163,6 +164,9 @@ Please ensure that you include some Objective-C code in your project. (This is c
 
 * `The code execution cannot proceed because gnustep-base-1_28.dll was not found. Reinstalling the program may fix this problem.`  
 Please ensure that DLLs are copied to the output folder.
+
+* Objective-C categories are not found at runtime
+Linking static libraries containing Objective-C categories into an executable or shared library will strip the categories during the linking process. This can be worked around by linking with the [`WHOLEARCHIVE`](https://learn.microsoft.com/en-us/cpp/build/reference/wholearchive-include-all-library-object-files) linker option (e.g. `/WHOLEARCHIVE:MyStaticLibrary.lib`), or by directly linking the object files from the library (e.g. by using "[object libraries](https://cmake.org/cmake/help/latest/command/add_library.html#object-libraries)" when using CMake).
 
 
 ## Building the Toolchain
@@ -175,7 +179,7 @@ The MSYS2 installation is required to provide the Bash shell and Unix tools requ
 
 **Windows tools**
 
-- Visual Studio 2019 or 2022
+- Visual Studio 2019
 - Clang (via Visual Studio or `choco install llvm`)
 - CMake (via Visual Studio or `choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'`)
 - Git (`choco install git`)
@@ -193,6 +197,7 @@ These can be installed via Pacman inside a MSYS2 shell:
 `pacman -S --needed make autoconf automake libtool pkg-config`
 
 Please make sure that you do _not_ have `gmake` installed in your MSYS2 environment, as it is not compatible but will be picked up by the project Makefiles. Running `which gmake` in MSYS2 should print "which: no gmake in ...".
+
 
 ### Building
 
