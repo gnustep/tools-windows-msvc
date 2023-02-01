@@ -1,0 +1,24 @@
+diff --git a/target.make b/target.make
+index fb093911..6ecfb7bd 100644
+--- a/target.make
++++ b/target.make
+@@ -34,7 +34,7 @@ endif
+ #
+ # Target specific libraries
+ #
+-TARGET_SYSTEM_LIBS = $(CONFIG_SYSTEM_LIBS) -lm
++TARGET_SYSTEM_LIBS = $(CONFIG_SYSTEM_LIBS)
+ 
+ # All code we build needs to be thread-safe nowadays
+ INTERNAL_CFLAGS = -pthread
+@@ -60,6 +60,10 @@ else ifeq ($(findstring mingw64, $(GNUSTEP_TARGET_OS)), mingw64)
+   TARGET_SYSTEM_LIBS = $(CONFIG_SYSTEM_LIBS) \
+ 	-lws2_32 -ladvapi32 -lcomctl32 -luser32 -lcomdlg32 \
+ 	-lmpr -lnetapi32 -lm -I. # the -I is a dummy to avoid -lm^M
++else ifeq ($(findstring mingw64, $(GNUSTEP_TARGET_OS)), windows)
++  TARGET_SYSTEM_LIBS = $(CONFIG_SYSTEM_LIBS) \
++	-lws2_32 -ladvapi32 -lcomctl32 -luser32 -lcomdlg32 \
++	-lmpr -lnetapi32 -I. # the -I is a dummy to avoid -lm^M
+ endif
+ 
+ ifeq ($(findstring solaris, $(GNUSTEP_TARGET_OS)), solaris)

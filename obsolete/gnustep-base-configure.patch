@@ -1,0 +1,85 @@
+diff --git a/configure b/configure
+index 662f1b6b4..785b2c44d 100755
+--- a/configure
++++ b/configure
+@@ -7805,25 +7805,25 @@ fi
+ #--------------------------------------------------------------------
+ # Check for thread synchronisation support in runtime
+ #--------------------------------------------------------------------
+-for ac_func in objc_sync_enter
+-do :
+-  ac_fn_c_check_func "$LINENO" "objc_sync_enter" "ac_cv_func_objc_sync_enter"
+-if test "x$ac_cv_func_objc_sync_enter" = xyes; then :
+-  cat >>confdefs.h <<_ACEOF
++#for ac_func in objc_sync_enter
++#do :
++#  ac_fn_c_check_func "$LINENO" "objc_sync_enter" "ac_cv_func_objc_sync_enter"
++#if test "x$ac_cv_func_objc_sync_enter" = xyes; then :
++#  cat >>confdefs.h <<_ACEOF
+ #define HAVE_OBJC_SYNC_ENTER 1
+-_ACEOF
+-
+-fi
+-done
+-
+-if test $ac_cv_func_objc_sync_enter = yes ; then
+-  OBJCSYNC=1
+-else
+-  OBJCSYNC=0
+-  if test "$OBJC_RUNTIME_LIB" = "ng"; then
+-    as_fn_error $? "The objc runtime library does not appear to have synchronisation support.  Try re-configuring gnustep-make with a CPPFLAGS variable containing a -L point to specify the directory containing the correct libobjc, or using the --with-objc-lib-flag=... option." "$LINENO" 5
+-  fi
+-fi
++#_ACEOF
++#
++#fi
++#done
++#
++#if test $ac_cv_func_objc_sync_enter = yes ; then
++#  OBJCSYNC=1
++#else
++#  OBJCSYNC=0
++#  if test "$OBJC_RUNTIME_LIB" = "ng"; then
++#    as_fn_error $? "The objc runtime library does not appear to have synchronisation support.  Try re-configuring gnustep-make with a CPPFLAGS variable containing a -L point to specify the directory containing the correct libobjc, or using the --with-objc-lib-flag=... option." "$LINENO" 5
++#  fi
++#fi
+ 
+ 
+ # Don't revert any Objective-C flags as they are used in the next test
+@@ -8099,22 +8099,22 @@ fi
+ #--------------------------------------------------------------------
+ # Function needed by @synchronize directive
+ #--------------------------------------------------------------------
+-for ac_func in objc_sync_enter
+-do :
+-  ac_fn_c_check_func "$LINENO" "objc_sync_enter" "ac_cv_func_objc_sync_enter"
+-if test "x$ac_cv_func_objc_sync_enter" = xyes; then :
+-  cat >>confdefs.h <<_ACEOF
+-#define HAVE_OBJC_SYNC_ENTER 1
+-_ACEOF
+-
+-fi
+-done
++#for ac_func in objc_sync_enter
++#do :
++#  ac_fn_c_check_func "$LINENO" "objc_sync_enter" "ac_cv_func_objc_sync_enter"
++#if test "x$ac_cv_func_objc_sync_enter" = xyes; then :
++#  cat >>confdefs.h <<_ACEOF
++##define HAVE_OBJC_SYNC_ENTER 1
++#_ACEOF
++#
++#fi
++#done
+ 
+ 
+-HAVE_OBJC_SYNC_ENTER=no
+-if test $ac_cv_func_objc_sync_enter = yes ; then
+-  HAVE_OBJC_SYNC_ENTER=yes
+-fi
++#HAVE_OBJC_SYNC_ENTER=no
++#if test $ac_cv_func_objc_sync_enter = yes ; then
++#  HAVE_OBJC_SYNC_ENTER=yes
++#fi
+ 
+ 
+ # Don't revert any Objective-C flags as they are used in the next test
