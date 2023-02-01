@@ -2,7 +2,7 @@
 setlocal
 
 set PROJECT=libobjc2
-set GITHUB_REPO=gnustep/libobjc2
+set GITHUB_REPO=keysight-eggplant/libobjc2
 set TAG=
 
 :: load environment and prepare project
