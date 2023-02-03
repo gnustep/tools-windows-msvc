@@ -1,0 +1,128 @@
+diff --git a/Headers/GNUstepBase/GSConfig.h.in b/Headers/GNUstepBase/GSConfig.h.in
+index dd9c7eb78..39b7a712e 100644
+--- a/Headers/GNUstepBase/GSConfig.h.in
++++ b/Headers/GNUstepBase/GSConfig.h.in
+@@ -240,7 +240,7 @@ typedef	gsuaddr gsaddr;
+  * Native character type for use in systemcalls etc.
+  */
+ 
+-#if	defined(__MINGW__)
++#if	defined(_WIN32)
+ #  define	GSNativeChar	uint16_t
+ #else
+ #  define	GSNativeChar	char
+@@ -254,23 +254,28 @@ typedef	gsuaddr gsaddr;
+  */
+ typedef	struct {
+   uint8_t	dummy[@GS_SIZEOF_COND_T@];
+-} gs_cond_t	__attribute__((aligned (@GS_ALIGNOF_COND_T@)));
++} gs_cond_public_t	__attribute__((aligned (@GS_ALIGNOF_COND_T@)));
++typedef	struct {
++  uint8_t	dummy[@GS_SIZEOF_COND_MUTEX_T@];
++} gs_cond_mutex_public_t	__attribute__((aligned (@GS_ALIGNOF_COND_MUTEX_T@)));
+ typedef	struct {
+   uint8_t	dummy[@GS_SIZEOF_MUTEX_T@];
+-} gs_mutex_t	__attribute__((aligned (@GS_ALIGNOF_MUTEX_T@)));
++} gs_mutex_public_t	__attribute__((aligned (@GS_ALIGNOF_MUTEX_T@)));
+ 
+ #define	OBJC2RUNTIME @OBJC2RUNTIME@
+ #define BASE_NATIVE_OBJC_EXCEPTIONS     @BASE_NATIVE_OBJC_EXCEPTIONS@
+ #define GS_NONFRAGILE     @GS_NONFRAGILE@
+-#define GS_MIXEDABI     @GS_MIXEDABI@
+ #define GS_USE_LIBXML @HAVE_LIBXML@
+ #define GS_USE_GNUTLS @HAVE_GNUTLS@
+ #define GS_USE_AVAHI @HAVE_AVAHI@
+ #define GS_USE_MDNS @HAVE_MDNS@
+ #define GS_USE_ICU @HAVE_ICU@
++#define GS_USE_LIBCURL @HAVE_LIBCURL@
+ #define GS_USE_LIBDISPATCH @HAVE_LIBDISPATCH@
+ #define GS_USE_LIBDISPATCH_RUNLOOP @HAVE_LIBDISPATCH_RUNLOOP@
++#define GS_HAVE_NSURLSESSION @GS_HAVE_NSURLSESSION@
+ #define GS_HAVE_OBJC_ROOT_CLASS_ATTR @GS_HAVE_OBJC_ROOT_CLASS_ATTR@
++#define GS_USE_WIN32_THREADS_AND_LOCKS @HAVE_WIN32_THREADS_AND_LOCKS@
+ 
+ #ifndef __has_include
+ #  define __has_include(x) 0
+@@ -294,42 +299,49 @@ typedef	struct {
+ #endif
+ 
+ #if defined(_WIN32)
+-#if defined(__MINGW64__)
+-#define BOOL WINBOOL
+-#else
+-#define BOOL WinBOOL
+-#endif
+-#define __OBJC_BOOL 1
+-#include <w32api.h>
+-#ifndef _WIN32_WINNT
+-#if defined(__MINGW64__)
+-#define _WIN32_WINNT Windows7    //MinGW64
+-#else
+-#define _WIN32_WINNT Windows2000 //MinGW32
+-#endif
+-#endif
+-#if	!defined(WINVER)
+-#if defined(__MINGW64__)
+-#define WINVER Windows7    //MinGW64
+-#else
+-#define WINVER Windows2000 //MinGW32
+-#endif
+-#elif (WINVER < Windows2000)
+-#undef	WINVER
+-#define WINVER Windows2000
+-#endif
++#  define BOOL WinBOOL
++#  define __OBJC_BOOL 1
++
++#  if defined(__MINGW__)
++#    include <w32api.h>
++#    define GS_WINVER Windows2000
++#  elif defined(_MSC_VER)
++#    include <WinSDKVer.h>
++#    define GS_WINVER _WIN32_WINNT_WIN10
++#  endif
+ 
+-#if defined(__WIN64__)
+-#include <winsock2.h>
+-#include <windows.h>
+-#else
+-#include <windows.h>
+-/* Testplant-MAL-09132016 - This doesn't work on MINGW32/clang builds for some reason... */
+-//#include <winsock2.h>
++#  ifndef _WIN32_WINNT
++#    define _WIN32_WINNT GS_WINVER
++#  endif
++#  if	!defined(WINVER)
++#    define WINVER GS_WINVER
++#  elif (WINVER < GS_WINVER)
++#    undef	WINVER
++#    define WINVER GS_WINVER
++#  endif
++
++// Trick to distinguish between MSYS/MinGW and MSYS2/MinGW32, the latter defines
++// __MINGW32_MAJOR_VERSION and __MINGW32_MINOR_VERSION for compatibility
++// but to a lower version than older MSYS/MinGW, but not the compound version
++//
++#  if defined(__MINGW32_VERSION)
++#    define __USE_W32_SOCKETS
++#    include <windows.h>
++#    include <winsock2.h>
++#  else
++#    include <winsock2.h>
++#    include <windows.h>
++#  endif
++
++#  undef __OBJC_BOOL
++#  undef  BOOL
+ #endif
+ 
+-#undef __OBJC_BOOL
+-#undef  BOOL
++/* Used to annotate callback functions with __stdcall on Windows. */
++#if defined(_WIN32)
++#define GS_WINAPI WINAPI
++#else
++#define GS_WINAPI
+ #endif
+ 
+ /* Include the blocks runtime header if it's available (It shouldn't matter

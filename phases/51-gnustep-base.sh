@@ -22,6 +22,8 @@ echo "### Running configure"
 ./configure \
   --host=$TARGET \
   --disable-tls \
+  --disable-xml \
+  --disable-icu \
   --enable-zeroconf \
   --with-zeroconf-api=mdns \
   $GNUSTEP_BASE_OPTIONS
