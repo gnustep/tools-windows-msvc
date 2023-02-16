@@ -19,6 +19,10 @@ jobs:
       matrix:
         arch: [x86, x64]
 
+    defaults:
+      run:
+        shell: cmd
+
     steps:
       - uses: actions/checkout@v3
 
@@ -30,10 +34,13 @@ jobs:
           # install MSYS packages
           install: make autoconf automake libtool pkg-config
 
-      - name: Delete MinGW gmake
-        # delete /c/Strawberry/c/bin/gmake built for MinGW that is found on runners, because we must use make built for MSYS
-        run: if GMAKE_PATH=`which gmake`; then rm -f "$GMAKE_PATH"; fi
-        shell: msys2 {0}
+      - name: Remove Perl Strawberry installation
+        # C:\Strawberry contains various MinGW libraries and binaries like pkg-config
+        # that can get picked up by configure/CMake and don't necessarily behave
+        # correctly when not using a MinGW environment, and more specifically we cannot
+        # use MinGW gmake but must use MSYS make for correctly handling of Windows paths,
+        # so we delete everything that could mess up our builds
+        run: rmdir /S /Q C:\Strawberry
 
       - name: Install Windows packages
         run: choco install ninja
@@ -49,7 +56,6 @@ jobs:
           :: use msys2.cmd from setup-msys2 as Bash shell, as it doesn't have msys2_shell.cmd used normally by build.bat
           set "BASH=msys2 -c"
           build.bat
-        shell: cmd
 
       - name: Package release
         run: |
