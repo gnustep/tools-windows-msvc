@@ -22,9 +22,7 @@ cmake .. %CMAKE_OPTIONS% ^
 
 echo.
 echo ### Building
-set CCC_OVERRIDE_OPTIONS=x-TC x-TP x/TC x/TP
 ninja || exit /b 1
-set CCC_OVERRIDE_OPTIONS=
 
 echo.
 echo ### Installing

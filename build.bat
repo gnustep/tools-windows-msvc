@@ -87,8 +87,8 @@ where cmake
 if %errorlevel% neq 0 call :error_missing_command cmake, "Visual Studio or 'choco install cmake --installargs ADD_CMAKE_TO_PATH=System'"
 where ninja
 if %errorlevel% neq 0 call :error_missing_command ninja, "'choco install ninja'"
-where clang-cl
-if %errorlevel% neq 0 call :error_missing_command clang-cl, "Visual Studio or 'choco install llvm'"
+where clang
+if %errorlevel% neq 0 call :error_missing_command clang, "Visual Studio or 'choco install llvm'"
 call %BASH% 'true'
 if %errorlevel% neq 0 call :error_missing_command MSYS2, "'choco install msys2'"
 call %BASH% 'which make'

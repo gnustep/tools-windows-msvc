@@ -36,26 +36,26 @@ if "%ARCH%" == "x86" (
   exit /b 1
 )
 
-:: compiler/linker flags
-:: - -m32/64 flags are required to ensure the right architecture is built and linked,
-::   and setting these via CFLAGS doesn't work because GNUstep Make ignores those,
-::   so we set them as part of the compiler instead
-:: - LLD linker is required for linking Objective C
-if not defined CC set CC=clang %MFLAG%
-if not defined CXX set CXX=clang++ %MFLAG%
-if not defined OBJCC set OBJCC=clang %MFLAG%
-if not defined OBJCXX set OBJCXX=clang++ %MFLAG%
+:: compiler flags: -m32/64 is required to ensure the right architecture is
+:: built and linked. Unfortunately GNUstep Make ignores those, so we also set
+:: them as part of the compiler.
+if not defined CFLAGS set CFLAGS=%MFLAG%
+if not defined CXXFLAGS set CXXFLAGS=%MFLAG%
+if not defined OBJCFLAGS set OBJCFLAGS=%MFLAG%
+if not defined OBJCXXFLAGS set OBJCXXFLAGS=%MFLAG%
+if not defined ASMFLAGS set ASMFLAGS=%MFLAG%
+if not defined CC set "CC=clang %MFLAG%"
+if not defined CXX set "CXX=clang++ %MFLAG%"
+if not defined OBJCC set "OBJCC=clang %MFLAG%"
+if not defined OBJCXX set "OBJCXX=clang++ %MFLAG%"
+
+:: LLD linker is required for linking Objective C
 set LDFLAGS=-fuse-ld=lld
 
 :: common CMake options
-:: - CMAKE_C(XX)_COMPILER_TARGET are required to ensure the right architecture is built and linked
 set CMAKE_BUILD_TYPE=%BUILD_TYPE%
 if "%BUILD_TYPE%" == "Release" set CMAKE_BUILD_TYPE=RelWithDebInfo
 set CMAKE_OPTIONS=^
   -G Ninja ^
   -D CMAKE_BUILD_TYPE=%CMAKE_BUILD_TYPE% ^
   -D CMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%" ^
-  -D CMAKE_C_COMPILER=clang-cl ^
-  -D CMAKE_CXX_COMPILER=clang-cl ^
-  -D CMAKE_C_COMPILER_TARGET=%TARGET% ^
-  -D CMAKE_CXX_COMPILER_TARGET=%TARGET% ^
