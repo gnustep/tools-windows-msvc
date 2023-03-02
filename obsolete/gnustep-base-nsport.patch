@@ -1,0 +1,13 @@
+diff --git a/Headers/Foundation/NSPort.h b/Headers/Foundation/NSPort.h
+index 0ebd41cc0..92e5b52ff 100644
+--- a/Headers/Foundation/NSPort.h
++++ b/Headers/Foundation/NSPort.h
+@@ -33,7 +33,7 @@
+ #import	<Foundation/NSObject.h>
+ #import	<Foundation/NSMapTable.h>
+ 
+-#if	defined(__MINGW__)
++#if	defined(__MINGW__) || defined(_WIN32)
+ #include	<winsock2.h>
+ #include	<wininet.h>
+ #else

@@ -1,0 +1,19 @@
+diff --git a/Source/win32/GSFileHandle.m b/Source/win32/GSFileHandle.m
+index 2f13cf530..10c4b3ef0 100644
+--- a/Source/win32/GSFileHandle.m
++++ b/Source/win32/GSFileHandle.m
+@@ -52,8 +52,14 @@
+ #import "../GSPrivate.h"
+ #import "../GSNetwork.h"
+ 
++// #if defined(HAVE_SYS_FCNTL_H)
+ #include <fcntl.h>
++// #endif
++
++#if defined(HAVE_SYS_FILE_H)
+ #include <sys/file.h>
++#endif
++
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <io.h>
