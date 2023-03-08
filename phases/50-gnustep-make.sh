@@ -5,7 +5,8 @@ shopt -s inherit_errexit
 cd `dirname $0`
 
 export PROJECT=gnustep-make
-export GITHUB_REPO=keysight-eggplant/tools-make
+# export GITHUB_REPO=keysight-eggplant/tools-make
+export GITHUB_REPO=gnustep/tools-make
 export TAG=
 
 # load environment and prepare project

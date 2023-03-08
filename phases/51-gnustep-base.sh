@@ -8,7 +8,8 @@ export PROJECT=gnustep-base
 export GITHUB_REPO=keysight-eggplant/libs-base
 #export TAG=keysight-eggplant-msvc-port-changes
 #export TAG=keysight-eggplant-msvc
-export TAG=msvc-configure-changes
+#export TAG=msvc-configure-changes
+export TAG=keysight-eggplant-msvc-export
 
 # load environment and prepare project
 ../scripts/common.bat prepare_project
