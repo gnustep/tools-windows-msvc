@@ -1,0 +1,71 @@
+diff --git a/Instance/framework.make b/Instance/framework.make
+index 1a95a21f..9c30c5d6 100644
+--- a/Instance/framework.make
++++ b/Instance/framework.make
+@@ -178,6 +178,19 @@ FRAMEWORK_VERSION_DIR = $(GNUSTEP_BUILD_DIR)/$(FRAMEWORK_VERSION_DIR_NAME)
+ include $(GNUSTEP_MAKEFILES)/Instance/Shared/headers.make
+ include $(GNUSTEP_MAKEFILES)/Instance/Shared/pkgconfig.make
+ 
++# 
++# Manage the case that LIBRARY_NAME starts with 'lib', and the case
++# that it doesn't start with 'lib'.  In both cases, we need to create
++# a .so file whose name starts with 'lib'.
++#
++ifneq ($(filter lib%,$(GNUSTEP_INSTANCE)),)
++  LIBRARY_NAME_WITH_LIB = $(GNUSTEP_INSTANCE)
++  LIBRARY_NAME_WITHOUT_LIB = $(patsubst lib%,%,$(GNUSTEP_INSTANCE))
++else
++  LIBRARY_NAME_WITH_LIB = lib$(GNUSTEP_INSTANCE)
++  LIBRARY_NAME_WITHOUT_LIB = $(GNUSTEP_INSTANCE)
++endif
++
+ # On windows, this is unfortunately required.
+ ifeq ($(BUILD_DLL), yes)
+   LINK_AGAINST_ALL_LIBS = yes
+@@ -186,7 +199,7 @@ endif
+ ifeq ($(LINK_AGAINST_ALL_LIBS), yes)
+   # Link against all libs ... but not the one we're compiling! (not sure
+   # when this could happen with frameworks, anyway it makes sense)
+-  LIBRARIES_DEPEND_UPON += $(filter-out -l$(GNUSTEP_INSTANCE), $(ALL_LIBS))
++  LIBRARIES_DEPEND_UPON += $(filter-out -l$(LIBRARY_NAME_WITHOUT_LIB), $(ALL_LIBS))
+ endif
+ 
+ INTERNAL_LIBRARIES_DEPEND_UPON =				\
+@@ -284,11 +297,15 @@ endif
+ # __declspec(dllimport) when the library is not being compiled.
+ # __declspec(dllexport) is not particularly useful instead.
+ 
+-CLEAN_framework_NAME = $(subst -,_,$(GNUSTEP_INSTANCE))
++CLEAN_framework_NAME = $(subst -,_,$(LIBRARY_NAME_WITH_LIB))
+ SHARED_CFLAGS += -DBUILD_$(CLEAN_framework_NAME)_DLL=1
+ 
+ # FRAMEWORK_LIBRARY_FILE is the import library, libRenaissance.dll.a
+-FRAMEWORK_LIBRARY_FILE         = lib$(GNUSTEP_INSTANCE)$(DLL_LIBEXT)$(LIBEXT)
++ifeq ($(GNUSTEP_TARGET_OS), windows)
++  FRAMEWORK_LIBRARY_FILE         = $(LIBRARY_NAME_WITHOUT_LIB)$(LIBEXT)
++else
++  FRAMEWORK_LIBRARY_FILE         = $(LIBRARY_NAME_WITH_LIB)$(DLL_LIBEXT)$(LIBEXT)
++endif
+ VERSION_FRAMEWORK_LIBRARY_FILE = $(FRAMEWORK_LIBRARY_FILE)
+ SONAME_FRAMEWORK_FILE  = $(FRAMEWORK_LIBRARY_FILE)
+ 
+@@ -297,13 +314,17 @@ SONAME_FRAMEWORK_FILE  = $(FRAMEWORK_LIBRARY_FILE)
+ # the DLL library name.  Applications are linked explicitly to this
+ # INTERFACE_VERSION of the library; this works exactly in the same way
+ # as under Unix.
+-LIB_LINK_DLL_FILE    = $(DLL_PREFIX)$(GNUSTEP_INSTANCE)-$(subst .,_,$(INTERFACE_VERSION))$(DLL_LIBEXT)
++# LIB_LINK_DLL_FILE    = $(DLL_PREFIX)$(GNUSTEP_INSTANCE)-$(subst .,_,$(INTERFACE_VERSION))$(DLL_LIBEXT)
+ 
+ # LIB_LINK_PDB_FILE is the PDB symbol file. The program database (PDB)
+ # includes instructions for formatting trace messages so that they
+ # can be presented in a human-readable display.
+-LIB_LINK_PDB_FILE  = $(DLL_PREFIX)$(GNUSTEP_INSTANCE)-$(subst .,_,$(INTERFACE_VERSION))$(DLL_PDBEXT)
++# LIB_LINK_PDB_FILE  = $(DLL_PREFIX)$(GNUSTEP_INSTANCE)-$(subst .,_,$(INTERFACE_VERSION))$(DLL_PDBEXT)
+ 
++LIB_LINK_DLL_FILE    = $(DLL_PREFIX)$(LIBRARY_NAME_WITHOUT_LIB)-$(subst .,_,$(INTERFACE_VERSION))$(DLL_LIBEXT)
++ifeq ($(GNUSTEP_TARGET_OS), windows)
++  LIB__LINK_PDB_FILE  = $(DLL_PREFIX)$(LIBRARY_NAME_WITHOUT_LIB)-$(subst .,_,$(INTERFACE_VERSION))$(DLL_PDBEXT)
++endif
+ FRAMEWORK_OBJ_EXT = $(DLL_LIBEXT)
+ endif # BUILD_DLL
+ 

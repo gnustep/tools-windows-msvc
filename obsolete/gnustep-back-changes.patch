@@ -1,0 +1,573 @@
+diff --git a/GNUmakefile b/GNUmakefile
+index 03ad17f..054c4a5 100644
+--- a/GNUmakefile
++++ b/GNUmakefile
+@@ -47,7 +47,8 @@ include ./Version
+ #
+ # The list of subproject directories
+ #
+-SUBPROJECTS = Source Tools
++SUBPROJECTS = Source \
++#	Tools
+ 
+ ifneq ($(fonts), no)
+ SUBPROJECTS += Fonts
+diff --git a/Source/win32/WIN32Server.m b/Source/win32/WIN32Server.m
+index e98c401..6e3fcd1 100644
+--- a/Source/win32/WIN32Server.m
++++ b/Source/win32/WIN32Server.m
+@@ -63,6 +63,21 @@
+ 
+ #include <math.h>
+ 
++// category for accessing private ivars...
++@interface NSView (_GSPrivate_)
++
++- (struct _rFlagsType) rFlags;
++
++- (NSArray *) cursorRects;
++
++@end
++
++@interface GSTrackingRect (_GSPrivate_)
++
++- (NSRect) rectangle;
++
++@end
++
+ // To update the cursor..
+ static BOOL update_cursor = NO;
+ static BOOL should_handle_cursor = NO;
+@@ -187,7 +202,7 @@ BOOL CALLBACK LoadDisplayMonitorInfo(HMONITOR hMonitor,
+ - (void) callback: (id)sender
+ {
+   MSG msg;
+-  WINBOOL bRet; 
++  WinBOOL bRet; 
+ //NSLog(@"Callback");
+   while ((bRet = PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) != 0)
+     { 
+@@ -358,6 +373,9 @@ BOOL CALLBACK LoadDisplayMonitorInfo(HMONITOR hMonitor,
+       [self setHandlesWindowDecorations: YES];
+       [self setUsesNativeTaskbar: YES];
+ 
++      [self isDiscoveryServiceInstalled];
++      [self isDiscoveryServiceRunning];
++
+       [GSTheme theme];
+       { // Check user defaults
+ 	NSUserDefaults	*defs;
+@@ -1543,9 +1561,117 @@ LRESULT CALLBACK windowEnumCallback(HWND hwnd, LPARAM lParam)
+ #endif
+ }
+ 
++- (BOOL) isDiscoveryServiceInstalled
++{
++  return [self isServiceInstalled: @"Bonjour Service"];
++}
++
++- (BOOL) isDiscoveryServiceRunning
++{
++  return [self isServiceRunning: @"Bonjour Service"];
++}
++
+ @end
+ 
++@implementation WIN32Server (ServiceOps)
+ 
++- (BOOL)isServiceInstalled: (NSString*)serviceName
++{
++  BOOL      result                = NO;
++  SC_HANDLE serviceControlManager = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT);
++  
++  if (serviceControlManager == NULL)
++    {
++      NSDebugMLLog(@"WIN32", @"cannot connect to service control manager - status: %ld", GetLastError());
++      NSWarnMLog(@"cannot connect to service control manager - status: %ld", GetLastError());
++    }
++  else
++    {
++      // CHeck for service running...
++      SC_HANDLE serviceHandle = OpenService(serviceControlManager, TEXT("Bonjour Service"), SERVICE_QUERY_STATUS);
++      
++      if (serviceHandle == NULL)
++        {
++          NSDebugMLLog(@"WIN32", @"cannot open service 'Bonjour' - status: %ld", GetLastError());
++          NSWarnMLog(@"cannot open service 'Bonjour' - status: %ld", GetLastError());
++        }
++      else
++        {
++          NSDebugMLLog(@"WIN32", @"service 'Bonjour' is installed");
++          result = YES;
++          
++          // Cleanup...
++          CloseServiceHandle(serviceHandle);
++        }
++      
++      // Cleanup...
++      CloseServiceHandle(serviceControlManager);
++    }
++  
++  // return our result...
++  return result;
++}
++
++- (BOOL)isServiceRunning: (NSString*)serviceName
++{
++  BOOL      result                = NO;
++  SC_HANDLE serviceControlManager = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT);
++  
++  if (serviceControlManager == NULL)
++    {
++      NSDebugMLLog(@"WIN32", @"cannot connect to service control manager - status: %ld", GetLastError());
++      NSWarnMLog(@"cannot connect to service control manager - status: %ld", GetLastError());
++    }
++  else
++    {
++      // Check for service running...
++      //TCHAR     *name          = TEXT([serviceName UTF8String]);
++      SC_HANDLE  serviceHandle = OpenService(serviceControlManager, TEXT("Bonjour Service"), SERVICE_QUERY_STATUS);
++      
++      if (serviceHandle == NULL)
++        {
++          NSDebugMLLog(@"WIN32", @"cannot open service 'Bonjour' - status: %ld", GetLastError());
++          NSWarnMLog(@"cannot open service 'Bonjour' - status: %ld", GetLastError());
++        }
++      else
++        {
++          SERVICE_STATUS_PROCESS serviceStatusInfo;
++          DWORD                  ssiSize;
++          
++          if (0 == QueryServiceStatusEx(serviceHandle, SC_STATUS_PROCESS_INFO, (LPBYTE)&serviceStatusInfo, sizeof(serviceStatusInfo), &ssiSize))
++            {
++              NSDebugMLLog(@"WIN32", @"cannot query service 'Bonjour' - status: %ld", GetLastError());
++              NSWarnMLog(@"cannot query service 'Bonjour' - status: %ld", GetLastError());
++            }
++          else
++            {
++              NSDebugMLLog(@"WIN32", @"service 'Bonjour' current state: %ld", serviceStatusInfo.dwCurrentState);
++              result = (serviceStatusInfo.dwCurrentState == SERVICE_RUNNING);
++            }
++          
++          // Cleanup...
++          CloseServiceHandle(serviceHandle);
++        }
++      
++      // Cleanup...
++      CloseServiceHandle(serviceControlManager);
++    }
++  
++  // return our result...
++  return result;
++}
++
++- (BOOL) isDiscoveryServiceInstalled
++{
++  return [self isServiceInstalled: @"Bonjour Service"];
++}
++
++- (BOOL) isDiscoveryServiceRunning
++{
++  return [self isServiceRunning: @"Bonjour Service"];
++}
++
++@end
+ 
+ @implementation WIN32Server (WindowOps)
+ 
+@@ -2192,7 +2318,7 @@ LRESULT CALLBACK windowEnumCallback(HWND hwnd, LPARAM lParam)
+         {
+           HDC     hdc = GetDC(hwnd);
+           RECT    r   = GSWindowRectToMS(self, hwnd, rect);
+-          WINBOOL result;
++          WinBOOL result;
+ 
+           result = BitBlt(hdc, r.left, r.top, 
+                           (r.right - r.left), (r.bottom - r.top), 
+@@ -2831,9 +2957,9 @@ process_mouse_event(WIN32Server *svr, HWND hwnd, WPARAM wParam, LPARAM lParam,
+ 
+       subview = [[gswin contentView] hitTest: eventLocation];
+       
+-      if (subview != nil && subview->_rFlags.valid_rects)
++      if (subview != nil && [subview rFlags].valid_rects)
+ 	{
+-	  NSArray *tr = subview->_cursor_rects;
++	  NSArray *tr = [subview cursorRects];
+ 	  NSUInteger count = [tr count];
+ 
+ 	  // Loop through cursor rectangles
+@@ -2855,7 +2981,7 @@ process_mouse_event(WIN32Server *svr, HWND hwnd, WPARAM wParam, LPARAM lParam,
+ 		  /*
+ 		   * Check for presence of point in rectangle.
+ 		   */
+-		  now = NSMouseInRect(eventLocation, r->rectangle, NO);
++		  now = NSMouseInRect(eventLocation, [r rectangle], NO);
+ 
+ 		  // Mouse inside
+ 		  if (now)
+diff --git a/Source/win32/w32_windowdisplay.m b/Source/win32/w32_windowdisplay.m
+index 8f61e9e..d1ae727 100644
+--- a/Source/win32/w32_windowdisplay.m
++++ b/Source/win32/w32_windowdisplay.m
+@@ -59,7 +59,7 @@ invalidateWindow(WIN32Server *svr, HWND hwnd, RECT rect)
+   if (win->useHDC)
+     {
+       HDC hdc = GetDC((HWND)hwnd);
+-      WINBOOL result;
++      WinBOOL result;
+ 
+       result = BitBlt(hdc, rect.left, rect.top, 
+ 		      (rect.right - rect.left), (rect.bottom - rect.top), 
+diff --git a/Source/winlib/WIN32FontEnumerator.m b/Source/winlib/WIN32FontEnumerator.m
+index def325b..29e0f7c 100644
+--- a/Source/winlib/WIN32FontEnumerator.m
++++ b/Source/winlib/WIN32FontEnumerator.m
+@@ -33,6 +33,39 @@
+ #include "winlib/WIN32FontEnumerator.h"
+ #include "windows.h"
+ 
++
++@interface WIN32FontEnumerator (_GSPrivate_)
++
++- (NSMutableDictionary *) allFontFamilies;
++
++- (NSArray *) allFontNames;
++
++- (void) setAllFontFamilies: (NSMutableDictionary *)d;
++
++- (void) setAllFontNames: (NSArray *)a;
++
++- (NSString *) fontName;
++
++- (const CGFloat *)matrix;
++
++- (NSString *) familyName;
++
++- (NSCharacterSet *) coveredCharacterSet;
++
++- (unsigned) numberOfGlyphs;
++
++- (CGFloat) ascender;
++
++- (CGFloat) descender;
++
++- (BOOL) isFixedPitch;
++
++- (BOOL) isBaseFont;
++
++- (CGFloat) xHeight;
++
++@end
++
+ @implementation WIN32FontEnumerator
+ 
+ int win32_font_weight(LONG tmWeight)
+@@ -180,13 +213,13 @@ int CALLBACK fontfamilyenum(ENUMLOGFONTEXW *lpelfe, NEWTEXTMETRICEXW *lpntme,
+ 				     length: wcslen(lpelfe->elfFullName)];
+ 
+   familyName = win32_font_family(fontName);
+-  fontDefs = [enumer->allFontFamilies objectForKey: familyName];
++  fontDefs = [[enumer allFontFamilies] objectForKey: familyName];
+   if (fontDefs == nil)
+     {
+       NSArray *fontDef;
+ 
+       fontDefs = [NSMutableArray arrayWithCapacity: 10];
+-      [enumer->allFontFamilies setObject: fontDefs forKey: familyName];
++      [[enumer allFontFamilies] setObject: fontDefs forKey: familyName];
+       // FIXME: Need to loop over all fonts for this family
+       //add_font(fontDefs, fontName, lpelfe, lpntme);
+       //enumerate_font(fontDefs, familyName);
+@@ -219,7 +252,7 @@ int CALLBACK fontfamilyenum(ENUMLOGFONTEXW *lpelfe, NEWTEXTMETRICEXW *lpntme,
+ 	nil];
+       [fontDefs addObject: fontDef];
+ 
+-      [(NSMutableArray*)(enumer->allFontNames) addObject: fontName];
++      [(NSMutableArray*)([enumer allFontNames]) addObject: fontName];
+     }
+ 
+   return 1;
+@@ -236,8 +269,8 @@ int CALLBACK fontfamilyenum(ENUMLOGFONTEXW *lpelfe, NEWTEXTMETRICEXW *lpntme,
+       int res;
+       CREATE_AUTORELEASE_POOL(pool);
+ 
+-      allFontFamilies = [[NSMutableDictionary alloc] init];
+-      allFontNames  = [[NSMutableArray alloc] init];
++      [self setAllFontFamilies: [[NSMutableDictionary alloc] init]];
++      [self setAllFontNames: [[NSMutableArray alloc] init]];
+ 	
+       hdc = GetDC(NULL);
+       logfont.lfCharSet = DEFAULT_CHARSET;
+diff --git a/Source/winlib/WIN32FontInfo.m b/Source/winlib/WIN32FontInfo.m
+index 19c52ce..6d374ea 100644
+--- a/Source/winlib/WIN32FontInfo.m
++++ b/Source/winlib/WIN32FontInfo.m
+@@ -41,6 +41,66 @@ NSString *win32_font_family(NSString *fontName);
+ - (BOOL) setupAttributes;
+ @end
+ 
++@interface WIN32FontInfo (_GSPrivate_)
++
++- (void) setFontName: (NSString *)n;
++
++- (NSString *) fontName;
++
++- (void) setMatrix: (const CGFloat *)m;
++
++- (const CGFloat *)matrix;
++
++- (void) setFamilyName: (NSString *)name;
++
++- (NSString *) familyName;
++
++- (void) setCoveredCharacterSet: (NSCharacterSet *)c;
++
++- (NSCharacterSet *) coveredCharacterSet;
++
++- (void) setNumberOfGlyphs: (unsigned)n;
++
++- (unsigned) numberOfGlyphs;
++
++- (void) setAscender: (CGFloat)a;
++
++- (CGFloat) ascender;
++
++- (void) setDescender: (CGFloat)d;
++
++- (CGFloat) descender;
++
++- (void) setFixedPitch: (BOOL)f;
++
++- (BOOL) isFixedPitch;
++
++- (void) setBaseFont: (BOOL)f;
++
++- (BOOL) isBaseFont;
++
++- (void) setXHeight: (CGFloat)h;
++
++- (CGFloat) xHeight;
++
++- (void) setMaximumAdvancement: (NSSize)s;
++
++- (NSSize) maximumAdvancement;
++
++- (void) setFontBBox: (NSRect)r;
++
++- (void) setWeight: (int)w;
++
++- (int) weight;
++
++- (NSFontTraitMask) traits;
++
++- (void) setTraits: (NSFontTraitMask)t;
++
++- (void) setMostCompatibleStringEncoding: (NSStringEncoding)e;
++
++@end
++
+ @implementation WIN32FontInfo
+ 
+ - initWithFontName: (NSString*)name
+@@ -54,8 +114,8 @@ NSString *win32_font_family(NSString *fontName);
+     }
+ 
+   [super init];
+-  ASSIGN(fontName, name);
+-  memcpy(matrix, fmatrix, sizeof(matrix));
++  [self setFontName: name]; // ASSIGN(fontName, name);
++  [self setMatrix: fmatrix]; // memcpy(matrix, fmatrix, sizeof(matrix));
+ 
+   if (![self setupAttributes])
+     {
+@@ -193,7 +253,7 @@ NSLog(@"No glyph for U%d", c);
+ 
+ - (NSCharacterSet*) coveredCharacterSet
+ {
+-  if (coveredCharacterSet == nil)
++  if ([super coveredCharacterSet] == nil)
+     {
+       NSMutableCharacterSet	*ms;
+       unsigned	count; 
+@@ -222,7 +282,7 @@ NSLog(@"No glyph for U%d", c);
+           gs->cbThis = count;
+           if ((unsigned)GetFontUnicodeRanges(hdc, gs) == count)
+             {
+-              numberOfGlyphs = gs->cGlyphsSupported;
++              [super setNumberOfGlyphs: gs->cGlyphsSupported];
+               if (gs->flAccel == 1 /* GS_8BIT_INDICES */)
+                 {
+                   for (count = 0; count < gs->cRanges; count++)
+@@ -250,11 +310,11 @@ NSLog(@"No glyph for U%d", c);
+         }
+       SelectObject(hdc, old);
+       DeleteDC(hdc);
+-      coveredCharacterSet = [ms copy];
++      [super setCoveredCharacterSet: [ms copy]];
+       RELEASE(ms);
+     }
+ 
+-  return coveredCharacterSet;
++  return [super coveredCharacterSet];
+ }
+ 
+ - (void) drawString: (NSString*)string
+@@ -266,7 +326,7 @@ NSLog(@"No glyph for U%d", c);
+   old = SelectObject(hdc, hFont);
+   TextOutW(hdc,
+     p.x,
+-    p.y - ascender,
++    p.y - [super ascender],
+     (const unichar*)[string cStringUsingEncoding: NSUnicodeStringEncoding],
+     [string length]); 
+   SelectObject(hdc, old);
+@@ -278,7 +338,7 @@ NSLog(@"No glyph for U%d", c);
+   HFONT old;
+ 
+   old = SelectObject(hdc, hFont);
+-  TextOut(hdc, p.x, p.y - ascender, s, len); 
++  TextOut(hdc, p.x, p.y - [super ascender], s, len); 
+   SelectObject(hdc, old);
+ }
+ 
+@@ -300,17 +360,17 @@ NSLog(@"No glyph for U%d", c);
+     {
+       buf[i] = (WORD)s[i];
+     }
+-  TextOutW(hdc, p.x, p.y - ascender, buf, len); 
++  TextOutW(hdc, p.x, p.y - [super ascender], buf, len); 
+   SelectObject(hdc, old);
+ }
+ 
+ - (unsigned) numberOfglyphs
+ {
+-  if (coveredCharacterSet == nil)
++  if ([super coveredCharacterSet] == nil)
+     {
+       [self coveredCharacterSet];
+     }
+-  return numberOfGlyphs;
++  return [super numberOfGlyphs];
+ }
+ 
+ - (void) appendBezierPathWithGlyphs: (NSGlyph *)glyphs
+@@ -437,29 +497,29 @@ NSLog(@"No glyph for U%d", c);
+   NSRange range;
+ 
+   //NSLog(@"Creating Font %@ of size %f", fontName, matrix[0]);
+-  ASSIGN(familyName, win32_font_family(fontName));
++  [self setFamilyName: win32_font_family([super fontName])]; //;ASSIGN(familyName, win32_font_family([super fontName]));
+   memset(&logfont, 0, sizeof(LOGFONT));
+   hdc = CreateCompatibleDC(NULL);
+   // FIXME This hack gets the font size about right, but what is the real solution?
+-  logfont.lfHeight = (int)(matrix[0] * 4 / 3);
++  logfont.lfHeight = (int)([self matrix][0] * 4 / 3);
+   //logfont.lfHeight = -MulDiv(matrix[0], GetDeviceCaps(hdc, LOGPIXELSY), 72);
+ 
+-  range = [fontName rangeOfString: @"Bold"];
++  range = [[self fontName] rangeOfString: @"Bold"];
+   if (range.length)
+     logfont.lfWeight = FW_BOLD;
+ 
+-  range = [fontName rangeOfString: @"Italic"];
++  range = [[self fontName] rangeOfString: @"Italic"];
+   if (range.length)
+     logfont.lfItalic = 1; 
+ 
+   logfont.lfQuality = DEFAULT_QUALITY;
+   wcsncpy(logfont.lfFaceName,
+-    (const unichar*)[familyName cStringUsingEncoding: NSUnicodeStringEncoding],
++    (const unichar*)[[super familyName] cStringUsingEncoding: NSUnicodeStringEncoding],
+     LF_FACESIZE);
+   hFont = CreateFontIndirectW(&logfont);
+   if (!hFont)
+     {
+-      NSLog(@"Could not create font %@", fontName);
++      NSLog(@"Could not create font %@", [self fontName]);
+       DeleteDC(hdc);
+       return NO;
+     }
+@@ -470,35 +530,36 @@ NSLog(@"No glyph for U%d", c);
+   DeleteDC(hdc);
+ 
+   // Fill the ivars
+-  isFixedPitch = TMPF_FIXED_PITCH & metric.tmPitchAndFamily;
+-  isBaseFont = NO;
+-  ascender = metric.tmAscent;
++  [self setFixedPitch: TMPF_FIXED_PITCH & metric.tmPitchAndFamily];
++  [self setBaseFont: NO];
++  [self setAscender: metric.tmAscent];
+   //NSLog(@"Resulted in height %d and ascent %d", metric.tmHeight, metric.tmAscent);
+-  descender = -metric.tmDescent;
++  [self setDescender: -metric.tmDescent];
+   /* TODO */
+-  xHeight = ascender * 0.5;
+-  maximumAdvancement = NSMakeSize((float)metric.tmMaxCharWidth, 0.0);
+-
+-  fontBBox = NSMakeRect((float)(0),
+-			(float)(0 - metric.tmAscent),
+-			(float)metric.tmMaxCharWidth,
+-			(float)metric.tmHeight);
+-
+-  weight = win32_font_weight(metric.tmWeight);
+-
+-  traits = 0;
+-  if (weight >= 9)
+-    traits |= NSBoldFontMask;
++  [self setXHeight: [self ascender] * 0.5];
++  [self setMaximumAdvancement: NSMakeSize((float)metric.tmMaxCharWidth,
++					  0.0)];
++
++  [self setFontBBox: NSMakeRect((float)(0),
++				(float)(0 - metric.tmAscent),
++				(float)metric.tmMaxCharWidth,
++				(float)metric.tmHeight)];
++	
++  [self setWeight: win32_font_weight(metric.tmWeight)];
++
++  [self setTraits: 0];
++  if ([self weight] >= 9)
++    [self setTraits: [self traits] | NSBoldFontMask];
+   else
+-    traits |= NSUnboldFontMask;
++    [self setTraits: [self traits] | NSUnboldFontMask];
+ 
+   if (metric.tmItalic)
+-    traits |= NSItalicFontMask;
++    [self setTraits: [self traits] | NSItalicFontMask];
+   else
+-    traits |= NSUnitalicFontMask;
++    [self setTraits: [self traits] | NSUnitalicFontMask];
+ 
+   // FIXME Should come from metric.tmCharSet
+-  mostCompatibleStringEncoding = NSISOLatin1StringEncoding;
++  [self setMostCompatibleStringEncoding: NSISOLatin1StringEncoding];
+ 
+   return YES;
+ }
+diff --git a/configure b/configure
+index cd97dc9..5158905 100755
+--- a/configure
++++ b/configure
+@@ -5932,7 +5932,7 @@ else
+ fi
+ 
+ if test "$have_gdi32" = yes; then
+-  WIN32_LIBS="-lgdi32 -lm"
++  WIN32_LIBS="-lgdi32"
+ fi
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lmsimg32" >&5
+ $as_echo_n "checking for main in -lmsimg32... " >&6; }
+diff --git a/configure.ac b/configure.ac
+index 88a80f5..60ca76b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -393,7 +393,7 @@ AC_CHECK_LIB(X11, XInternAtoms,
+ #--------------------------------------------------------------------
+ AC_CHECK_LIB(gdi32, main, have_gdi32=yes, have_gdi32=no)
+ if test "$have_gdi32" = yes; then
+-  WIN32_LIBS="-lgdi32 -lm"
++  WIN32_LIBS="-lgdi32"
+ fi
+ AC_CHECK_LIB(msimg32, main, have_msimg32=yes, have_msimg32=no)
+ if test "$have_msimg32" = yes; then

@@ -1,0 +1,77 @@
+diff --git a/Source/NSBundle.m b/Source/NSBundle.m
+index 0e7bfc432..df2a26bfd 100644
+--- a/Source/NSBundle.m
++++ b/Source/NSBundle.m
+@@ -711,6 +711,8 @@ _find_main_bundle_for_tool(NSString *toolName)
+           return bundle;
+         }
+ 
++      NSWarnLog(@"\t *** frameworkClass = %@, _byClass = %@", frameworkClass, _byClass);
++
+       name = [NSString stringWithUTF8String: &frameworkClassName[12]];
+       /* Important - gnustep-make mangles framework names to encode
+        * them as ObjC class names.  Here we need to demangle them.  We
+@@ -727,6 +729,8 @@ _find_main_bundle_for_tool(NSString *toolName)
+        */
+       bundlePath = GSPrivateSymbolPath(frameworkClass);
+ 
++      NSWarnLog(@"\t *** name = %@, bundlePath = %@", name, bundlePath);
++
+       if ([bundlePath isEqualToString: GSPrivateExecutablePath()])
+ 	{
+ 	  /* Oops ... the NSFramework_xxx class is linked in the main
+@@ -784,7 +788,7 @@ _find_main_bundle_for_tool(NSString *toolName)
+ 	    {
+ 	      bundlePath = [bundlePath stringByDeletingLastPathComponent];
+ 	    }
+-#if defined(_WIN32)
++#if defined(_WIN32) || defined(_MSC_VER)
+ 	  /* On windows, the library (dll) is in the Tools area rather than
+ 	   * in the framework, so we can adjust the path here.
+ 	   */
+@@ -819,7 +823,7 @@ _find_main_bundle_for_tool(NSString *toolName)
+ 		  if (bundlePath)
+ 		    bundle = [[self alloc] initWithPath: bundlePath];
+ 		}
+-#if !defined(_WIN32)
++#if !defined(_WIN32) && !defined(_MSC_VER)
+ 	    }
+ #endif
+ 
+@@ -856,6 +860,8 @@ _find_main_bundle_for_tool(NSString *toolName)
+ 	    }
+ 	}
+ 
++      NSWarnLog(@"\t *** bundlePath = %@", bundlePath);
++      
+       [load_lock lock];
+       if (bundle == nil)
+ 	{
+@@ -931,6 +937,12 @@ _find_main_bundle_for_tool(NSString *toolName)
+ 	    }
+ 	}
+     }
++
++  if (bundle)
++    {
++      NSWarnLog(@"\t *** Bundle loaded %@", bundle);
++    }
++  
+   return bundle;
+ }
+ 
+diff --git a/Source/NSException.m b/Source/NSException.m
+index ea4bfa411..6090fde5b 100644
+--- a/Source/NSException.m
++++ b/Source/NSException.m
+@@ -1603,6 +1603,10 @@ callUncaughtHandler(id value)
+       _e_stack = [GSStackTrace new];
+       [_e_stack trace];
+     }
++  
++  NSWarnLog(@"\t *** name = %@, reason = %@", _e_name, _e_reason);
++
++  while (1);
+ 
+ #if     defined(_NATIVE_OBJC_EXCEPTIONS)
+   @throw self;
