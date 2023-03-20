@@ -6,7 +6,7 @@ cd `dirname $0`
 
 export PROJECT=gnustep-gui
 export GITHUB_REPO=gnustep/libs-gui
-export TAG=
+export TAG=keysight-msvc-staging
 # windows-msvc-fixes-additional
 
 # load environment and prepare project

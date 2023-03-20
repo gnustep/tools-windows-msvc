@@ -3,7 +3,7 @@ setlocal
 
 set PROJECT=libobjc2
 set GITHUB_REPO=gnustep/libobjc2
-set TAG=
+set TAG=keysight-msvc-staging
 
 :: load environment and prepare project
 call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1

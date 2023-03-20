@@ -6,7 +6,7 @@ cd `dirname $0`
 
 export PROJECT=gnustep-make
 export GITHUB_REPO=gnustep/tools-make
-export TAG=
+export TAG=keysight-msvc-staging
 
 # load environment and prepare project
 ../scripts/common.bat prepare_project
