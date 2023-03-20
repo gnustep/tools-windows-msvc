@@ -3,7 +3,7 @@ setlocal
 
 set PROJECT=libobjc2
 set GITHUB_REPO=gnustep/libobjc2
-set TAG=keysight-libobjc2-branch
+set TAG=keysight_libobjc2_branch
 
 :: load environment and prepare project
 call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
