@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.arch }}
+    name: ${{ matrix.arch }}-${{ matrix.type }}
     runs-on: windows-2019
     # don't run pull requests from local branches twice
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
@@ -18,6 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         arch: [x86, x64]
+        type: [Debug, Release]
 
     defaults:
       run:
@@ -55,17 +56,17 @@ jobs:
         run: |
           :: use msys2.cmd from setup-msys2 as Bash shell, as it doesn't have msys2_shell.cmd used normally by build.bat
           set "BASH=msys2 -c"
-          build.bat
+          build.bat --type ${{ env.type }}
 
       - name: Package release
         run: |
-          tar -a -cf GNUstep-Windows-MSVC-${{matrix.arch}}.zip C:\GNUstep\${{matrix.arch}}
+          tar -a -cf GNUstep-Windows-MSVC-${{matrix.arch}}-${{matrix.type}}.zip C:\GNUstep\${{matrix.arch}}\${{matrix.type}}
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v3
         with:
-          path: GNUstep-Windows-MSVC-${{matrix.arch}}.zip
-          name: GNUstep-Windows-MSVC-${{matrix.arch}}
+          path: GNUstep-Windows-MSVC-${{matrix.arch}}-${{matrix.type}}.zip
+          name: GNUstep-Windows-MSVC-${{matrix.arch}}-${{matrix.type}}
 
   prerelease:
     needs: build
