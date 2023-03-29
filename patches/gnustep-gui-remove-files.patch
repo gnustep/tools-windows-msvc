@@ -1,0 +1,32 @@
+diff --git a/GNUmakefile b/GNUmakefile
+index 97e45677..cece19e9 100644
+--- a/GNUmakefile
++++ b/GNUmakefile
+@@ -55,15 +55,12 @@ SUBPROJECTS = \
+ Source \
+ Images \
+ Sounds \
+-Model \
+ Tools \
+ Panels \
+ PrinterTypes \
+ TextConverters \
+-ColorPickers \
+ KeyBindings \
+ Resources \
+-Printing \
+ Themes \
+ Tests
+ 
+diff --git a/Source/GNUmakefile b/Source/GNUmakefile
+index ce41a088..0470f38f 100644
+--- a/Source/GNUmakefile
++++ b/Source/GNUmakefile
+@@ -110,7 +110,6 @@ NSDocumentController.m \
+ NSDrawer.m \
+ NSEPSImageRep.m \
+ NSEvent.m \
+-NSFileWrapperExtensions.m \
+ NSFont.m \
+ NSFontAssetRequest.m \
+ NSFontCollection.m \
