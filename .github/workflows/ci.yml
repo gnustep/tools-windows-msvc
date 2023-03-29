@@ -44,7 +44,7 @@ jobs:
         run: rmdir /S /Q C:\Strawberry
 
       - name: Install Windows packages
-        run: choco install ninja
+        run: choco install ninja nasm
 
       - uses: ilammy/msvc-dev-cmd@v1
         with:

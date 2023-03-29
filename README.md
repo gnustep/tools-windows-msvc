@@ -186,6 +186,7 @@ The MSYS2 installation is required to provide the Bash shell and Unix tools requ
 - Git (`choco install git`)
 - Ninja (`choco install ninja`)
 - MSYS2 (`choco install msys2`)
+- NASM (`choco install nasm`)
 
 **Unix tools**
 
