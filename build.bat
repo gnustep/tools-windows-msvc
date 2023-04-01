@@ -28,6 +28,7 @@ set "ROOT_DIR=%~dp0"
   if /i "%~1" == "--no-clean" set NO_CLEAN=1 & shift & goto getopts
   if /i "%~1" == "--no-update" set NO_UPDATE=1 & shift & goto getopts
   if /i "%~1" == "--patches" set "ADDITIONAL_PATCHES_DIR=%~2" & shift & shift & goto getopts
+  if /i "%~1" == "--no-gui" set NO_GUI=1 & shift & shift & goto getopts
   
   if not "%~1" == "" echo Unknown option: %~1 & exit 1
 
@@ -152,7 +153,9 @@ goto :eof
       if defined PHASE_IS_DEPENDENCY (
         call :build_phase
       )
-    ) else (
+    ) else if not defined NO_GUI (
+      call :build_phase
+    ) else if !PHASE_NUMBER! LEQ 40 (
       call :build_phase
     )
   )
@@ -185,6 +188,7 @@ goto :eof
   set PHASE=%1
   set PHASE_EXTENSION=%~x1
   set PHASE_NAME=%~n1
+  set PHASE_NUMBER=%PHASE_NAME:~0,2%
   if %PHASE_NAME:~0,1% == 1 (
     set PHASE_IS_DEPENDENCY=1
   ) else (
@@ -211,6 +215,7 @@ goto :eof
   echo   --no-clean               Skip the repository cleanup operation
   echo   --no-update              Skip the repository update operation
   echo   --patches DIR            Apply additional patches from given directory
+  echo   --no-gui                 Skip gnustep-gui and related libraries
   echo   -h, --help, /?           Print usage information and exit
   exit 1
 
