@@ -28,7 +28,7 @@ set "ROOT_DIR=%~dp0"
   if /i "%~1" == "--no-clean" set NO_CLEAN=1 & shift & goto getopts
   if /i "%~1" == "--no-update" set NO_UPDATE=1 & shift & goto getopts
   if /i "%~1" == "--patches" set "ADDITIONAL_PATCHES_DIR=%~2" & shift & shift & goto getopts
-  if /i "%~1" == "--no-gui" set NO_GUI=1 & shift & shift & goto getopts
+  if /i "%~1" == "--no-gui" set NO_GUI=1 & shift & goto getopts
   
   if not "%~1" == "" echo Unknown option: %~1 & exit 1
 
