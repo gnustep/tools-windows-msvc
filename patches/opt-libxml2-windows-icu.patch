@@ -1,9 +1,9 @@
 diff --git a/encoding.c b/encoding.c
-index 5465359f..7fb09e4c 100644
+index 52bc15ac..99232887 100644
 --- a/encoding.c
 +++ b/encoding.c
-@@ -44,7 +44,7 @@
- #include "enc.h"
+@@ -45,7 +45,7 @@
+ #include "private/error.h"
  
  #ifdef LIBXML_ICU_ENABLED
 -#include <unicode/ucnv.h>
@@ -12,10 +12,10 @@ index 5465359f..7fb09e4c 100644
  #define ICU_PIVOT_BUF_SIZE 1024
  typedef struct _uconv_t uconv_t;
 diff --git a/win32/Makefile.msvc b/win32/Makefile.msvc
-index f6a0182d..0dce87c0 100644
+index 7cc25b84..107c180b 100644
 --- a/win32/Makefile.msvc
 +++ b/win32/Makefile.msvc
-@@ -73,7 +73,7 @@ LIBS = $(LIBS) iconv.lib
+@@ -71,7 +71,7 @@ LIBS = $(LIBS) iconv.lib
  !if "$(STATIC)" == "1"
  LIBS = $(LIBS) advapi32.lib sicuuc.lib sicuin.lib sicudt.lib
  !else
@@ -24,3 +24,4 @@ index f6a0182d..0dce87c0 100644
  !endif
  !endif
  !if "$(WITH_ZLIB)" == "1"
+ 
