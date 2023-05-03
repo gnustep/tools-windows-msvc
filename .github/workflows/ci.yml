@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: ${{ matrix.arch }}-${{ matrix.type }}
-    runs-on: windows-2019
+    runs-on: windows-latest
     # don't run pull requests from local branches twice
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
 
@@ -45,6 +45,10 @@ jobs:
 
       - name: Install Windows packages
         run: choco install ninja nasm
+
+      - name: Upgrade LLVM
+        # Upgrade LLVM to get latest v16 release with fixes for Objective-C exception handling
+        run: choco upgrade llvm
 
       - uses: ilammy/msvc-dev-cmd@v1
         with:
