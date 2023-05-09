@@ -16,12 +16,6 @@ call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
 cd "%SRCROOT%\%PROJECT%\win32" || exit /b 1
 
 echo.
-echo ### Apply patches
-:: this commit are required for v1.1.34 to build on Windows
-:: (can be removed when updating to the next release)
-git cherry-pick --no-commit e2584eed1c84c18f16e42188c30d2c3d8e3e8853 || exit /b 1
-
-echo.
 echo ### Running configure
 set CONFIGURE_OPTS=
 if "%BUILD_TYPE%" == "Debug" (
