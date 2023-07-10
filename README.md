@@ -127,7 +127,7 @@ Place a breakpoint at the line `NSLog(@"Hello Objective-C");` and run from Visua
 
 ## Status and Known Issues
 
-* The toolchain supports both x64 and x86. However, on x86 libdispatch is not available due to a [build error](https://bugs.swift.org/browse/SR-14314).
+* The toolchain supports x64 only (due to a [build error](https://bugs.swift.org/browse/SR-14314) in libdispatch on x86).
 
 * LLVM/Clang has the following known issues with Objective-C code on Windows. For the time being, it is recommended to use Clang 13 (e.g. from Visual Studio 2019), until Clang 16 has been released which fixes most of them.
   - Using `@finally` crashing Clang ([issue](https://github.com/llvm/llvm-project/issues/43828), [issue](https://github.com/llvm/llvm-project/issues/51899))
