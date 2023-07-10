@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [x86, x64]
+        arch: [x64]
         type: [Debug, Release]
 
     defaults:
