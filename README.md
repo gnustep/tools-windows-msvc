@@ -129,15 +129,15 @@ Place a breakpoint at the line `NSLog(@"Hello Objective-C");` and run from Visua
 
 * The toolchain supports x64 only (due to a [build error](https://bugs.swift.org/browse/SR-14314) in libdispatch on x86).
 
-* LLVM/Clang has the following known issues with Objective-C code on Windows. For the time being, it is recommended to use Clang 13 (e.g. from Visual Studio 2019), until Clang 16 has been released which fixes most of them.
-  - Using `@finally` crashing Clang ([issue](https://github.com/llvm/llvm-project/issues/43828), [issue](https://github.com/llvm/llvm-project/issues/51899))
+* Older Clang releases had various issues with Objective-C code on Windows, most of which were fixed with Clang 16. It is therefore highly recommended to use Clang 16 or later.
   - Exception handling with ARC causing access violation ([issue](https://github.com/gnustep/libobjc2/issues/222), fixed in Clang 15)
   - Certain Objective-C++ code crashing Clang ([issue](https://github.com/llvm/llvm-project/issues/54556), affects Clang 14, fixed in Clang 15)
   - Objective-C class methods not working with ARC ([issue](https://github.com/llvm/llvm-project/issues/56952), affects Clang 14, fixed in Clang 16)
+  - Using `@finally` crashing Clang ([issue 1](https://github.com/llvm/llvm-project/issues/43828) and [2](https://github.com/llvm/llvm-project/issues/51899), not fixed)
 
 * The compilation will fail if the Windows home folder contains whitespace, e.g. `C:\Users\John Appleseed`.
 
-* When utilizing the built-in gnustep-make test suite's debug capabilities, the preferred debugger on Windows is lldb. lldb (from the Chocolatey package manager) links to `python310.dll`, but is not found if Python 3.10.x is not installed and added to PATH. The error message is obscure and doesn't mention the missing dependency. Install Python3 manually using the official Python Installer. After downloading and executing the installer, select `Add to PATH` and proceed with the installation. You can now use the lldb debugger.
+* When utilizing the built-in gnustep-make test suite's debug capabilities, the preferred debugger on Windows is LLDB. LLDB from the Chocolatey package manager links to `python310.dll`, but is not found if Python 3.10.x is not installed and added to PATH. The error message is obscure and doesn't mention the missing dependency. Install Python3 manually using the official Python Installer. After downloading and executing the installer, select `Add to PATH` and proceed with the installation. You can now use the LLDB debugger.
 
 
 ## Troubleshooting
@@ -180,8 +180,8 @@ The MSYS2 installation is required to provide the Bash shell and Unix tools requ
 
 **Windows tools**
 
-- Visual Studio 2019
-- Clang (via Visual Studio or `choco install llvm`)
+- Visual Studio 2019 or 2022
+- Clang 16 or later (`choco install llvm`)
 - CMake (via Visual Studio or `choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'`)
 - Git (`choco install git`)
 - Ninja (`choco install ninja`)
