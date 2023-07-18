@@ -47,12 +47,12 @@ When building in a Bash environment (like an MSYS2 shell), the `gnustep-config` 
 Alternatively, `clang-cl.exe` can be used to build Objective-C code directly in a Visual Studio environment like the "x64 Native Tools Command Prompt". Note that this requires prefixing some of the required compiler flags with `-Xclang` to pass them directly to Clang:
 
     # build test.m to produce an object file test.obj
-    clang-cl -I C:\GNUstep\x64\Debug\include -fobjc-runtime=gnustep-2.0 -Xclang -fexceptions -Xclang -fobjc-exceptions -fblocks -DGNUSTEP -DGNUSTEP_WITH_DLL -DGNUSTEP_RUNTIME=1 -D_NONFRAGILE_ABI=1 -D_NATIVE_OBJC_EXCEPTIONS /MDd /c test.m
+    clang-cl -I C:\GNUstep\x64\Debug\include -fobjc-runtime=gnustep-2.0 -Xclang -fexceptions -Xclang -fobjc-exceptions -fblocks -DGNUSTEP -DGNUSTEP_WITH_DLL -DGNUSTEP_RUNTIME=1 -D_NONFRAGILE_ABI=1 -D_NATIVE_OBJC_EXCEPTIONS /MDd /Z7 /c test.m
     
-    # link object file into executable
-    clang-cl test.obj gnustep-base.lib objc.lib dispatch.lib /MDd -o test.exe /link /LIBPATH:C:\GNUstep\x64\Debug\lib
+    # link object file into executable using the LLD linker
+    clang-cl test.obj gnustep-base.lib objc.lib dispatch.lib -fuse-ld=lld /MDd /Z7 -o test.exe /link /LIBPATH:C:\GNUstep\x64\Debug\lib
 
-Specify `/MDd` for debug builds, and `/MD` for release builds, in order to link against the same runtime libraries as the DLLs in `C:\GNUstep\x64\Debug` and `C:\GNUstep\x64\Release` respectively.
+Specify `/MDd` for debug builds, and `/MD` for release builds, in order to link against the same runtime libraries as the DLLs in `C:\GNUstep\x64\Debug` and `C:\GNUstep\x64\Release` respectively. Adding `/Z7` [adds full debug symbols](https://learn.microsoft.com/cpp/build/reference/z7-zi-zi-debug-information-format#z7).
 
 Note that the `GNUSTEP_WITH_DLL` definition is always required to enable annotation of the Objective-C objects defined in the GNUstep Base DLL with `__declspec(dllexport)`.
 
@@ -159,7 +159,7 @@ Please ensure that you correctly set "Library Directories".
 Please ensure that you added the required linking options in Linker > Input > Additional Dependencies.
 
 * `relocation against symbol in discarded section: __start_.objcrt$SEL`  
-Please ensure that you include some Objective-C code in your project. (This is currently required due to a [compiler/linker issue](https://github.com/llvm/llvm-project/issues/49025) when using the LLD linker. Alternatively you can use link.exe instead of LLD.)
+Please ensure that you include some Objective-C code in your project. This is currently required due to a [compiler/linker issue](https://github.com/llvm/llvm-project/issues/49025) when using the LLD linker.
 
 ### Runtime Errors
 
