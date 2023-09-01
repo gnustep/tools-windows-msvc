@@ -3,8 +3,7 @@ setlocal
 
 set PROJECT=libiconv
 set GITHUB_REPO=kiyolee/libiconv-win-build
-:: clamp to specific commit due to https://github.com/kiyolee/libiconv-win-build/issues/7
-set TAG=a03370a8cd61ffc38b94945aa1926f45cfaf6d40
+set TAG=
 
 :: load environment and prepare project
 call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
