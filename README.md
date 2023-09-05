@@ -28,6 +28,8 @@ To install a pre-built release, download it from [the releases on GitHub](https:
 
 You should end up with the folders `C:\GNUstep\x64\Debug` and `C:\GNUstep\x64\Release` when using the x64 toolchain. The explanations below and the example project assume this installation location.
 
+You also need a standard Windows release of Clang 16 or later, e.g. installed via [Chocolatey](https://community.chocolatey.org/packages/llvm) (`choco install llvm`) or the [latest official release](https://github.com/llvm/llvm-project/releases/latest) (download "LLVM-x.y.z-win64.exe"). The explanations below expect that Clang is available in your PATH. Note that using Clang from MSYS2/MinGW packages is not supported as they contain MinGW-specific patches.
+
 
 ## Using the Toolchain from the Command Line
 
