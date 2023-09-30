@@ -1,0 +1,13 @@
+diff --git a/GNUmakefile b/GNUmakefile
+index 03ad17f..029a521 100644
+--- a/GNUmakefile
++++ b/GNUmakefile
+@@ -47,7 +47,7 @@ include ./Version
+ #
+ # The list of subproject directories
+ #
+-SUBPROJECTS = Source Tools
++SUBPROJECTS = Source
+ 
+ ifneq ($(fonts), no)
+ SUBPROJECTS += Fonts
