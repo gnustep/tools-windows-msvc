@@ -1,0 +1,2 @@
+# always convert patch files to LF so `git apply` doesn't choke
+*.patch text eol=lf
