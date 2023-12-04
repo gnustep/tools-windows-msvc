@@ -11,6 +11,14 @@ export TAG=
 # load environment and prepare project
 ../scripts/common.bat prepare_project
 
+# set CFLAGS to enable optimizations and always generate debug info,
+# which is required because Autoconf doesn't recognize Clang to support
+# GNU C on Windows and therefore doesn't set CFLAGS to "-g -O2"
+if [ ! -v OPTFLAG ]; then
+  OPTFLAG=-O2
+fi
+CFLAGS="-g -gcodeview $OPTFLAG"
+
 cd "$SRCROOT/$PROJECT"
 
 echo
@@ -24,6 +32,7 @@ fi
   --prefix="$UNIX_INSTALL_PREFIX" \
   --with-library-combo=ng-gnu-gnu \
   --with-runtime-abi=gnustep-2.0 \
+  CFLAGS="$CFLAGS" \
   $CONFIGURE_OPTS
 
 echo
