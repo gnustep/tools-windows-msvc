@@ -14,7 +14,7 @@ export TAG=
 # set CFLAGS to enable optimizations and always generate debug info,
 # which is required because Autoconf doesn't recognize Clang to support
 # GNU C on Windows and therefore doesn't set CFLAGS to "-g -O2"
-if [ ! -v OPTFLAG ]; then
+if [[ ! -v OPTFLAG && "$BUILD_TYPE" == "Release" ]]; then
   OPTFLAG=-O2
 fi
 CFLAGS="-g -gcodeview $OPTFLAG"
