@@ -3,7 +3,13 @@ setlocal
 
 set PROJECT=libpng
 set GITHUB_REPO=glennrp/libpng
-set TAG=v1.6.39
+
+:: get the latest release tag from GitHub (DISABLED UNTIL v1.7.0 with WoA support has been released)
+::cd %~dp0
+::for /f "usebackq delims=" %%i in (`call %BASH% '../scripts/get-latest-github-release-tag.sh %GITHUB_REPO%'`) do (
+::  set TAG=%%i
+::)
+set TAG=master
 
 :: load environment and prepare project
 call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
