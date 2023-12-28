@@ -3,7 +3,7 @@
 
 [![CI](https://github.com/gnustep/tools-windows-msvc/actions/workflows/ci.yml/badge.svg)](https://github.com/gnustep/tools-windows-msvc/actions/workflows/ci.yml?query=branch%3Amaster)
 
-This project comprises a collection of scripts to build a modern GNUstep toolchain, with support for blocks and Automatic Reference Counting (ARC), using LLVM/Clang and the Visual Studio toolchain. The toolchain can be used to integrate Objective-C code in any Windows app, including Visual Studio projects using LLVM/Clang (see below), without using MinGW.
+This project comprises a collection of scripts to build a modern GNUstep toolchain for x64 or arm64 architectures using the Visual Studio toolchain and LLVM/Clang. The toolchain supports Objective-C 2.0 features like blocks and Automatic Reference Counting (ARC) and can be used to integrate Objective-C code in any native Windows app — including Visual Studio projects — using LLVM/Clang (without using MinGW).
 
 
 ## Libraries
@@ -129,13 +129,13 @@ Place a breakpoint at the line `NSLog(@"Hello Objective-C");` and run from Visua
 
 ## Status and Known Issues
 
-* The toolchain supports x64 only (due to a [build error](https://bugs.swift.org/browse/SR-14314) in libdispatch on x86).
-
 * Older Clang releases had various issues with Objective-C code on Windows, most of which were fixed with Clang 16. It is therefore highly recommended to use Clang 16 or later.
   - Exception handling with ARC causing access violation ([issue](https://github.com/gnustep/libobjc2/issues/222), fixed in Clang 15)
   - Certain Objective-C++ code crashing Clang ([issue](https://github.com/llvm/llvm-project/issues/54556), affects Clang 14, fixed in Clang 15)
   - Objective-C class methods not working with ARC ([issue](https://github.com/llvm/llvm-project/issues/56952), affects Clang 14, fixed in Clang 16)
   - Using `@finally` crashing Clang ([issue 1](https://github.com/llvm/llvm-project/issues/43828) and [2](https://github.com/llvm/llvm-project/issues/51899), not fixed)
+
+* Support for x86 is broken due to a [build error](https://bugs.swift.org/browse/SR-14314) in libdispatch.
 
 * The compilation will fail if the Windows home folder contains whitespace, e.g. `C:\Users\John Appleseed`.
 
@@ -205,7 +205,7 @@ Please make sure that you do _not_ have `gmake` installed in your MSYS2 environm
 
 ### Building
 
-Run the [build.bat](build.bat) script in either a x86 or x64 Native Tools Command Prompt from Visual Studio to build the toolchain for x86 or x64.
+Run the [build.bat](build.bat) script in a x86, x64, or arm64 Native Tools Command Prompt from Visual Studio to build the toolchain for x86/x64/arm64.
 
 ```
 Usage: build.bat
