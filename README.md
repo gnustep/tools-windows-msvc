@@ -183,12 +183,14 @@ The MSYS2 installation is required to provide the Bash shell and Unix tools requ
 **Windows tools**
 
 - Visual Studio 2019 or 2022
-- Clang 16 or later (`choco install llvm`)
-- CMake (via Visual Studio or `choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'`)
-- Git (`choco install git`)
-- Ninja (`choco install ninja`)
-- MSYS2 (`choco install msys2`)
-- NASM (`choco install nasm`)
+- Clang 16 or later (`winget install LLVM.LLVM`)
+- CMake (via Visual Studio or `winget install Kitware.CMake`)
+- Git (`winget install Git.Git`)
+- Ninja (`winget install Ninja-build.Ninja`)
+- MSYS2 (`winget install MSYS2.MSYS2`)
+- NASM (`winget install NASM.NASM`)
+
+The switch from Chocolatey to winget as the recommended package manager was made due to winget's support for Windows on ARM64.
 
 **Unix tools**
 
