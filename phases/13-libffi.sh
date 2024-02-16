@@ -47,7 +47,7 @@ rm -rf $TARGET
   --disable-docs \
   CC="$MSVCC" CXX="$MSVCC" LD=link \
   CPP="cl -nologo -EP" CXXCPP="cl -nologo -EP" \
-  CPPFLAGS="-DFFI_BUILDING_DLL" LDFLAGS="" CFLAGS="" \
+  CPPFLAGS="-DFFI_BUILDING_DLL" CFLAGS="" LDFLAGS="" \
 
 echo
 echo "### Building"
