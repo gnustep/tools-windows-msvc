@@ -28,7 +28,7 @@ To install a pre-built release, download it from [the releases on GitHub](https:
 
 You should end up with the folders `C:\GNUstep\x64\Debug` and `C:\GNUstep\x64\Release` when using the x64 toolchain. The explanations below and the example project assume this installation location.
 
-You also need a standard Windows release of Clang 16 or later, e.g. installed via [Chocolatey](https://community.chocolatey.org/packages/llvm) (`choco install llvm`) or the [latest official release](https://github.com/llvm/llvm-project/releases/latest) (download "LLVM-x.y.z-win64.exe"). The explanations below expect that Clang is available in your PATH. Note that using Clang from MSYS2/MinGW packages is not supported as they contain MinGW-specific patches.
+You also need a standard Windows release of Clang 16 or later, e.g. installed via [WinGet](https://learn.microsoft.com/en-us/windows/package-manager) (`winget install LLVM.LLVM`) or the [latest official release](https://github.com/llvm/llvm-project/releases/latest) (download "LLVM-x.y.z-win64.exe" for x86_64 or "LLVM-x.y.z-woa64.exe" for ARM64). The explanations below expect that Clang is available in your PATH. Note that using Clang from MSYS2/MinGW packages is not supported as they contain MinGW-specific patches.
 
 
 ## Using the Toolchain from the Command Line
@@ -190,8 +190,6 @@ The MSYS2 installation is required to provide the Bash shell and Unix tools requ
 - MSYS2 (`winget install MSYS2.MSYS2`)
 - NASM (`winget install NASM.NASM`)
 
-The switch from Chocolatey to winget as the recommended package manager was made due to winget's support for Windows on ARM64.
-
 **Unix tools**
 
 - Make
@@ -221,4 +219,4 @@ Usage: build.bat
 
 For each of the libraries, the script automatically downloads the source via Git into the `src` subdirectory, builds, and installs it.
 
-The toolchain is installed into `C:\GNUstep\[x86|x64]\[Debug|Release]`.
+The toolchain is installed into `C:\GNUstep\[x86|x64|arm64]\[Debug|Release]`.
