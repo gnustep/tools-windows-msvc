@@ -31,7 +31,7 @@ fi
   --host=$TARGET \
   --prefix="$UNIX_INSTALL_PREFIX" \
   --with-library-combo=ng-gnu-gnu \
-  --with-runtime-abi=gnustep-2.0 \
+  --with-runtime-abi=gnustep-2.2 \
   CFLAGS="$CFLAGS" \
   $CONFIGURE_OPTS
 
