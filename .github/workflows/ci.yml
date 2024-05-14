@@ -67,7 +67,7 @@ jobs:
           tar -a -cf GNUstep-Windows-MSVC-${{matrix.arch}}-${{matrix.type}}.zip C:\GNUstep\${{matrix.arch}}\${{matrix.type}}
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: GNUstep-Windows-MSVC-${{matrix.arch}}-${{matrix.type}}.zip
           name: GNUstep-Windows-MSVC-${{matrix.arch}}-${{matrix.type}}
