@@ -6,10 +6,7 @@ cd `dirname $0`
 
 export PROJECT=libffi
 export GITHUB_REPO=libffi/libffi
-#export TAG=`../scripts/get-latest-github-release-tag.sh $GITHUB_REPO`
-# Clamp to v3.4.2 release until issues with later releases are resolved:
-# https://github.com/gnustep/libs-base/issues/278
-export TAG=v3.4.2
+export TAG=`../scripts/get-latest-github-release-tag.sh $GITHUB_REPO`
 
 # load environment and prepare project
 ../scripts/common.bat prepare_project
