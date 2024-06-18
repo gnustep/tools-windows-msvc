@@ -24,6 +24,9 @@ if exist "%INSTALL_PREFIX%\lib\icuin.lib" (
   set "LIBS_PRIVATE=-licu"
 )
 
+:: libxml2 v2.13.0 and later requires BCrypt
+set "LIBS_PRIVATE=%LIBS_PRIVATE% -lbcrypt"
+
 cd "win32" || exit /b 1
 
 echo.
