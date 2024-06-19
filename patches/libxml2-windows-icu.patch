@@ -1,5 +1,38 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 723e2344..c513872e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -102,7 +102,7 @@ if(LIBXML2_WITH_ICONV)
+ endif()
+ 
+ if(LIBXML2_WITH_ICU)
+-    find_package(ICU REQUIRED COMPONENTS data i18n uc)
++    find_package(ICU REQUIRED COMPONENTS i18n uc)
+ endif()
+ 
+ if(LIBXML2_WITH_LZMA)
+@@ -368,9 +368,9 @@ if(LIBXML2_WITH_ICONV)
+ endif()
+ 
+ if(LIBXML2_WITH_ICU)
+-    target_link_libraries(LibXml2 PRIVATE ICU::data ICU::i18n ICU::uc)
++    target_link_libraries(LibXml2 PRIVATE ICU::i18n ICU::uc)
+     if(WIN32)
+-        set(ICU_LDFLAGS "-licudt -licuin -licuuc")
++        set(ICU_LDFLAGS "-licu")
+     else()
+         set(ICU_LDFLAGS "-licudata -licui18n -licuuc")
+     endif()
+@@ -433,7 +433,6 @@ set_target_properties(
+     IMPORT_PREFIX lib
+     OUTPUT_NAME xml2
+     POSITION_INDEPENDENT_CODE ON
+-    PREFIX lib
+     VERSION ${PROJECT_VERSION}
+     SOVERSION ${LIBXML_MAJOR_VERSION}
+ )
 diff --git a/encoding.c b/encoding.c
-index 52bc15ac..99232887 100644
+index 04c24e42..74305989 100644
 --- a/encoding.c
 +++ b/encoding.c
 @@ -45,7 +45,7 @@
@@ -12,10 +45,10 @@ index 52bc15ac..99232887 100644
  #define ICU_PIVOT_BUF_SIZE 1024
  typedef struct _uconv_t uconv_t;
 diff --git a/win32/Makefile.msvc b/win32/Makefile.msvc
-index 7cc25b84..107c180b 100644
+index ce877a5e..ad9b2197 100644
 --- a/win32/Makefile.msvc
 +++ b/win32/Makefile.msvc
-@@ -71,7 +71,7 @@ LIBS = $(LIBS) iconv.lib
+@@ -64,7 +64,7 @@ LIBS = $(LIBS) iconv.lib
  !if "$(STATIC)" == "1"
  LIBS = $(LIBS) advapi32.lib sicuuc.lib sicuin.lib sicudt.lib
  !else
@@ -24,26 +57,3 @@ index 7cc25b84..107c180b 100644
  !endif
  !endif
  !if "$(WITH_ZLIB)" == "1"
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 27ddacdc..96bf5e0c 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -99,7 +99,7 @@ if(LIBXML2_WITH_ICONV)
- endif()
-
- if(LIBXML2_WITH_ICU)
--    find_package(ICU REQUIRED COMPONENTS data i18n uc)
-+    find_package(ICU REQUIRED COMPONENTS i18n uc)
- endif()
-
- if(LIBXML2_WITH_LZMA)
-@@ -363,7 +363,7 @@ if(LIBXML2_WITH_ICONV)
- endif()
-
- if(LIBXML2_WITH_ICU)
--    target_link_libraries(LibXml2 PRIVATE ICU::data ICU::i18n ICU::uc)
-+    target_link_libraries(LibXml2 PRIVATE ICU::i18n ICU::uc)
-     if(WIN32)
-         set(ICU_LDFLAGS "-licudt -licuin -licuuc")
-     else()
- 
