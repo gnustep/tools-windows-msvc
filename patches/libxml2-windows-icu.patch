@@ -1,0 +1,49 @@
+diff --git a/encoding.c b/encoding.c
+index 52bc15ac..99232887 100644
+--- a/encoding.c
++++ b/encoding.c
+@@ -45,7 +45,7 @@
+ #include "private/error.h"
+ 
+ #ifdef LIBXML_ICU_ENABLED
+-#include <unicode/ucnv.h>
++#include <icu.h>
+ /* Size of pivot buffer, same as icu/source/common/ucnv.cpp CHUNK_SIZE */
+ #define ICU_PIVOT_BUF_SIZE 1024
+ typedef struct _uconv_t uconv_t;
+diff --git a/win32/Makefile.msvc b/win32/Makefile.msvc
+index 7cc25b84..107c180b 100644
+--- a/win32/Makefile.msvc
++++ b/win32/Makefile.msvc
+@@ -71,7 +71,7 @@ LIBS = $(LIBS) iconv.lib
+ !if "$(STATIC)" == "1"
+ LIBS = $(LIBS) advapi32.lib sicuuc.lib sicuin.lib sicudt.lib
+ !else
+-LIBS = $(LIBS) icuuc.lib icuin.lib icudt.lib
++LIBS = $(LIBS) icu.lib
+ !endif
+ !endif
+ !if "$(WITH_ZLIB)" == "1"
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 27ddacdc..96bf5e0c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -99,7 +99,7 @@ if(LIBXML2_WITH_ICONV)
+ endif()
+
+ if(LIBXML2_WITH_ICU)
+-    find_package(ICU REQUIRED COMPONENTS data i18n uc)
++    find_package(ICU REQUIRED COMPONENTS i18n uc)
+ endif()
+
+ if(LIBXML2_WITH_LZMA)
+@@ -363,7 +363,7 @@ if(LIBXML2_WITH_ICONV)
+ endif()
+
+ if(LIBXML2_WITH_ICU)
+-    target_link_libraries(LibXml2 PRIVATE ICU::data ICU::i18n ICU::uc)
++    target_link_libraries(LibXml2 PRIVATE ICU::i18n ICU::uc)
+     if(WIN32)
+         set(ICU_LDFLAGS "-licudt -licuin -licuuc")
+     else()
+ 
