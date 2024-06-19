@@ -19,7 +19,6 @@ The toolchain consists of the following libraries:
 - [libxml2](https://github.com/GNOME/libxml2)
 - [libxslt](https://github.com/GNOME/libxslt)
 - [libcurl](https://github.com/curl/curl)
-- [ICU](https://docs.microsoft.com/en-us/windows/win32/intl/international-components-for-unicode--icu-) (using system-provided DLL on Windows 10 version 1903 or later)
 
 
 ## Installation
@@ -174,9 +173,11 @@ Linking static libraries containing Objective-C categories into an executable or
 
 ## Building the Toolchain
 
+The toolchain requires Windows 10 version 1903 or later.
+
 ### Prerequisites
 
-Building the toolchain require the following tools to be installed and available in the PATH. Their presence is verified when building the toolchain.
+Building the toolchain requires the following tools to be installed and available in the PATH. Their presence is verified when building the toolchain.
 
 The MSYS2 installation is required to provide the Bash shell and Unix tools required to build some of the libraries, but no MinGW packages are needed. The Windows Clang installation is used to build all libraries.
 
