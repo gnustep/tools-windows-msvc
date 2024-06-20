@@ -44,16 +44,3 @@ index 04c24e42..74305989 100644
  /* Size of pivot buffer, same as icu/source/common/ucnv.cpp CHUNK_SIZE */
  #define ICU_PIVOT_BUF_SIZE 1024
  typedef struct _uconv_t uconv_t;
-diff --git a/win32/Makefile.msvc b/win32/Makefile.msvc
-index ce877a5e..ad9b2197 100644
---- a/win32/Makefile.msvc
-+++ b/win32/Makefile.msvc
-@@ -64,7 +64,7 @@ LIBS = $(LIBS) iconv.lib
- !if "$(STATIC)" == "1"
- LIBS = $(LIBS) advapi32.lib sicuuc.lib sicuin.lib sicudt.lib
- !else
--LIBS = $(LIBS) icuuc.lib icuin.lib icudt.lib
-+LIBS = $(LIBS) icu.lib
- !endif
- !endif
- !if "$(WITH_ZLIB)" == "1"
