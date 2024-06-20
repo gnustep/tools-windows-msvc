@@ -5,6 +5,8 @@
 
 This project comprises a collection of scripts to build a modern GNUstep toolchain for x64 or arm64 architectures using the Visual Studio toolchain and LLVM/Clang. The toolchain supports Objective-C 2.0 features like blocks and Automatic Reference Counting (ARC) and can be used to integrate Objective-C code in any native Windows app — including Visual Studio projects — using LLVM/Clang (without using MinGW).
 
+The toolchain supports Windows 10 version 1903 or later.
+
 
 ## Libraries
 
@@ -19,7 +21,6 @@ The toolchain consists of the following libraries:
 - [libxml2](https://github.com/GNOME/libxml2)
 - [libxslt](https://github.com/GNOME/libxslt)
 - [libcurl](https://github.com/curl/curl)
-- [ICU](https://docs.microsoft.com/en-us/windows/win32/intl/international-components-for-unicode--icu-) (using system-provided DLL on Windows 10 version 1903 or later)
 
 
 ## Installation
