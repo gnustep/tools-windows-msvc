@@ -39,5 +39,6 @@ ninja || exit /b 1
 
 echo.
 echo ### Installing
+
 :: libxml2-export.cmake is generated while installing libxml2
 ninja install || exit /b 1
