@@ -27,6 +27,7 @@ cscript configure.js ^
   %CONFIGURE_OPTS% ^
   "prefix=%INSTALL_PREFIX%" ^
   "include=%INSTALL_PREFIX%\include" ^
+  "include=%INSTALL_PREFIX%\include\libxml2" ^
   "lib=%INSTALL_PREFIX%\lib" ^
   "sodir=%INSTALL_PREFIX%\lib" ^
   || exit /b 1

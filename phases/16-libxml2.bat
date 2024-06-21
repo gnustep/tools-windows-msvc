@@ -13,36 +13,32 @@ for /f "usebackq delims=" %%i in (`call %BASH% '../scripts/get-latest-github-rel
 :: load environment and prepare project
 call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
 
-cd "%SRCROOT%\%PROJECT%" || exit \b 1
-cd "win32" || exit /b 1
+set BUILD_DIR="%SRCROOT%\%PROJECT%\build-%ARCH%-%BUILD_TYPE%"
+if exist "%BUILD_DIR%" (rmdir /S /Q "%BUILD_DIR%" || exit /b 1)
+mkdir "%BUILD_DIR%" || exit /b 1
+cd "%BUILD_DIR%" || exit /b 1
+
+SET UM_INCLUDE_DIR="%WindowsSdkDir%include\%WindowsSdkVersion%um"
 
 echo.
-echo ### Running configure
-set CONFIGURE_OPTS=
-if "%BUILD_TYPE%" == "Debug" (
-  set "CONFIGURE_OPTS=cruntime=/MDd debug=yes"
-)
-cscript configure.js ^
-  compiler=msvc ^
-  icu=yes xml_debug=no ^
-  %CONFIGURE_OPTS% ^
-  "prefix=%INSTALL_PREFIX%" ^
-  "include=%INSTALL_PREFIX%\include" ^
-  "lib=%INSTALL_PREFIX%\lib" ^
-  "sodir=%INSTALL_PREFIX%\lib" ^
+echo ### Running cmake
+cmake .. %CMAKE_OPTIONS% ^
+  -D BUILD_SHARED_LIBS=NO ^
+  -D LIBXML2_WITH_LZMA=NO ^
+  -D LIBXML2_WITH_PYTHON=NO ^
+  -D LIBXML2_WITH_ZLIB=NO ^
+  -D LIBXML2_WITH_TESTS=NO ^
+  -D LIBXML2_WITH_PROGRAMS=NO ^
+  -D LIBXML2_WITH_ICU=YES ^
+  -D ICU_INCLUDE_DIR=%UM_INCLUDE_DIR% ^
   || exit /b 1
 
 echo.
 echo ### Building
-:: we only build the static library
-nmake /f Makefile.msvc libxmla || exit /b 1
+ninja || exit /b 1
 
 echo.
 echo ### Installing
-:: rename libxml2_a.lib to xml2.lib to allow linking using -lxml2
-:: (the wildcard suffix is required to suppress the "file or directory" prompt)
-xcopy /Y /F "bin.msvc\libxml2_a.lib" "%INSTALL_PREFIX%\lib\xml2.lib*" || exit /b 1
-xcopy /Y /F "%SRCROOT%\%PROJECT%\include\libxml\*.h" "%INSTALL_PREFIX%\include\libxml\" || exit /b 1
 
-:: write pkgconfig file
-call "%~dp0\..\scripts\common.bat" write_pkgconfig libxml-2.0 %TAG% -DLIBXML_STATIC -lxml2 -licu || exit /b 1
+:: libxml2-export.cmake is generated while installing libxml2
+ninja install || exit /b 1
