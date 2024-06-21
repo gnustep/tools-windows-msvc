@@ -177,7 +177,7 @@ Linking static libraries containing Objective-C categories into an executable or
 
 ### Prerequisites
 
-Building the toolchain require the following tools to be installed and available in the PATH. Their presence is verified when building the toolchain.
+Building the toolchain requires the following tools to be installed and available in the PATH. Their presence is verified when building the toolchain.
 
 The MSYS2 installation is required to provide the Bash shell and Unix tools required to build some of the libraries, but no MinGW packages are needed. The Windows Clang installation is used to build all libraries.
 
