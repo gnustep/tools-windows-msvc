@@ -1,0 +1,20 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index fb352475..dd306465 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -242,7 +242,6 @@ set_target_properties(
+ 	IMPORT_PREFIX lib
+ 	OUTPUT_NAME xslt
+ 	POSITION_INDEPENDENT_CODE ON
+-	PREFIX lib
+ 	VERSION ${PROJECT_VERSION}
+ 	SOVERSION ${LIBXSLT_MAJOR_VERSION}
+ )
+@@ -335,7 +334,6 @@ set_target_properties(
+ 	IMPORT_PREFIX lib
+ 	OUTPUT_NAME exslt
+ 	POSITION_INDEPENDENT_CODE ON
+-	PREFIX lib
+ 	VERSION ${LIBEXSLT_VERSION}
+ 	SOVERSION ${LIBEXSLT_MAJOR_VERSION}
+ )

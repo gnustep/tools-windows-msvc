@@ -1,0 +1,15 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index fb352475..1d8270f1 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -526,6 +524,10 @@ set(EXSLT_INCLUDEDIR "-I\${includedir}")
+ set(EXSLT_LIBDIR "-L\${libdir}")
+ set(EXSLT_PRIVATE_LIBS "${XSLT_PRIVATE_LIBS} ${LIBGCRYPT_LIBS} ${LIBM}")
+ 
++if(NOT LIBXSLT_SHARED)
++	set(LIBXSLT_CFLAGS -DLIBXSLT_STATIC)
++endif()
++
+ file(RELATIVE_PATH PACKAGE_RELATIVE_PATH "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig" "${CMAKE_INSTALL_PREFIX}")
+ string(REGEX REPLACE "/$" "" PACKAGE_RELATIVE_PATH "${PACKAGE_RELATIVE_PATH}")
+ 

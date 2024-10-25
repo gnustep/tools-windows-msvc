@@ -1,0 +1,26 @@
+diff --git a/libexslt/libexslt.h b/libexslt/libexslt.h
+index af68f7d4..5b1ace7f 100644
+--- a/libexslt/libexslt.h
++++ b/libexslt/libexslt.h
+@@ -9,7 +9,7 @@
+ #ifndef __XSLT_LIBEXSLT_H__
+ #define __XSLT_LIBEXSLT_H__
+ 
+-#if defined(_WIN32) && !defined (__MINGW32__)
++#if defined(_WIN32) && !defined (__MINGW32__) && 0
+ #include <win32config.h>
+ #else
+ #include "config.h"
+diff --git a/libxslt/libxslt.h b/libxslt/libxslt.h
+index f81066c0..3344c570 100644
+--- a/libxslt/libxslt.h
++++ b/libxslt/libxslt.h
+@@ -23,7 +23,7 @@
+   #endif
+ #endif
+ 
+-#if defined(_WIN32) && !defined (__MINGW32__)
++#if defined(_WIN32) && !defined (__MINGW32__) && 0
+ #include <win32config.h>
+ #else
+ #include "config.h"
