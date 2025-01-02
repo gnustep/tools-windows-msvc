@@ -32,7 +32,8 @@ echo "### Running configure"
 
 echo
 echo "### Building"
-make -j`nproc`
+# define _UCRT_NOISY_NAN to work around https://developercommunity.visualstudio.com/t/NAN-is-no-longer-compile-time-constant-i/10688907
+make -j`nproc` CFLAGS=-D_UCRT_NOISY_NAN
 
 echo
 echo "### Installing"
