@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index f15095ff..9c760806 100644
+index 327c2a42..26ccfabf 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -362,7 +362,7 @@ endif()
@@ -11,6 +11,14 @@ index f15095ff..9c760806 100644
      list(APPEND XML_PRIVATE_LIBS "${ICU_LDFLAGS}")
      pkg_check_modules(ICU_PC IMPORTED_TARGET icu-uc)
      if(ICU_PC_FOUND)
+@@ -416,7 +416,6 @@ set_target_properties(
+     IMPORT_PREFIX lib
+     OUTPUT_NAME xml2
+     POSITION_INDEPENDENT_CODE ON
+-    PREFIX lib
+     VERSION ${PROJECT_VERSION}
+     SOVERSION ${LIBXML_SOVERSION}
+ )
 diff --git a/encoding.c b/encoding.c
 index a90694f5..a0b9a9c1 100644
 --- a/encoding.c
