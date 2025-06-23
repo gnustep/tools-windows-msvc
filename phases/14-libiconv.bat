@@ -21,7 +21,7 @@ if "%VSVERSION%" == "" (
 
 :: ARM-based builds have a different build configuration
 if "%ARCH%" == "arm64" (
-  set VSVERSION=%VSVERSION%-arm
+  set VSVERSION=%VSVERSION%-arm64
 )
 
 cd "%SRCROOT%\%PROJECT%\build-VS%VSVERSION%" || exit /b 1
