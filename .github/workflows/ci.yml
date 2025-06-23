@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: ${{ matrix.arch }}-${{ matrix.type }}
-    runs-on: ${{ contains(matrix.arch, 'arm64') && 'windows-11-arm' || 'windows-latest' }}
+    runs-on: ${{ contains(matrix.arch, 'arm64') && 'windows-11-arm' || 'windows-2025' }}
     # don't run pull requests from local branches twice
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
 
