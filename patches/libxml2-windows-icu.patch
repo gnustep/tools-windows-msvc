@@ -1,8 +1,8 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index c23fe75f..5cc294b2 100644
+index ab3d0d24..f8dcd44d 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -362,7 +362,7 @@ endif()
+@@ -355,7 +355,7 @@ endif()
  
  if(LIBXML2_WITH_ICU)
      target_link_libraries(LibXml2 PRIVATE ICU::uc)
@@ -11,19 +11,19 @@ index c23fe75f..5cc294b2 100644
      list(APPEND XML_PRIVATE_LIBS "${ICU_LDFLAGS}")
      pkg_check_modules(ICU_PC IMPORTED_TARGET icu-uc)
      if(ICU_PC_FOUND)
-@@ -417,7 +417,6 @@ set_target_properties(
+@@ -411,7 +411,6 @@ set_target_properties(
      IMPORT_PREFIX lib
      OUTPUT_NAME xml2
      POSITION_INDEPENDENT_CODE ON
 -    PREFIX lib
      VERSION "${LIBXML_SOVERSION}.${LIBXML_AGE}.${LIBXML_MICRO_VERSION}"
      SOVERSION ${LIBXML_SOVERSION}
- )
+     MACHO_COMPATIBILITY_VERSION ${LIBXML_MACHO_COMPAT}
 diff --git a/encoding.c b/encoding.c
-index a90694f5..a0b9a9c1 100644
+index 7dfd37aa..96c00a72 100644
 --- a/encoding.c
 +++ b/encoding.c
-@@ -48,7 +48,7 @@
+@@ -47,7 +47,7 @@
  #include "private/memory.h"
  
  #ifdef LIBXML_ICU_ENABLED
@@ -33,10 +33,10 @@ index a90694f5..a0b9a9c1 100644
  
  #define XML_HANDLER_STATIC (1 << 0)
 diff --git a/libxml2-config.cmake.cmake.in b/libxml2-config.cmake.cmake.in
-index de084bdf..39d30622 100644
+index ac15ded1..59121cc5 100644
 --- a/libxml2-config.cmake.cmake.in
 +++ b/libxml2-config.cmake.cmake.in
-@@ -124,7 +124,7 @@ if(NOT LIBXML2_SHARED)
+@@ -122,7 +122,7 @@ if(NOT LIBXML2_SHARED)
      endif()
  
      if(LIBXML2_WITH_ICU)
@@ -46,18 +46,18 @@ index de084bdf..39d30622 100644
          if(NOT ICU_FOUND)
              set(${CMAKE_FIND_PACKAGE_NAME}_FOUND FALSE)
 diff --git a/libxml2-config.cmake.in b/libxml2-config.cmake.in
-index 31036805..469d110b 100644
+index b70eb1dd..78de2cb8 100644
 --- a/libxml2-config.cmake.in
 +++ b/libxml2-config.cmake.in
-@@ -76,9 +76,9 @@ if(LIBXML2_WITH_THREADS)
- endif()
+@@ -75,9 +75,9 @@ if(NOT LIBXML2_SHARED)
+     endif()
  
- if(LIBXML2_WITH_ICU)
--    find_dependency(ICU COMPONENTS data i18n uc)
-+    find_dependency(ICU COMPONENTS i18n uc)
-     list(APPEND LIBXML2_LIBRARIES    ${ICU_LIBRARIES})
--    list(APPEND LIBXML2_INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:ICU::data>;\$<LINK_ONLY:ICU::i18n>;\$<LINK_ONLY:ICU::uc>")
-+    list(APPEND LIBXML2_INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:ICU::i18n>;\$<LINK_ONLY:ICU::uc>")
-     if(NOT ICU_FOUND)
-         set(${CMAKE_FIND_PACKAGE_NAME}_FOUND FALSE)
-         set(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE "ICU dependency was not found")
+     if(LIBXML2_WITH_ICU)
+-        find_dependency(ICU COMPONENTS data i18n uc)
++        find_dependency(ICU COMPONENTS i18n uc)
+         list(APPEND LIBXML2_LIBRARIES    ${ICU_LIBRARIES})
+-        list(APPEND LIBXML2_INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:ICU::data>;\$<LINK_ONLY:ICU::i18n>;\$<LINK_ONLY:ICU::uc>")
++	list(APPEND LIBXML2_INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:ICU::i18n>;\$<LINK_ONLY:ICU::uc>")
+         if(NOT ICU_FOUND)
+             set(${CMAKE_FIND_PACKAGE_NAME}_FOUND FALSE)
+             set(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE "ICU dependency was not found")
