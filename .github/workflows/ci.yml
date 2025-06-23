@@ -10,14 +10,14 @@ on:
 jobs:
   build:
     name: ${{ matrix.arch }}-${{ matrix.type }}
-    runs-on: windows-latest
+    runs-on: ${{ contains(matrix.arch, 'arm64') && 'windows-11-arm' || 'windows-latest' }}
     # don't run pull requests from local branches twice
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
 
     strategy:
       fail-fast: false
       matrix:
-        arch: [x64]
+        arch: [x64, arm64]
         type: [Debug, Release]
 
     defaults:
@@ -44,11 +44,10 @@ jobs:
         run: rmdir /S /Q C:\Strawberry
 
       - name: Install Windows packages
-        run: choco install ninja nasm
+        run: winget install Ninja-build.Ninja NASM
 
       - name: Upgrade LLVM
-        # Upgrade LLVM to get latest v16 release with fixes for Objective-C exception handling
-        run: choco upgrade llvm
+        run: winget install LLVM.LLVM
 
       - uses: ilammy/msvc-dev-cmd@v1
         with:
