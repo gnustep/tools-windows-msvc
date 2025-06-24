@@ -48,11 +48,14 @@ jobs:
         run: Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
         shell: pwsh
 
-      - name: Install Windows packages
-        run: winget install Ninja-build.Ninja NASM
+      - name: Install Ninja
+        run: winget install --disable-interactivity Ninja-build.Ninja
+
+      - name: Install NASM
+        run: winget install --disable-interactivity NASM
 
       - name: Upgrade LLVM
-        run: winget install LLVM.LLVM
+        run: winget install --disable-interactivity LLVM.LLVM
 
       - uses: ilammy/msvc-dev-cmd@v1
         with:
