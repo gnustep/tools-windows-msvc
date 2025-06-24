@@ -43,6 +43,52 @@ jobs:
         # so we delete everything that could mess up our builds
         run: rmdir /S /Q C:\Strawberry
 
+      - name: Install Winget Dependencies (ARM64) from Zip
+          if: contains(matrix.arch, 'arm64') # Assuming matrix.arch will be 'arm64' for this job
+          run: |
+            $tempDir = Join-Path $env:TEMP "WingetDependencies"
+            $zipFilePath = Join-Path $env:TEMP "DesktopAppInstaller_Dependencies.zip"
+            $arm64DepsDir = Join-Path $tempDir "arm64" # Path to the arm64 folder inside the unzipped content
+
+            # Create temporary directory if it doesn't exist
+            New-Item -ItemType Directory -Force -Path $tempDir | Out-Null
+
+            Write-Host "Downloading DesktopAppInstaller_Dependencies.zip to $zipFilePath..."
+            try {
+              Invoke-WebRequest -Uri https://github.com/microsoft/winget-cli/releases/download/v1.10.390/DesktopAppInstaller_Dependencies.zip -OutFile $zipFilePath -TimeoutSec 300
+            } catch {
+              Write-Error "Failed to download DesktopAppInstaller_Dependencies.zip: $($_.Exception.Message)"
+              exit 1
+            }
+
+            Write-Host "Extracting dependencies to $tempDir..."
+            try {
+              Expand-Archive -Path $zipFilePath -DestinationPath $tempDir -Force
+            } catch {
+              Write-Error "Failed to extract zip file: $($_.Exception.Message)"
+              exit 1
+            }
+
+            # Install ARM64 dependencies
+            Write-Host "Installing ARM64 dependencies from $arm64DepsDir..."
+            try {
+              # Get all .appx files in the arm64 directory
+              $arm64AppxFiles = Get-ChildItem -Path $arm64DepsDir -Filter "*.appx" -Recurse | Select-Object -ExpandProperty FullName
+
+              if ($arm64AppxFiles.Count -eq 0) {
+                Write-Warning "No ARM64 .appx files found in $arm64DepsDir. This might indicate an issue with the downloaded package or path."
+              } else {
+                foreach ($appxFile in $arm64AppxFiles) {
+                  Write-Host "Installing $appxFile..."
+                  Add-AppxPackage -Path $appxFile
+                }
+              }
+            } catch {
+              Write-Error "Failed to install ARM64 AppX packages: $($_.Exception.Message)"
+              exit 1
+            }
+          shell: pwsh
+
       - name: Install Winget (ARM64)
         if: contains(matrix.arch, 'arm64')
         run: |
