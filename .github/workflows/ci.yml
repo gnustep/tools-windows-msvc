@@ -43,12 +43,14 @@ jobs:
         # so we delete everything that could mess up our builds
         run: rmdir /S /Q C:\Strawberry
 
-      - name: Install Winget
+      - name: Install Winget Dependencies (ARM64)
         if: contains(matrix.arch, 'arm64')
-        run: Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
+        run: |
+          Invoke-WebRequest -Uri https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.8.6/Microsoft.UI.Xaml.2.8.arm64.appx -OutFile $env:TEMP\Microsoft.UI.Xaml.2.8.arm64.appx
+          Add-AppxPackage $env:TEMP\Microsoft.UI.Xaml.2.8.arm64.appx
         shell: pwsh
       
-      - name: Update Winget
+      - name: Install Winget
         if: contains(matrix.arch, 'arm64')
         run: Add-AppPackage https://aka.ms/GetWinGet
         shell: pwsh
