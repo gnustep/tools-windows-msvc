@@ -17,6 +17,9 @@ echo
 echo "### Loading GNUstep environment"
 . "$UNIX_INSTALL_PREFIX/share/GNUstep/Makefiles/GNUstep.sh"
 
+# Make sure that we only include configuration from the current install prefix
+export PKG_CONFIG_PATH="$UNIX_INSTALL_PREFIX/lib/pkgconfig"
+
 echo
 echo "### Running configure"
 ./configure \
