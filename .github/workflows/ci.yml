@@ -95,13 +95,14 @@ jobs:
         shell: pwsh
       
       - name: Install Ninja
-        run: winget install --accept-source-agreements --accept-package-agreements Ninja-build.Ninja
+        run: winget install --accept-source-agreements --accept-package-agreements Ninja-build.Ninja ${{ matrix.arch == 'arm64' && '--architecture arm64' || '' }}
 
       - name: Install NASM
         run: winget install --accept-source-agreements --accept-package-agreements NASM
 
       - name: Upgrade LLVM
-        run: winget install --accept-source-agreements --accept-package-agreements LLVM.LLVM
+        run: winget install --accept-source-agreements --accept-package-agreements LLVM.LLVM ${{ matrix.arch == 'arm64' && '--architecture arm64' || '' }}
+        shell: pwsh
 
       - uses: ilammy/msvc-dev-cmd@v1
         with:
