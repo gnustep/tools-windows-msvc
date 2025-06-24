@@ -48,6 +48,7 @@ jobs:
         run: |
           Invoke-WebRequest -Uri https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.8.6/Microsoft.UI.Xaml.2.8.arm64.appx -OutFile $env:TEMP\Microsoft.UI.Xaml.2.8.arm64.appx
           Add-AppxPackage $env:TEMP\Microsoft.UI.Xaml.2.8.arm64.appx
+          Add-AppxPackage 'https://aka.ms/Microsoft.VCLibs.arm64.14.00.Desktop.appx'
         shell: pwsh
       
       - name: Install Winget
