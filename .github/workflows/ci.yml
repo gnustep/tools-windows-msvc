@@ -47,6 +47,11 @@ jobs:
         if: contains(matrix.arch, 'arm64')
         run: Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
         shell: pwsh
+      
+      - name: Update Winget
+        if: contains(matrix.arch, 'arm64')
+        run: Add-AppPackage https://aka.ms/GetWinGet
+        shell: pwsh
 
       - name: Install Ninja
         run: winget install --accept-source-agreements --accept-package-agreements Ninja-build.Ninja
