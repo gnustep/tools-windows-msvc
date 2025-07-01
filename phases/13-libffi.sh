@@ -10,6 +10,7 @@ export TAG=`../scripts/get-latest-github-release-tag.sh $GITHUB_REPO`
 
 # load environment and prepare project
 ../scripts/common.bat prepare_project
+source ../scripts/bash-env.sh
 
 cd "$SRCROOT/$PROJECT" || exit /b 1
 

@@ -10,6 +10,7 @@ export TAG=
 
 # load environment and prepare project
 ../scripts/common.bat prepare_project
+source ../scripts/bash-env.sh
 
 cd "$SRCROOT/$PROJECT"
 

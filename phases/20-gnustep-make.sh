@@ -19,6 +19,8 @@ if [ ! -v OPTFLAG ]; then
 fi
 CFLAGS="-g -gcodeview $OPTFLAG"
 
+source ../scripts/bash-env.sh
+
 cd "$SRCROOT/$PROJECT"
 
 echo
