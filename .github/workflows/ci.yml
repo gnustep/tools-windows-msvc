@@ -43,11 +43,13 @@ jobs:
         # so we delete everything that could mess up our builds
         run: rmdir /S /Q C:\Strawberry
 
-      - name: Install Winget Dependencies from Zip
+
+      - name: Install Winget Dependencies from Zip (arm64)
+        if: contains(matrix.arch, 'arm64')
         run: |
           $tempDir = Join-Path $env:TEMP "WingetDependencies"
           $zipFilePath = Join-Path $env:TEMP "DesktopAppInstaller_Dependencies.zip"
-          $arm64DepsDir = Join-Path $tempDir "arm64" # Path to the arm64 folder inside the unzipped content
+          $archDepsDir = Join-Path $tempDir "${{ matrix.arch }}" # Path to the arm64 or x64 folder inside the unzipped content
 
           New-Item -ItemType Directory -Force -Path $tempDir | Out-Null
 
@@ -67,15 +69,15 @@ jobs:
             exit 1
           }
 
-          Write-Host "Installing dependencies from $arm64DepsDir..."
+          Write-Host "Installing dependencies from $archDepsDir..."
           try {
             # Get all .appx files in the arm64 directory
-            $arm64AppxFiles = Get-ChildItem -Path $arm64DepsDir -Filter "*.appx" -Recurse | Select-Object -ExpandProperty FullName
+            $appXFiles = Get-ChildItem -Path $archDepsDir -Filter "*.appx" -Recurse | Select-Object -ExpandProperty FullName
 
-            if ($arm64AppxFiles.Count -eq 0) {
-              Write-Warning "No .appx files found in $arm64DepsDir. This might indicate an issue with the downloaded package or path."
+            if ($appXFiles.Count -eq 0) {
+              Write-Warning "No .appx files found in $archDepsDir. This might indicate an issue with the downloaded package or path."
             } else {
-              foreach ($appxFile in $arm64AppxFiles) {
+              foreach ($appxFile in $appXFiles) {
                 Write-Host "Installing $appxFile..."
                 Add-AppxPackage -Path $appxFile
               }
@@ -86,21 +88,27 @@ jobs:
           }
         shell: pwsh
 
-      - name: Install Winget
+      - name: Install Winget (arm64)
+        if: contains(matrix.arch, 'arm64')
         run: |
           Invoke-WebRequest -Uri https://github.com/microsoft/winget-cli/releases/download/v1.10.390/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle -OutFile $env:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
           Add-AppxPackage $env:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
         shell: pwsh
       
-      - name: Install Ninja
-        run: winget install --accept-source-agreements --accept-package-agreements Ninja-build.Ninja ${{ matrix.arch == 'arm64' && '--architecture arm64' || '' }}
+      - name: Install Dependencies (arm64)
+        if: contains(matrix.arch, 'arm64')
+        run: |
+          winget install --accept-source-agreements --accept-package-agreements Ninja-build.Ninja ${{ matrix.arch == 'arm64' && '--architecture arm64' || '' }}
+          winget install --accept-source-agreements --accept-package-agreements NASM
+          winget install --accept-source-agreements --accept-package-agreements LLVM.LLVM ${{ matrix.arch == 'arm64' && '--architecture arm64' || '' }}
 
-      - name: Install NASM
-        run: winget install --accept-source-agreements --accept-package-agreements NASM
+      - name: Install Windows packages (x64)
+        if: contains(matrix.arch, 'x64')
+        run: choco install ninja nasm
 
-      - name: Upgrade LLVM
-        run: winget install --accept-source-agreements --accept-package-agreements LLVM.LLVM ${{ matrix.arch == 'arm64' && '--architecture arm64' || '' }}
-        shell: pwsh
+      - name: Upgrade LLVM (x64)
+        if: contains(matrix.arch, 'x64')
+        run: choco upgrade llvm
 
       - uses: ilammy/msvc-dev-cmd@v1
         with:
