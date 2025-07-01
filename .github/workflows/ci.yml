@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: ${{ matrix.arch }}-${{ matrix.type }}
-    runs-on: ${{ contains(matrix.arch, 'arm64') && 'windows-11-arm' || 'windows-latest' }}
+    runs-on: ${{ contains(matrix.arch, 'arm64') && 'windows-11-arm' || 'windows-2025' }}
     # don't run pull requests from local branches twice
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
 
@@ -95,20 +95,11 @@ jobs:
           Add-AppxPackage $env:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
         shell: pwsh
       
-      - name: Install Dependencies (arm64)
-        if: contains(matrix.arch, 'arm64')
+      - name: Install Dependencies
         run: |
           winget install --accept-source-agreements --accept-package-agreements Ninja-build.Ninja ${{ matrix.arch == 'arm64' && '--architecture arm64' || '' }}
           winget install --accept-source-agreements --accept-package-agreements NASM
           winget install --accept-source-agreements --accept-package-agreements LLVM.LLVM ${{ matrix.arch == 'arm64' && '--architecture arm64' || '' }}
-
-      - name: Install Windows packages (x64)
-        if: contains(matrix.arch, 'x64')
-        run: choco install ninja nasm
-
-      - name: Upgrade LLVM (x64)
-        if: contains(matrix.arch, 'x64')
-        run: choco upgrade llvm
 
       - uses: ilammy/msvc-dev-cmd@v1
         with:
@@ -120,7 +111,7 @@ jobs:
         run: |
           :: use msys2.cmd from setup-msys2 as Bash shell, as it doesn't have msys2_shell.cmd used normally by build.bat
           set "BASH=msys2 -c"
-          build.bat --type ${{ env.type }}
+          build.bat --type ${{ env.type }} --no-gui
 
       - name: Package release
         run: |
