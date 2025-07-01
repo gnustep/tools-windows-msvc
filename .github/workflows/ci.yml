@@ -43,8 +43,7 @@ jobs:
         # so we delete everything that could mess up our builds
         run: rmdir /S /Q C:\Strawberry
 
-      - name: Install Winget Dependencies (ARM64) from Zip
-        if: contains(matrix.arch, 'arm64')
+      - name: Install Winget Dependencies from Zip
         run: |
           $tempDir = Join-Path $env:TEMP "WingetDependencies"
           $zipFilePath = Join-Path $env:TEMP "DesktopAppInstaller_Dependencies.zip"
@@ -68,13 +67,13 @@ jobs:
             exit 1
           }
 
-          Write-Host "Installing ARM64 dependencies from $arm64DepsDir..."
+          Write-Host "Installing dependencies from $arm64DepsDir..."
           try {
             # Get all .appx files in the arm64 directory
             $arm64AppxFiles = Get-ChildItem -Path $arm64DepsDir -Filter "*.appx" -Recurse | Select-Object -ExpandProperty FullName
 
             if ($arm64AppxFiles.Count -eq 0) {
-              Write-Warning "No ARM64 .appx files found in $arm64DepsDir. This might indicate an issue with the downloaded package or path."
+              Write-Warning "No .appx files found in $arm64DepsDir. This might indicate an issue with the downloaded package or path."
             } else {
               foreach ($appxFile in $arm64AppxFiles) {
                 Write-Host "Installing $appxFile..."
@@ -82,13 +81,12 @@ jobs:
               }
             }
           } catch {
-            Write-Error "Failed to install ARM64 AppX packages: $($_.Exception.Message)"
+            Write-Error "Failed to install AppX packages: $($_.Exception.Message)"
             exit 1
           }
         shell: pwsh
 
-      - name: Install Winget (ARM64)
-        if: contains(matrix.arch, 'arm64')
+      - name: Install Winget
         run: |
           Invoke-WebRequest -Uri https://github.com/microsoft/winget-cli/releases/download/v1.10.390/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle -OutFile $env:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
           Add-AppxPackage $env:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
