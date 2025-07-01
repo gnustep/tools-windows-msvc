@@ -6,7 +6,7 @@ cd `dirname $0`
 
 export PROJECT=gnustep-base
 export GITHUB_REPO=gnustep/libs-base
-export TAG=
+export TAG=curl-configure
 
 # load environment and prepare project
 ../scripts/common.bat prepare_project
