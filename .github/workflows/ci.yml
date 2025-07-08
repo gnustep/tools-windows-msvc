@@ -99,7 +99,6 @@ jobs:
         run: |
           winget install --accept-source-agreements --accept-package-agreements Ninja-build.Ninja ${{ matrix.arch == 'arm64' && '--architecture arm64' || '' }}
           winget install --accept-source-agreements --accept-package-agreements NASM
-          winget install --accept-source-agreements --accept-package-agreements LLVM.LLVM ${{ matrix.arch == 'arm64' && '--architecture arm64' || '' }}
 
       - uses: ilammy/msvc-dev-cmd@v1
         with:
