@@ -25,10 +25,7 @@ set "ROOT_DIR=%~dp0"
   if /i "%~1" == "--type" set "BUILD_TYPES=%~2" & shift & shift & goto getopts
   if /i "%~1" == "--only" set "ONLY_PHASE=%~2" & shift & shift & goto getopts
   if /i "%~1" == "--only-dependencies" set ONLY_DEPENDENCIES=1 & shift & goto getopts
-  if /i "%~1" == "--no-clean" set NO_CLEAN=1 & shift & goto getopts
-  if /i "%~1" == "--no-update" set NO_UPDATE=1 & shift & goto getopts
   if /i "%~1" == "--patches" set "ADDITIONAL_PATCHES_DIR=%~2" & shift & shift & goto getopts
-  if /i "%~1" == "--no-gui" set NO_GUI=1 & shift & goto getopts
   
   if not "%~1" == "" echo Unknown option: %~1 & exit 1
 
@@ -83,15 +80,17 @@ echo.
 echo ### Checking prerequisites
 echo Using Bash shell: %BASH%
 where git
-if %errorlevel% neq 0 call :error_missing_command git, "'choco install git'"
+if %errorlevel% neq 0 call :error_missing_command git, "'winget install -e --id Git.Git'"
+where yq
+if %errorlevel% neq 0 call :error_missing_command git, "'winget install -e --id MikeFarah.yq'"
 where cmake
-if %errorlevel% neq 0 call :error_missing_command cmake, "Visual Studio or 'choco install cmake --installargs ADD_CMAKE_TO_PATH=System'"
+if %errorlevel% neq 0 call :error_missing_command cmake, "Visual Studio or 'winget install -e --id Kitware.CMake'"
 where ninja
-if %errorlevel% neq 0 call :error_missing_command ninja, "'choco install ninja'"
+if %errorlevel% neq 0 call :error_missing_command ninja, "'winget install -e --id Ninja-build.Ninja'"
 where clang
-if %errorlevel% neq 0 call :error_missing_command clang, "Visual Studio or 'choco install llvm'"
+if %errorlevel% neq 0 call :error_missing_command clang, "Visual Studio or 'winget install -e --id LLVM.LLVM'"
 call %BASH% 'true'
-if %errorlevel% neq 0 call :error_missing_command MSYS2, "'choco install msys2'"
+if %errorlevel% neq 0 call :error_missing_command MSYS2, "'winget install -e --id MSYS2.MSYS2'"
 call %BASH% 'which make'
 if %errorlevel% neq 0 call :error_missing_command make, "'pacman -S make' in MSYS2"
 call %BASH% 'which autoconf'
@@ -153,21 +152,11 @@ goto :eof
       if defined PHASE_IS_DEPENDENCY (
         call :build_phase
       )
-    ) else if not defined NO_GUI (
-      call :build_phase
-    ) else if !PHASE_NUMBER! LEQ 40 (
-      call :build_phase
-    )
+    call :build_phase
   )
   
   :: remove backup if all went well
   if exist "%INSTALL_PREFIX%.bak" (rmdir /S /Q "%INSTALL_PREFIX%.bak" || exit 1)
-
-  :: don't update projects for subsequent build types to avoid mismatching builds
-  set NO_UPDATE=1
-
-  :: always clean projects for subsequent build types
-  set NO_CLEAN=
   
   goto :eof
 
