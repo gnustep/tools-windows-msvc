@@ -16,9 +16,9 @@ for /f "usebackq tokens=*" %%A in (`yq ".[] | select(.name == \"%PROJECT%\") | .
 for /f "usebackq tokens=*" %%A in (`yq ".[] | select(.name == \"%PROJECT%\") | .archive" "%YAML_FILE%"`) do set ARCHIVE=%%A
 for /f "usebackq tokens=*" %%A in (`yq ".[] | select(.name == \"%PROJECT%\") | .sha256" "%YAML_FILE%"`) do set EXPECTED_SHA=%%A
 
-set ARCHIVE_URL=%ARCHIVE:${tag}=%TAG%%
+set ARCHIVE=!ARCHIVE:{TAG}=%TAG%!
 set CACHE_DIR=%ROOT_DIR%\cache
-set EXTRACT_DIR=%ROOT_DIR%\%SRCROOT%\%PROJECT%-%TAG%
+set EXTRACT_DIR=%SRCROOT%\%PROJECT%-%TAG%
 set FILE=%CACHE_DIR%\%PROJECT%-%TAG%.tar.gz
 
 if not exist "%CACHE_DIR%" mkdir "%CACHE_DIR%"
@@ -26,8 +26,8 @@ if not exist "%CACHE_DIR%" mkdir "%CACHE_DIR%"
 if exist "%FILE%" (
     echo Found cached %PROJECT% at %FILE%
 ) else (
-    echo Downloading %PROJECT% from %ARCHIVE_URL%
-    powershell -Command "Invoke-WebRequest -Uri '%ARCHIVE_URL%' -OutFile '%FILE%'"
+    echo Downloading %PROJECT% from %ARCHIVE%
+    powershell -Command "Invoke-WebRequest -Uri '%ARCHIVE%' -OutFile '%FILE%'"
 )
 
 for /f "usebackq tokens=*" %%H in (`powershell -Command "(Get-FileHash -Algorithm SHA256 '%FILE%').Hash.ToLower()"`) do set ACTUAL_SHA=%%H

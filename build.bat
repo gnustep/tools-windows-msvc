@@ -14,6 +14,7 @@ endlocal
 
 set "SCRIPT_NAME=%~0"
 set "ROOT_DIR=%~dp0"
+set YAML_FILE="%ROOT_DIR%\phases.yaml"
 
 :: parse command-line arguments
 :getopts
@@ -82,7 +83,7 @@ echo Using Bash shell: %BASH%
 where git
 if %errorlevel% neq 0 call :error_missing_command git, "'winget install -e --id Git.Git'"
 where yq
-if %errorlevel% neq 0 call :error_missing_command git, "'winget install -e --id MikeFarah.yq'"
+if %errorlevel% neq 0 call :error_missing_command yq, "'winget install -e --id MikeFarah.yq'"
 where cmake
 if %errorlevel% neq 0 call :error_missing_command cmake, "Visual Studio or 'winget install -e --id Kitware.CMake'"
 where ninja
@@ -152,6 +153,7 @@ goto :eof
       if defined PHASE_IS_DEPENDENCY (
         call :build_phase
       )
+    )
     call :build_phase
   )
   
