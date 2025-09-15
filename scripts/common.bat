@@ -12,102 +12,56 @@ exit /b %errorlevel%
   goto :eof
 
 :prepare_project
-  if not defined PROJECT (echo Missing PROJECT && exit /b 1)
-  if not defined REPO (
-    if defined GITHUB_REPO (
-      set REPO=https://github.com/%GITHUB_REPO%.git
-    ) else (
-      echo Missing REPO && exit /b 1
-    )
-  )
+for /f "usebackq tokens=*" %%A in (`yq ".[] | select(.name == \"%PROJECT%\") | .tag" "%YAML_FILE%"`) do set TAG=%%A
+for /f "usebackq tokens=*" %%A in (`yq ".[] | select(.name == \"%PROJECT%\") | .archive" "%YAML_FILE%"`) do set ARCHIVE=%%A
+for /f "usebackq tokens=*" %%A in (`yq ".[] | select(.name == \"%PROJECT%\") | .sha256" "%YAML_FILE%"`) do set EXPECTED_SHA=%%A
+
+set ARCHIVE_URL=%ARCHIVE:${tag}=%TAG%%
+set CACHE_DIR=%ROOT_DIR%\cache
+set EXTRACT_DIR=%ROOT_DIR%\%SRCROOT%\%PROJECT%-%TAG%
+set FILE=%CACHE_DIR%\%PROJECT%-%TAG%.tar.gz
+
+if not exist "%CACHE_DIR%" mkdir "%CACHE_DIR%"
+
+if exist "%FILE%" (
+    echo Found cached %PROJECT% at %FILE%
+) else (
+    echo Downloading %PROJECT% from %ARCHIVE_URL%
+    powershell -Command "Invoke-WebRequest -Uri '%ARCHIVE_URL%' -OutFile '%FILE%'"
+)
+
+for /f "usebackq tokens=*" %%H in (`powershell -Command "(Get-FileHash -Algorithm SHA256 '%FILE%').Hash.ToLower()"`) do set ACTUAL_SHA=%%H
+
+if /i "%ACTUAL_SHA%"=="%EXPECTED_SHA%" (
+    echo SHA256 verified for %PROJECT%
+) else (
+    echo ERROR: SHA256 mismatch for %PROJECT%
+    exit /b 1
+)
+
+if exist "%EXTRACT_DIR%" (
+    echo Removing existing extraction directory: %EXTRACT_DIR%
+    rmdir /s /q "%EXTRACT_DIR%"
+)
+
+echo Extracting %PROJECT% into %EXTRACT_DIR%
+mkdir "%EXTRACT_DIR%"
+cd "%EXTRACT_DIR%"
+tar --strip-components=1 -xzf "%FILE%"
+
   
-  cd "%SRCROOT%"
-  
-  :: clone project if needed
-  if not exist "%PROJECT%" (
-    echo.
-    echo ### Cloning project
-    git clone --recursive %REPO% %PROJECT% || exit /b 1
-  )
-  
-  cd %PROJECT%
-  
-  if defined NO_CLEAN (
-    echo.
-    echo ### Skipping project cleanup
-  ) else (
-    echo.
-    echo ### Cleaning project
-    git reset --hard || exit /b 1
-    git clean -qfdx || exit /b 1
-  )
-  
-  if defined NO_UPDATE (
-    echo.
-    echo ### Skipping project update
-  ) else (
-    echo.
-    :: check out tag/branch if any
-    if not "%TAG%" == "" (
-      echo ### Checking out "%TAG%"
-      git fetch --tags || exit /b 1
-      git checkout -q %TAG% || exit /b 1
-    )
-    
-    call :update_project || exit /b 1
-    
-    :: update submodules if needed (also init in case submodule was added)
-    git submodule sync --recursive || exit /b 1
-    git submodule update --recursive --init || exit /b 1
-  )
-  
-  for /F "tokens=*" %%P in ('dir /b /s ^"%ROOT_DIR%\patches\%PROJECT%-*.patch^" 2^>nul') do (
+for /F "tokens=*" %%P in ('dir /b /s ^"%ROOT_DIR%\patches\%PROJECT%-*.patch^" 2^>nul') do (
+  echo.
+  echo ### Applying %%~nxP
+  patch -p1 -i "%%P" || exit /b 1
+)
+
+if defined ADDITIONAL_PATCHES_DIR (
+  for /F "tokens=*" %%P in ('dir /b /s ^"%ADDITIONAL_PATCHES_DIR%\%PROJECT%-*.patch^" 2^>nul') do (
     echo.
     echo ### Applying %%~nxP
-    git apply -C1 %%P || exit /b 1
+    patch -p1 -i "%%P" || exit /b 1
   )
-  
-  if defined ADDITIONAL_PATCHES_DIR (
-    for /F "tokens=*" %%P in ('dir /b /s ^"%ADDITIONAL_PATCHES_DIR%\%PROJECT%-*.patch^" 2^>nul') do (
-      echo.
-      echo ### Applying %%~nxP
-      git apply -C1 %%P || exit /b 1
-    )
-  )
-  
-  goto :eof
+)
 
-:update_project
-  :: check if we should update project
-  set GIT_BRANCH=NONE
-  for /f "usebackq delims=" %%i in (`git symbolic-ref --short -q HEAD`) do (
-    call :set_git_branch %%i || exit /b 1
-  )
-  if not [%GIT_BRANCH%] == [NONE] (
-    call :update_project_2 || exit /b 1
-  ) else if "%TAG%" == "" (
-    echo NOT updating project [not on branch]
-  )
-  goto :eof
-
-:update_project_2
-  :: check if current branch has a remote
-  set GIT_REMOTE=NONE
-  for /f "usebackq delims=" %%i in (`git config --get branch.%GIT_BRANCH%.remote`) do (
-    call :set_git_remote %%i || exit /b 1
-  )
-  if not [%GIT_REMOTE%] == [NONE] (
-    echo ### Updating project
-    git pull --ff-only || exit /b 1
-  ) else (
-    echo ### NOT updating project [no remote for branch %GIT_BRANCH%]
-  )
-  goto :eof
-
-:set_git_branch
-  set GIT_BRANCH=%1
-  goto :eof
-  
-:set_git_remote
-  set GIT_REMOTE=%1
-  goto :eof
+goto :eof
