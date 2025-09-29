@@ -1,0 +1,380 @@
+From d5d32112d701dc8ed63fe7ca337f88372c8444fc Mon Sep 17 00:00:00 2001
+From: hmelder <service@hugomelder.com>
+Date: Thu, 9 Oct 2025 04:34:06 -0700
+Subject: [PATCH 1/6] remove unused CMake directory
+
+---
+ CMake/CMakeLists.txt   | 17 ------------
+ CMake/typeinfo_test.cc | 62 ------------------------------------------
+ 2 files changed, 79 deletions(-)
+ delete mode 100644 CMake/CMakeLists.txt
+ delete mode 100644 CMake/typeinfo_test.cc
+
+diff --git a/CMake/CMakeLists.txt b/CMake/CMakeLists.txt
+deleted file mode 100644
+index a16bffff..00000000
+--- a/CMake/CMakeLists.txt
++++ /dev/null
+@@ -1,17 +0,0 @@
+-cmake_minimum_required(VERSION 3.2)
+-project(test_cxx_runtime)
+-
+-add_executable(test_cxx_runtime typeinfo_test.cc)
+-add_executable(test_cxx_stdlib typeinfo_test.cc)
+-if (CXX_RUNTIME)
+-	if (CXX_RUNTIME MATCHES ".*libc\\+\\+abi.*")
+-		find_library(M_LIBRARY m)
+-		if (M_LIBRARY)
+-			target_link_libraries(test_cxx_runtime ${M_LIBRARY})
+-		endif()
+-	endif()
+-	set(CMAKE_CXX_IMPLICIT_LINK_LIBRARIES "")
+-	target_link_libraries(test_cxx_runtime ${CXX_RUNTIME})
+-	set_target_properties(test_cxx_runtime PROPERTIES
+-		LINKER_LANGUAGE C)
+-endif()
+diff --git a/CMake/typeinfo_test.cc b/CMake/typeinfo_test.cc
+deleted file mode 100644
+index 1d5536b2..00000000
+--- a/CMake/typeinfo_test.cc
++++ /dev/null
+@@ -1,62 +0,0 @@
+-#include <stdint.h>
+-
+-namespace __cxxabiv1
+-{
+-	struct __class_type_info;
+-}
+-
+-using __cxxabiv1::__class_type_info;
+-
+-namespace std
+-{
+-	/**
+-	 * std::type_info defined with the GCC ABI.  This may not be exposed in
+-	 * public headers, but is required for correctly implementing the unified
+-	 * exception model.
+-	 */
+-	class type_info
+-	{
+-				public:
+-				virtual ~type_info();
+-				bool operator==(const type_info &) const;
+-				bool operator!=(const type_info &) const;
+-				bool before(const type_info &) const;
+-				private:
+-				type_info(const type_info& rhs);
+-				type_info& operator= (const type_info& rhs);
+-				const char *__type_name;
+-				protected:
+-				type_info(const char *name): __type_name(name) { }
+-				public:
+-				const char* name() const { return __type_name; }
+-				virtual bool __is_pointer_p() const;
+-				virtual bool __is_function_p() const;
+-				virtual bool __do_catch(const type_info *thrown_type,
+-				                        void **thrown_object,
+-				                        unsigned outer) const;
+-				virtual bool __do_upcast(
+-				                const __class_type_info *target,
+-				                void **thrown_object) const;
+-	};
+-}
+-
+-class type_info2 : public std::type_info
+-{
+-	public:
+-	type_info2() : type_info("foo") {}
+-	virtual bool __is_pointer_p() const; 
+-	virtual bool __is_function_p() const { return true; }
+-	virtual bool __do_catch(const type_info *thrown_type,
+-	                        void **thrown_object,
+-	                        unsigned outer) const { return true; }
+-	virtual bool __do_upcast(
+-					const __class_type_info *target,
+-					void **thrown_object) const { return true; };
+-};
+-bool type_info2::__is_pointer_p() const { return true; }
+-
+-int main()
+-{
+-	type_info2 s;
+-	return s.__is_pointer_p();
+-}
+
+From 9d8fb81d30bd298cbe06a474ee8d14d4cfb000c9 Mon Sep 17 00:00:00 2001
+From: hmelder <service@hugomelder.com>
+Date: Thu, 9 Oct 2025 04:50:11 -0700
+Subject: [PATCH 2/6] Add FindBlocksRuntime.cmake from the libdispatch project
+
+This is a slightly modified version of the file found in swift-corelibs-libdispatch. Notabily, the non-existent HINTS are removed.
+---
+ cmake/FindBlocksRuntime.cmake | 44 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+ create mode 100644 cmake/FindBlocksRuntime.cmake
+
+diff --git a/cmake/FindBlocksRuntime.cmake b/cmake/FindBlocksRuntime.cmake
+new file mode 100644
+index 00000000..c623065e
+--- /dev/null
++++ b/cmake/FindBlocksRuntime.cmake
+@@ -0,0 +1,44 @@
++#.rst:
++# FindBlocksRuntime
++# -----------------
++#
++# Find libBlocksRuntime library and headers.
++#
++# The module defines the following variables:
++#
++# ##
++#
++# BlocksRuntime_FOUND        - true if libBlocksRuntime was found
++# BlocksRuntime_INCLUDE_DIR  - include search path
++# BlocksRuntime_LIBRARIES    - libraries to link
++
++if(BlocksRuntime_INCLUDE_DIR AND BlocksRuntime_LIBRARIES)
++  set(BlocksRuntime_FOUND TRUE)
++else()
++  find_path(BlocksRuntime_INCLUDE_DIR
++            NAMES
++              Block.h Block_private.h)
++  find_library(BlocksRuntime_LIBRARIES
++               NAMES
++                 BlocksRuntime libBlocksRuntime)
++
++  include(FindPackageHandleStandardArgs)
++  find_package_handle_standard_args(BlocksRuntime
++                                    REQUIRED_VARS
++                                      BlocksRuntime_LIBRARIES
++                                      BlocksRuntime_INCLUDE_DIR)
++
++  mark_as_advanced(BlocksRuntime_LIBRARIES BlocksRuntime_INCLUDE_DIR)
++endif()
++
++if(BlocksRuntime_FOUND)
++  if(NOT TARGET BlocksRuntime::BlocksRuntime)
++    add_library(BlocksRuntime::BlocksRuntime UNKNOWN IMPORTED)
++    set_target_properties(BlocksRuntime::BlocksRuntime
++                          PROPERTIES
++                            IMPORTED_LOCATION
++                              ${BlocksRuntime_LIBRARIES}
++                            INTERFACE_INCLUDE_DIRECTORIES
++                              ${BlocksRuntime_INCLUDE_DIR})
++  endif()
++endif()
+
+From 08acb0aacbdd8afd5f52510d4b3013c004a54b0c Mon Sep 17 00:00:00 2001
+From: hmelder <service@hugomelder.com>
+Date: Thu, 9 Oct 2025 04:34:24 -0700
+Subject: [PATCH 3/6] CMakeLists.txt: Use FindBlocksRuntime
+
+Use cmake/FindBlocksRuntime.cmake to locate the external blocks runtime,
+and do not compile the internal one.
+---
+ CMakeLists.txt | 46 ++++++++++++++++++++++++++++------------------
+ 1 file changed, 28 insertions(+), 18 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 3f073375..e2468ed3 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -26,6 +26,9 @@ if (MINGW)
+ 	set(CMAKE_OBJCXX_IMPLICIT_INCLUDE_DIRECTORIES ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
+ endif ()
+ 
++list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
++list(APPEND CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX})
++
+ INCLUDE (CheckCXXSourceCompiles)
+ INCLUDE (FetchContent)
+ INCLUDE (CheckSymbolExists)
+@@ -50,7 +53,6 @@ add_compile_definitions(GNUSTEP __OBJC_RUNTIME_INTERNAL__=1 __OBJC_BOOL)
+ set(CMAKE_CXX_STANDARD 17)
+ 
+ set(libobjc_ASM_SRCS 
+-	block_trampolines.S
+ 	objc_msgSend.S)
+ set(libobjc_OBJCXX_SRCS 
+ 	arc.mm
+@@ -62,7 +64,6 @@ set(libobjc_OBJC_SRCS
+ 	properties.m)
+ set(libobjc_C_SRCS 
+ 	alias_table.c
+-	block_to_imp.c
+ 	builtin_classes.c
+ 	caps.c
+ 	category_loader.c
+@@ -105,6 +106,7 @@ set(libobjc_HDRS
+ set(libobjc_CXX_SRCS
+ 	selector_table.cc
+ 	)
++
+ # Windows does not use DWARF EH, except when using the GNU ABI (MinGW)
+ if (WIN32 AND NOT MINGW)
+ 	list(APPEND libobjc_CXX_SRCS eh_win32_msvc.cc)
+@@ -154,6 +156,11 @@ add_compile_definitions($<$<BOOL:${STRICT_APPLE_COMPATIBILITY}>:STRICT_APPLE_COM
+ configure_file(objc/objc-config.h.in objc/objc-config.h @ONLY)
+ include_directories("${PROJECT_BINARY_DIR}/objc/")
+ 
++if (EMBEDDED_BLOCKS_RUNTIME)
++	list(APPEND libobjc_ASM_SRCS block_trampolines.S)
++	list(APPEND libobjc_C_SRCS block_to_imp.c)
++endif()
++
+ if (OLDABI_COMPAT)
+ 	list(APPEND libobjc_C_SRCS legacy.c abi_version.c statics_loader.c)
+ 	add_definitions(-DOLDABI_COMPAT=1)
+@@ -242,18 +249,9 @@ if (EMBEDDED_BLOCKS_RUNTIME)
+ 	list(APPEND libobjc_HDRS objc/blocks_runtime.h)
+ 	add_definitions(-DEMBEDDED_BLOCKS_RUNTIME)
+ else ()
+-	find_library(BLOCKS_RUNTIME_LIBRARY BlocksRuntime)
+-	if (BLOCKS_RUNTIME_LIBRARY)
+-		set(CMAKE_REQUIRED_LIBRARIES ${BLOCKS_RUNTIME_LIBRARY})
+-		check_symbol_exists(_Block_use_RR2 "Block_private.h" HAVE_BLOCK_USE_RR2)
+-		if (HAVE_BLOCK_USE_RR2)
+-			add_definitions(-DHAVE_BLOCK_USE_RR2)
+-		else ()
+-			message(FATAL_ERROR "libBlocksRuntime does not contain _Block_use_RR2(). Enable EMBEDDED_BLOCKS_RUNTIME to use the built-in blocks runtime.")
+-		endif ()
+-		unset(CMAKE_REQUIRED_LIBRARIES)
+-	else ()
+-		message(FATAL_ERROR "libBlocksRuntime not found. Enable EMBEDDED_BLOCKS_RUNTIME to use the built-in blocks runtime.")
++	find_package(BlocksRuntime)
++	if (NOT BlocksRuntime_FOUND)
++		message(FATAL_ERROR "An external blocks runtime is required when not using the embedded one.")
+ 	endif ()
+ endif ()
+ 
+@@ -270,6 +268,22 @@ if (WIN32 AND NOT MINGW)
+ 	target_link_libraries(objc PUBLIC ntdll.dll)
+ endif()
+ 
++if (NOT EMBEDDED_BLOCKS_RUNTIME)
++	# Check if the blocks runtime exports _Block_use_RR2 
++	set(CMAKE_REQUIRED_LIBRARIES ${BlocksRuntime_LIBRARIES})
++	set(CMAKE_REQUIRED_INCLUDES ${BlocksRuntime_INCLUDE_DIR})
++	check_symbol_exists(_Block_use_RR2 "Block_private.h" HAVE_BLOCK_USE_RR2)
++	unset(CMAKE_REQUIRED_LIBRARIES)
++	unset(CMAKE_REQUIRED_INCLUDES)
++
++	if (NOT HAVE_BLOCK_USE_RR2)
++		message(FATAL_ERROR "The external blocks runtime is not supported. It does not export _Block_use_RR2().")
++	endif()
++
++	target_compile_definitions(objc PRIVATE HAVE_BLOCK_USE_RR2)
++	target_link_libraries(objc PUBLIC BlocksRuntime::BlocksRuntime)
++endif()
++
+ target_link_libraries(objc PRIVATE tsl::robin_map)
+ 
+ set_target_properties(objc PROPERTIES
+@@ -295,10 +309,6 @@ if (M_LIBRARY)
+ 	target_link_libraries(objc PUBLIC ${M_LIBRARY})
+ endif ()
+ 
+-if (BLOCKS_RUNTIME_LIBRARY)
+-	target_link_libraries(objc PUBLIC ${BLOCKS_RUNTIME_LIBRARY})
+-endif ()
+-
+ # Make weak symbols work on OS X
+ if (APPLE)
+ 	set(CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS
+
+From 9320daefcaccb0418b535d83e75a8c2017deec50 Mon Sep 17 00:00:00 2001
+From: hmelder <service@hugomelder.com>
+Date: Thu, 9 Oct 2025 04:36:42 -0700
+Subject: [PATCH 4/6] Only call init_trampolines when using the internal blocks
+ rt
+
+---
+ loader.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/loader.c b/loader.c
+index 449d7a7c..f4df0471 100644
+--- a/loader.c
++++ b/loader.c
+@@ -59,7 +59,9 @@ static void init_runtime(void)
+ 		init_alias_table();
+ 		init_early_blocks();
+ 		init_arc();
++#if defined(EMBEDDED_BLOCKS_RUNTIME)
+ 		init_trampolines();
++#endif
+ 		init_builtin_classes();
+ 		first_run = NO;
+ 		if (getenv("LIBOBJC_MEMORY_PROFILE"))
+
+From 5c7378c1ba6809cab4d539531bd0dcff6576dea2 Mon Sep 17 00:00:00 2001
+From: hmelder <service@hugomelder.com>
+Date: Thu, 9 Oct 2025 04:38:11 -0700
+Subject: [PATCH 5/6] Conditionally include BlockImpTest.m
+
+---
+ Test/CMakeLists.txt | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/Test/CMakeLists.txt b/Test/CMakeLists.txt
+index 3e37fb79..3aa27b73 100644
+--- a/Test/CMakeLists.txt
++++ b/Test/CMakeLists.txt
+@@ -16,7 +16,6 @@ set(TESTS
+ 	AllocatePair.m
+ 	AssociatedObject.m
+ 	AssociatedObject2.m
+-	BlockImpTest.m
+ 	BlockTest_arc.m
+ 	ConstantString.m
+ 	Category.m
+@@ -54,6 +53,10 @@ set(TESTS
+ 	UnexpectedException.m
+ )
+ 
++if (EMBEDDED_BLOCKS_RUNTIME)
++	list(APPEND TESTS BlockImpTest.m)
++endif()
++
+ set(ENABLE_ALL_OBJC_ARC_TESTS On)
+ 
+ if (WIN32)
+
+From 6a18e54a0209051d37db00d76b668d8f3ac23627 Mon Sep 17 00:00:00 2001
+From: hmelder <service@hugomelder.com>
+Date: Thu, 9 Oct 2025 04:39:13 -0700
+Subject: [PATCH 6/6] External symbols should be imported from the DLL
+
+---
+ NSBlocks.m | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/NSBlocks.m b/NSBlocks.m
+index 49eee9d9..e5cccbdb 100644
+--- a/NSBlocks.m
++++ b/NSBlocks.m
+@@ -7,10 +7,14 @@
+ #include <assert.h>
+ 
+ #ifdef EMBEDDED_BLOCKS_RUNTIME
+-#define BLOCK_STORAGE OBJC_PUBLIC
++#	define BLOCK_STORAGE OBJC_PUBLIC
+ #else
+-#define BLOCK_STORAGE extern
+-#endif
++#	if defined(_WIN32)
++#		define BLOCK_STORAGE __attribute__((dllimport))
++#	else
++#		define BLOCK_STORAGE extern
++#	endif // defined(_WIN32)
++#endif // EMBEDDED_BLOCKS_RUNTIME
+ 
+ BLOCK_STORAGE struct objc_class _NSConcreteGlobalBlock;
+ BLOCK_STORAGE struct objc_class _NSConcreteStackBlock;
+@@ -76,4 +80,4 @@ PRIVATE void init_early_blocks(void)
+ 	_NSConcreteMallocBlock.info = objc_class_flag_is_block;
+ 	_NSConcreteAutoBlock.info = objc_class_flag_is_block;
+ 	_NSConcreteFinalizingBlock.info = objc_class_flag_is_block;
+-}
+\ No newline at end of file
++}
