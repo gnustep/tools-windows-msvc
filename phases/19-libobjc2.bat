@@ -18,6 +18,7 @@ echo ### Running cmake
 :: GNUSTEP_CONFIG is set to empty string to prevent CMake from finding it in install root.
 cmake .. %CMAKE_OPTIONS% ^
   -D GNUSTEP_CONFIG= ^
+  -D EMBEDDED_BLOCKS_RUNTIME=OFF ^
   || exit /b 1
 
 echo.
