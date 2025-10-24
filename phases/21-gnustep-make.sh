@@ -32,7 +32,8 @@ fi
   --prefix="$UNIX_INSTALL_PREFIX" \
   --with-library-combo=ng-gnu-gnu \
   --with-runtime-abi=gnustep-2.2 \
-  CFLAGS="$CFLAGS" \
+  CFLAGS="$CFLAGS -I$UNIX_INSTALL_PREFIX/include/BlocksRuntime" \
+  LDFLAGS="$LDFLAGS -lBlocksRuntime -L$UNIX_INSTALL_PREFIX/lib" \
   $CONFIGURE_OPTS
 
 echo
