@@ -1,0 +1,22 @@
+commit a6f07549b8ea67e107a9a2fb3edadc7412311188 (HEAD -> blocks-rt)
+Author: Hugo Melder <service@hugomelder.com>
+Date:   Mon Oct 20 13:38:44 2025 +0200
+
+    Use standard blocks runtime header
+
+diff --git a/Headers/GNUstepBase/GSBlocks.h b/Headers/GNUstepBase/GSBlocks.h
+index 758b21130..bf745cb26 100644
+--- a/Headers/GNUstepBase/GSBlocks.h
++++ b/Headers/GNUstepBase/GSBlocks.h
+@@ -112,8 +112,8 @@ typedef retTy(^name)()
+ #define CALL_BLOCK_NO_ARGS(block) ({if (NULL != block) CALL_NON_NULL_BLOCK_NO_ARGS(block);})
+ #define CALL_BLOCK_RET_NO_ARGS(block, rettype) ((NULL != block) ? (rettype)CALL_NON_NULL_BLOCK_NO_ARGS(block) : (rettype)0)
+ 
+-#if __has_include(<objc/blocks_runtime.h>)
+-#  include <objc/blocks_runtime.h>
++#if __has_include(<Block.h>)
++#  include <Block.h>
+ #else
+ 
+ #ifdef __cplusplus
+
