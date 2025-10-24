@@ -22,7 +22,6 @@ cd "%BUILD_DIR%" || exit /b 1
 echo.
 echo ### Running cmake
 :: CXX and linker flags below are to produce PDBs for release builds.
-:: BlocksRuntime parameters provided to use blocks runtime from libobjc2 with libdispatch-own-blocksruntime.patch.
 :: libdispatch only supports building with clang-cl frontend.
 cmake .. %CMAKE_OPTIONS% ^
   -D BUILD_SHARED_LIBS=YES ^
@@ -31,6 +30,7 @@ cmake .. %CMAKE_OPTIONS% ^
   -D CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
   -D CMAKE_C_COMPILER=clang-cl ^
   -D CMAKE_CXX_COMPILER=clang-cl ^
+  -D BlocksRuntime_INCLUDE_DIR="%INSTALL_PREFIX%\include\BlocksRuntime" ^
   || exit /b 1
 
 echo.

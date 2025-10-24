@@ -19,6 +19,7 @@ echo ### Running cmake
 cmake .. %CMAKE_OPTIONS% ^
   -D GNUSTEP_CONFIG= ^
   -D EMBEDDED_BLOCKS_RUNTIME=OFF ^
+  -D BlocksRuntime_INCLUDE_DIR="%INSTALL_PREFIX%\include\BlocksRuntime" ^
   || exit /b 1
 
 echo.
