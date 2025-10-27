@@ -1,9 +1,9 @@
 @echo off
 setlocal
 
-set PROJECT=libobjc2
-set GITHUB_REPO=gnustep/libobjc2
-set TAG=
+set PROJECT=blocksruntime
+set GITHUB_REPO=hmelder/swift-corelibs-blocksruntime
+set TAG=blocks-rt-win32
 
 :: load environment and prepare project
 call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
@@ -15,9 +15,10 @@ cd "%BUILD_DIR%" || exit /b 1
 
 echo.
 echo ### Running cmake
-:: GNUSTEP_CONFIG is set to empty string to prevent CMake from finding it in install root.
+:: CXX and linker flags below are to produce PDBs for release builds.
 cmake .. %CMAKE_OPTIONS% ^
-  -D GNUSTEP_CONFIG= ^
+  -D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/Zi" ^
+  -D CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
   || exit /b 1
 
 echo.
@@ -28,7 +29,5 @@ echo.
 echo ### Installing
 ninja install || exit /b 1
 
-:: move DLL to bin and install PDB files
-if not exist "%INSTALL_PREFIX%\bin\" mkdir "%INSTALL_PREFIX%\bin\" || exit /b 1
-if exist "%INSTALL_PREFIX%\lib\objc.dll" move /Y "%INSTALL_PREFIX%\lib\objc.dll" "%INSTALL_PREFIX%\bin\" || exit /b 1
-xcopy /Y /F objc.pdb "%INSTALL_PREFIX%\bin\" || exit /b 1
+:: install PDB file
+xcopy /Y /F BlocksRuntime.pdb "%INSTALL_PREFIX%\bin\" || exit /b 1

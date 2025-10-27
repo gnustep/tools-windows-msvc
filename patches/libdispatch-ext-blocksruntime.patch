@@ -1,0 +1,26 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 51f1f1b..564ddac 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -333,7 +333,7 @@ add_subdirectory(man)
+ add_subdirectory(os)
+ add_subdirectory(private)
+ if(NOT APPLE)
+-  add_subdirectory(src/BlocksRuntime)
++  include(cmake/modules/FindBlocksRuntime.cmake)
+ endif()
+ add_subdirectory(src)
+ if(BUILD_TESTING)
+diff --git a/cmake/modules/FindBlocksRuntime.cmake b/cmake/modules/FindBlocksRuntime.cmake
+index 111a5d6..3310b75 100644
+--- a/cmake/modules/FindBlocksRuntime.cmake
++++ b/cmake/modules/FindBlocksRuntime.cmake
+@@ -17,7 +17,7 @@ if(BlocksRuntime_INCLUDE_DIR AND BlocksRuntime_LIBRARIES)
+ else()
+   find_path(BlocksRuntime_INCLUDE_DIR
+             NAMES
+-              Blocks.h
++              Block.h
+             HINTS
+               ${CMAKE_INSTALL_FULL_INCLUDEDIR})
+   find_library(BlocksRuntime_LIBRARIES

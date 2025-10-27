@@ -53,7 +53,7 @@ Alternatively, `clang-cl.exe` can be used to build Objective-C code directly in 
     clang-cl -I C:\GNUstep\x64\Debug\include -fobjc-runtime=gnustep-2.0 -Xclang -fexceptions -Xclang -fobjc-exceptions -fblocks -DGNUSTEP -DGNUSTEP_WITH_DLL -DGNUSTEP_RUNTIME=1 -D_NONFRAGILE_ABI=1 -D_NATIVE_OBJC_EXCEPTIONS /MDd /Z7 /c test.m
     
     # link object file into executable using the LLD linker
-    clang-cl test.obj gnustep-base.lib objc.lib dispatch.lib -fuse-ld=lld /MDd /Z7 -o test.exe /link /LIBPATH:C:\GNUstep\x64\Debug\lib
+    clang-cl test.obj gnustep-base.lib objc.lib BlocksRuntime.lib dispatch.lib -fuse-ld=lld /MDd /Z7 -o test.exe /link /LIBPATH:C:\GNUstep\x64\Debug\lib
 
 Specify `/MDd` for debug builds, and `/MD` for release builds, in order to link against the same runtime libraries as the DLLs in `C:\GNUstep\x64\Debug` and `C:\GNUstep\x64\Release` respectively. Adding `/Z7` [adds full debug symbols](https://learn.microsoft.com/cpp/build/reference/z7-zi-zi-debug-information-format#z7).
 
