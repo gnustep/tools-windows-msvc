@@ -97,8 +97,8 @@ jobs:
       
       - name: Install Dependencies
         run: |
-          winget install --accept-source-agreements --accept-package-agreements Ninja-build.Ninja ${{ matrix.arch == 'arm64' && '--architecture arm64' || '' }}
-          winget install --accept-source-agreements --accept-package-agreements NASM
+          winget install --accept-source-agreements --accept-package-agreements --source winget Ninja-build.Ninja ${{ matrix.arch == 'arm64' && '--architecture arm64' || '' }}
+          winget install --accept-source-agreements --accept-package-agreements --source winget NASM
 
       - name: Install LLVM
         if: contains(matrix.arch, 'arm64')
