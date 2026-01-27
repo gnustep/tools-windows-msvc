@@ -43,7 +43,6 @@ jobs:
         # so we delete everything that could mess up our builds
         run: rmdir /S /Q C:\Strawberry
 
-
       - name: Install Winget Dependencies from Zip (arm64)
         if: contains(matrix.arch, 'arm64')
         run: |
@@ -55,7 +54,7 @@ jobs:
 
           Write-Host "Downloading DesktopAppInstaller_Dependencies.zip to $zipFilePath..."
           try {
-            Invoke-WebRequest -Uri https://github.com/microsoft/winget-cli/releases/download/v1.10.390/DesktopAppInstaller_Dependencies.zip -OutFile $zipFilePath -TimeoutSec 300
+            Invoke-WebRequest -Uri https://github.com/microsoft/winget-cli/releases/download/v1.12.460/DesktopAppInstaller_Dependencies.zip -OutFile $zipFilePath -TimeoutSec 300
           } catch {
             Write-Error "Failed to download DesktopAppInstaller_Dependencies.zip: $($_.Exception.Message)"
             exit 1
@@ -91,7 +90,7 @@ jobs:
       - name: Install Winget (arm64)
         if: contains(matrix.arch, 'arm64')
         run: |
-          Invoke-WebRequest -Uri https://github.com/microsoft/winget-cli/releases/download/v1.10.390/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle -OutFile $env:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
+          Invoke-WebRequest -Uri https://github.com/microsoft/winget-cli/releases/download/v1.12.460/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle -OutFile $env:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
           Add-AppxPackage $env:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
         shell: pwsh
       
