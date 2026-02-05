@@ -9,6 +9,7 @@ set TAG=
 call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
 
 :: determine Visual Studio version
+if "%VisualStudioVersion:~0,3%" == "18." set VSVERSION=2026
 if "%VisualStudioVersion:~0,3%" == "17." set VSVERSION=2022
 if "%VisualStudioVersion:~0,3%" == "16." set VSVERSION=2019
 if "%VisualStudioVersion:~0,3%" == "15." set VSVERSION=2017
