@@ -3,13 +3,12 @@ setlocal
 
 set PROJECT=libcurl
 set GITHUB_REPO=curl/curl
-set TAG=curl-8_14_0
 
 :: get the latest release tag from GitHub
-:: cd %~dp0
-:: for /f "usebackq delims=" %%i in (`call %BASH% '../scripts/get-latest-github-release-tag.sh %GITHUB_REPO% curl-'`) do (
-::   set TAG=%%i
-:: )
+cd %~dp0
+for /f "usebackq delims=" %%i in (`call %BASH% '../scripts/get-latest-github-release-tag.sh %GITHUB_REPO% curl-'`) do (
+  set TAG=%%i
+)
 
 :: load environment and prepare project
 call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
