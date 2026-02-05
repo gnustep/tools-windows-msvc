@@ -114,7 +114,7 @@ jobs:
         run: |
           :: use msys2.cmd from setup-msys2 as Bash shell, as it doesn't have msys2_shell.cmd used normally by build.bat
           set "BASH=msys2 -c"
-          build.bat --no-gui --type ${{ matrix.type }}
+          build.bat --type ${{ matrix.type }}
 
       - name: Package release
         run: |
