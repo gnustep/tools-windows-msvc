@@ -11,6 +11,10 @@ if [ -z "$GITHUB_REPO" ]; then
   exit 1
 fi
 
+if [ -z "$TAG_PREFIX" ]; then
+  TAG_PREFIX="([a-z_-]+)?"
+fi
+
 # use GitHub token authentication on CI to prevent rate limit errors
 if [ -n "$GITHUB_TOKEN" ]; then
   GITHUB_AUTHORIZATION_HEADER="Authorization: Bearer $GITHUB_TOKEN"
@@ -28,7 +32,7 @@ if [ $? -eq 0 ]; then
   echo "$github_tags" \
     | grep '"name":' \
     | sed -E 's/.*"([^"]+)".*/\1/' \
-    | egrep "^${TAG_PREFIX:-[a-z_-]+}[0-9]+[\._-][0-9]+([\._-][0-9]+)?\$" \
+    | egrep "^${TAG_PREFIX}[0-9]+[\\._-][0-9]+([\\._-][0-9]+)?\$" \
     | head -n 1
 else
   echo "$github_tags" >&2
