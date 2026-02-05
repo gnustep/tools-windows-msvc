@@ -3,7 +3,12 @@ setlocal
 
 set PROJECT=zlib-ng
 set GITHUB_REPO=zlib-ng/zlib-ng
-set TAG=2.0.7
+
+:: get the latest release tag from GitHub
+cd %~dp0
+for /f "usebackq delims=" %%i in (`call %BASH% '../scripts/get-latest-github-release-tag.sh %GITHUB_REPO%'`) do (
+  set TAG=%%i
+)
 
 :: load environment and prepare project
 call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1

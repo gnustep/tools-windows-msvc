@@ -3,7 +3,6 @@ setlocal
 
 set PROJECT=libjpeg
 set GITHUB_REPO=libjpeg-turbo/libjpeg-turbo
-set TAG=2.1.5.1
 
 :: get the latest release tag from GitHub
 cd %~dp0
