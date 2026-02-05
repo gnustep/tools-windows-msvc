@@ -16,6 +16,8 @@ exit /b %errorlevel%
   if not defined REPO (
     if defined GITHUB_REPO (
       set REPO=https://github.com/%GITHUB_REPO%.git
+    ) else if defined GITLAB_REPO (
+      set REPO=https://gitlab.com/%GITLAB_REPO%.git
     ) else (
       echo Missing REPO && exit /b 1
     )

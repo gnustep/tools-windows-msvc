@@ -2,8 +2,13 @@
 setlocal
 
 set PROJECT=libtiff
-set REPO=https://gitlab.com/libtiff/libtiff.git
-set TAG=v4.5.0
+set GITLAB_REPO=libtiff/libtiff
+
+:: get the latest release tag from GitLab
+cd %~dp0
+for /f "usebackq delims=" %%i in (`call %BASH% '../scripts/get-latest-gitlab-release-tag.sh %GITLAB_REPO%'`) do (
+  set TAG=%%i
+)
 
 :: load environment and prepare project
 call "%~dp0\..\scripts\common.bat" prepare_project || exit /b 1
