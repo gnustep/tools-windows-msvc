@@ -43,9 +43,25 @@ jobs:
         # so we delete everything that could mess up our builds
         run: rmdir /S /Q C:\Strawberry
 
-      - name: Install Winget Dependencies from Zip (arm64)
+      - name: Install Winget (arm64)
         if: contains(matrix.arch, 'arm64')
         run: |
+          function Install-AppxWithRetry($path) {
+            $maxAttempts = 5
+            for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+              try {
+                Add-AppxPackage -Path $path -ForceApplicationShutdown -ErrorAction Stop
+                return
+              } catch {
+                if ($attempt -eq $maxAttempts) {
+                  throw
+                }
+                Write-Warning "Add-AppxPackage failed (attempt $attempt/$maxAttempts): $($_.Exception.Message)"
+                Start-Sleep -Seconds 5
+              }
+            }
+          }
+
           $tempDir = Join-Path $env:TEMP "WingetDependencies"
           $zipFilePath = Join-Path $env:TEMP "DesktopAppInstaller_Dependencies.zip"
           $archDepsDir = Join-Path $tempDir "${{ matrix.arch }}" # Path to the arm64 or x64 folder inside the unzipped content
@@ -78,20 +94,16 @@ jobs:
             } else {
               foreach ($appxFile in $appXFiles) {
                 Write-Host "Installing $appxFile..."
-                Add-AppxPackage -Path $appxFile
+                Install-AppxWithRetry $appxFile
               }
             }
           } catch {
             Write-Error "Failed to install AppX packages: $($_.Exception.Message)"
             exit 1
           }
-        shell: pwsh
 
-      - name: Install Winget (arm64)
-        if: contains(matrix.arch, 'arm64')
-        run: |
           Invoke-WebRequest -Uri https://github.com/microsoft/winget-cli/releases/download/v1.12.460/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle -OutFile $env:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
-          Add-AppxPackage $env:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
+          Install-AppxWithRetry $env:TEMP\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
         shell: pwsh
       
       - name: Install Dependencies
