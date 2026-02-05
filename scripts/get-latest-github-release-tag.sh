@@ -20,9 +20,27 @@ if [ -n "$GITHUB_TOKEN" ]; then
   GITHUB_AUTHORIZATION_HEADER="Authorization: Bearer $GITHUB_TOKEN"
 fi
 
-# get the tags JSON from the GitHub API and parse it manually,
-# or output it to stderr if the server returns an error
+# try releases first (preferred), then fall back to tags
 # per_page=100 is required for some repositories with a lot of beta tags
+github_releases=`curl \
+  --silent --show-error --fail-with-body \
+  --header "$GITHUB_AUTHORIZATION_HEADER" \
+  https://api.github.com/repos/$GITHUB_REPO/releases?per_page=100`
+
+if [ $? -eq 0 ]; then
+  latest_release=`echo "$github_releases" \
+    | grep '"tag_name":' \
+    | sed -E 's/.*"([^"]+)".*/\1/' \
+    | egrep "^${TAG_PREFIX}[0-9]+[\\._-][0-9]+([\\._-][0-9]+)?\$" \
+    | head -n 1`
+  if [ -n "$latest_release" ]; then
+    echo "$latest_release"
+    exit 0
+  fi
+else
+  echo "$github_releases" >&2
+fi
+
 github_tags=`curl \
   --silent --show-error --fail-with-body \
   --header "$GITHUB_AUTHORIZATION_HEADER" \
