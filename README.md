@@ -22,6 +22,17 @@ The toolchain consists of the following libraries:
 - [libxslt](https://github.com/GNOME/libxslt)
 - [libcurl](https://github.com/curl/curl)
 
+Optionally, GNUstep GUI (AppKit) and its dependencies can be compiled by
+setting `--with-gui`. Please note that AppKit support is experimental.
+
+- [GNUstep GUI Library](https://github.com/GNUstep/libs-gui) (AppKit)
+- [GNUstep Back Library](https://github.com/GNUstep/libs-back)
+- [GNUstep Systempreferences](https://github.com/GNUstep/apps-systempreferences)
+- [zlib-ng](https://github.com/zlib-ng/zlib-ng)
+- [libpng](https://github.com/glennrp/libpng)
+- [libtiff](https://github.com/libtiff/libtiff)
+- [libjpeg](https://github.com/libjpeg-turbo/libjpeg-turbo)
+
 
 ## Installation
 
