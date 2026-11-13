@@ -182,6 +182,8 @@ goto :eof
   ) else (
     echo Error invalid phase: %PHASE_NAME% && exit 1
   )
+
+  call %BASH% '`cygpath -u "%ROOT_DIR%\scripts\write-build-info.sh"` %PHASE_NAME%' || (echo Failed writing build info && exit 1)
   goto :eof
 
 :set_phase_vars
