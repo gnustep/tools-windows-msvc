@@ -231,4 +231,4 @@ Usage: build.bat
 
 For each of the libraries, the script automatically downloads the source via Git into the `src` subdirectory, builds, and installs it.
 
-The toolchain is installed into `C:\GNUstep\[x86|x64|arm64]\[Debug|Release]`.
+The toolchain is installed into `C:\GNUstep\[x86|x64|arm64]\[Debug|Release]`. A `build.txt` file in that folder lists the Git revision and applied patches of each library.
